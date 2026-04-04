@@ -7,38 +7,74 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+<body style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.5rem;">
 
-<main class="animate" style="width: 100%; max-width: 400px; padding: 1rem;">
-  <div class="card" style="text-align: center;">
-    <div style="margin-bottom: 2rem;">
-        <i class="fa-solid fa-user-shield" style="font-size: 3rem; color: var(--accent-blue); margin-bottom: 1rem;"></i>
-        <h2 style="text-transform: uppercase; letter-spacing: 2px;">Acesso Restrito</h2>
-        <p style="color: var(--text-dim); font-size: 0.85rem;">Identifique-se para acessar o painel</p>
+<main class="animate" style="width:100%; max-width:1000px;">
+  <section style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:24px; align-items:stretch;">
+    <div class="card" style="padding:2rem; display:flex; flex-direction:column; justify-content:center;">
+      <span style="display:inline-block; width:max-content; margin-bottom:1rem; padding:8px 14px; border-radius:999px; background:var(--accent-soft); color:#8ec5ff; font-size:0.8rem; font-weight:700; letter-spacing:0.8px;">
+        ÁREA INTERNA
+      </span>
+
+      <h1 style="font-size:2.4rem; line-height:1.05; margin-bottom:1rem;">
+        Acesso ao painel administrativo
+      </h1>
+
+      <p style="color:var(--text-dim); font-size:1rem; max-width:520px; margin-bottom:1.5rem;">
+        Entre para visualizar agenda, acompanhar faturamento e gerenciar a operação da barbearia em um ambiente mais organizado.
+      </p>
+
+      <div style="display:grid; gap:12px;">
+        <div style="padding:1rem; border-radius:16px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+          <strong>Agenda diária</strong>
+          <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Visualize horários por profissional e acompanhe a ocupação do dia.</p>
+        </div>
+
+        <div style="padding:1rem; border-radius:16px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+          <strong>Resumo da operação</strong>
+          <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Acompanhe métricas rápidas e organização do atendimento.</p>
+        </div>
+
+        <div style="padding:1rem; border-radius:16px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+          <strong>Base pronta para evolução</strong>
+          <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Depois vamos conectar isso ao Firebase com autenticação real.</p>
+        </div>
+      </div>
     </div>
 
-    <form id="loginForm">
-      <div style="text-align: left; margin-bottom: 15px;">
-        <label style="font-size: 0.8rem; color: var(--text-dim);">NOME COMPLETO</label>
-        <input type="text" id="loginUser" placeholder="Ex: Junin0303" required>
+    <div class="card" style="padding:2rem; display:flex; flex-direction:column; justify-content:center;">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div style="width:72px; height:72px; border-radius:50%; margin:0 auto 1rem auto; display:flex; align-items:center; justify-content:center; background:rgba(0,123,255,0.12); border:1px solid rgba(0,123,255,0.25);">
+          <i class="fa-solid fa-user-shield" style="font-size:2rem; color:var(--accent-blue);"></i>
+        </div>
+
+        <h2 style="text-transform:uppercase; letter-spacing:2px; margin-bottom:0.4rem;">Login Admin</h2>
+        <p style="color:var(--text-dim); font-size:0.9rem;">Use seu acesso interno para continuar</p>
       </div>
 
-      <div style="text-align: left; margin-bottom: 15px;">
-        <label style="font-size: 0.8rem; color: var(--text-dim);">TELEFONE OU SENHA</label>
-        <input type="password" id="loginPass" placeholder="Digite sua senha" required>
-      </div>
+      <form id="loginForm">
+        <div style="text-align:left; margin-bottom:14px;">
+          <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:6px;">Usuário</label>
+          <input type="text" id="loginUser" placeholder="Digite seu usuário" required>
+        </div>
 
-      <button type="submit" style="margin-top: 10px; height: 50px;">ENTRAR NO PAINEL</button>
-      
-      <p id="errorMessage" style="color: var(--error); font-size: 0.8rem; margin-top: 15px; display: none;">
-        Credenciais incorretas. Tente novamente.
-      </p>
-    </form>
-    
-    <a href="index.html" style="display: block; margin-top: 20px; color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">
-      <i class="fa-solid fa-arrow-left"></i> Voltar ao site
-    </a>
-  </div>
+        <div style="text-align:left; margin-bottom:14px;">
+          <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:6px;">Senha</label>
+          <input type="password" id="loginPass" placeholder="Digite sua senha" required>
+        </div>
+
+        <button type="submit" style="margin-top:8px; height:52px;">Entrar no painel</button>
+
+        <p id="errorMessage" style="color:#ff4d4f; font-size:0.85rem; margin-top:12px; display:none; text-align:center;">
+          Credenciais incorretas. Tente novamente.
+        </p>
+      </form>
+
+      <a href="index.html" style="display:block; margin-top:20px; color:var(--text-dim); text-align:center; font-size:0.9rem;">
+        <i class="fa-solid fa-arrow-left"></i> Voltar ao site
+      </a>
+    </div>
+  </section>
 </main>
 
 <script>
@@ -48,21 +84,20 @@
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const user = document.getElementById('loginUser').value;
-    const pass = document.getElementById('loginPass').value;
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
 
-    // VALIDAÇÃO CONFORME SOLICITADO
-    if (user === "Junin0303" && pass === "100898") {
-      // Salva no localStorage para simular uma sessão ativa
+    if (user === 'admin' && pass === '123456') {
       localStorage.setItem('ahs_logged', 'true');
-      window.location.href = "admin.html";
+      window.location.href = 'admin.html';
     } else {
       errorMsg.style.display = 'block';
-      // Shake effect simples no erro
-      loginForm.classList.add('animate');
-      setTimeout(() => loginForm.classList.remove('animate'), 500);
     }
   });
+
+  if (localStorage.getItem('ahs_logged') === 'true') {
+    window.location.href = 'admin.html';
+  }
 </script>
 
 </body>

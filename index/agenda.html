@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda | Adriano Hair Style</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header style="padding: 1rem 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(10,14,23,0.9); border-bottom:1px solid var(--glass-border); position:sticky; top:0; z-index:1000;">
+  <div>
+    <h1 style="margin:0; font-size:1.2rem;">Agenda</h1>
+    <p style="color: var(--text-dim); margin:0;">Admin / Calendário de horários</p>
+  </div>
+  <div style="display:flex; align-items:center; gap:0.5rem;">
+    <a href="admin.html" class="btn-admin" style="padding:8px 12px;">← Voltar</a>
+    <button id="btnNovoHorario" class="btn-primary" style="padding:8px 12px;">+ Novo horário</button>
+  </div>
+</header>
+
+<main style="padding: 1.5rem 5%;">
+  <aside class="agenda-controls" style="margin-bottom: 1rem;">
+    <button id="goToday" class="btn-primary">Hoje</button>
+    <button id="prevDay" class="btn-admin">← Dia anterior</button>
+    <button id="nextDay" class="btn-admin">Próximo dia →</button>
+    <span class="agenda-week-label">Data: <strong id="currentDateLabel"></strong></span>
+  </aside>
+
+  <section class="schedule-grid" id="scheduleGrid">
+    <div class="schedule-row header">
+      <div>Hora</div>
+      <div>Adriano</div>
+      <div>Arthur</div>
+      <div>Igor</div>
+      <div>Vinícius</div>
+    </div>
+  </section>
+
+  <div style="margin-top:1rem; color: var(--text-dim); font-size:0.9rem;">Clique em um horário disponível para agendar.</div>
+</main>
+
+<div id="appointmentModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="closeModal"><i class="fa-solid fa-x"></i></button>
+    <h2>Agendar horário</h2>
+    <form id="appointmentForm">
+      <div class="form-group">
+        <label>Data selecionada</label>
+        <input type="text" id="slotDate" readonly>
+      </div>
+      <div class="form-group">
+        <label>Horário selecionado</label>
+        <input type="text" id="slotTime" readonly>
+      </div>
+      <div class="form-group">
+        <label>Profissional</label>
+        <input type="text" id="slotStylist" readonly>
+      </div>
+      <div class="form-group">
+        <label>Cliente</label>
+        <input type="text" id="clientName" required>
+      </div>
+      <div class="form-group">
+        <label>Serviço</label>
+        <select id="service" required>
+          <option value="Corte Masculino">Corte Masculino - R$ 50</option>
+          <option value="Corte com Sobrancelha">Corte/Sobrancelha - R$ 55</option>
+          <option value="Combo Corte e Barba">Combo corte e barba - R$ 90</option>
+          <option value="Acabamento">Acabamento - R$ 20</option>
+          <option value="Progressiva">Progressiva - R$ 90</option>
+          <option value="Platinado">Platinado - R$ 110</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="tel" id="clientPhone">
+      </div>
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="notes" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn-primary">Salvar Agendamento</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const grid = document.getElementById('scheduleGrid');
+  const modal = document.getElementById('appointmentModal');
+  const closeModal = document.getElementById('closeModal');
+  const appointmentForm = document.getElementById('appointmentForm');
+  const slotDate = document.getElementById('slotDate');
+  const slotTime = document.getElementById('slotTime');
+  const slotStylist = document.getElementById('slotStylist');
+  const clientName = document.getElementById('clientName');
+  const service = document.getElementById('service');
+  const clientPhone = document.getElementById('clientPhone');
+  const notes = document.getElementById('notes');
+  const currentDateLabel = document.getElementById('currentDateLabel');
+  const btnNovoHorario = document.getElementById('btnNovoHorario');
+  const prevDay = document.getElementById('prevDay');
+  const nextDay = document.getElementById('nextDay');
+  const goToday = document.getElementById('goToday');
+
+  const staff = ['Adriano', 'Arthur', 'Igor', 'Vinícius'];
+  const hours = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+
+  let busySlots = JSON.parse(localStorage.getItem('ahasSchedule') || '[]');
+  let currentDate = new Date();
+
+  function toYMD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatDate(date) {
+    return date.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  function renderSchedule() {
+    const selectedDate = toYMD(currentDate);
+    const daySlots = busySlots.filter(slot => slot.date === selectedDate);
+
+    grid.innerHTML = '<div class="schedule-row header"><div>Hora</div>' + staff.map(name => `<div>${name}</div>`).join('') + '</div>';
+
+    hours.forEach(hour => {
+      const row = document.createElement('div');
+      row.className = 'schedule-row';
+
+      row.innerHTML = `<div class="time-cell">${hour}</div>` + staff.map(name => {
+        const appointment = daySlots.find(a => a.time === hour && a.stylist === name);
+        return `
+          <div class="slot-cell ${appointment ? 'booked' : ''}" data-time="${hour}" data-stylist="${name}">
+            ${appointment ? `<strong>${appointment.client}</strong><br>${appointment.service}` : 'Disponível'}
+          </div>
+        `;
+      }).join('');
+
+      grid.appendChild(row);
+    });
+  }
+
+  function openModal(time, stylist) {
+    slotDate.value = formatDate(currentDate);
+    slotTime.value = time;
+    slotStylist.value = stylist;
+    clientName.value = '';
+    service.value = 'Corte Masculino';
+    clientPhone.value = '';
+    notes.value = '';
+    modal.classList.add('open');
+  }
+
+  function closeAppointmentModal() {
+    modal.classList.remove('open');
+  }
+
+  grid.addEventListener('click', (event) => {
+    const slot = event.target.closest('.slot-cell');
+    if (!slot) return;
+
+    if (slot.classList.contains('booked')) return;
+
+    const time = slot.getAttribute('data-time');
+    const stylist = slot.getAttribute('data-stylist');
+    openModal(time, stylist);
+  });
+
+  btnNovoHorario.addEventListener('click', () => openModal('', ''));
+  closeModal.addEventListener('click', closeAppointmentModal);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeAppointmentModal();
+  });
+
+  prevDay.addEventListener('click', () => {
+    currentDate.setDate(currentDate.getDate() - 1);
+    updateDisplay();
+  });
+
+  nextDay.addEventListener('click', () => {
+    currentDate.setDate(currentDate.getDate() + 1);
+    updateDisplay();
+  });
+
+  goToday.addEventListener('click', () => {
+    currentDate = new Date();
+    updateDisplay();
+  });
+
+  appointmentForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    if (!slotTime.value || !slotStylist.value || !clientName.value.trim()) {
+      alert('Preencha cliente, horário e profissional.');
+      return;
+    }
+
+    const selectedDate = toYMD(currentDate);
+
+    const newAppointment = {
+      time: slotTime.value,
+      stylist: slotStylist.value,
+      client: clientName.value.trim(),
+      service: service.value,
+      phone: clientPhone.value.trim(),
+      notes: notes.value.trim(),
+      date: selectedDate,
+      createdAt: new Date().toISOString()
+    };
+
+    const existing = busySlots.find(a =>
+      a.time === newAppointment.time &&
+      a.stylist === newAppointment.stylist &&
+      a.date === newAppointment.date
+    );
+
+    if (existing) {
+      alert('Este horário já está ocupado para este profissional.');
+      return;
+    }
+
+    busySlots.push(newAppointment);
+    localStorage.setItem('ahasSchedule', JSON.stringify(busySlots));
+    renderSchedule();
+    closeAppointmentModal();
+  });
+
+  function updateDisplay() {
+    currentDateLabel.textContent = formatDate(currentDate);
+    renderSchedule();
+  }
+
+  updateDisplay();
+</script>
+
+</body>
+</html>

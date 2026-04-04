@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+/* 1. CONFIGURAÇÕES GERAIS E CORES */
+:root {
+  --bg-dark: #0a0e17;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --accent-blue: #007bff;
+  --accent-hover: #0056b3;
+  --text-main: #ffffff;
+  --text-dim: #a0a0a0;
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --success: #28a745;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 123, 255, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 123, 255, 0.05) 0%, transparent 40%);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+}
+
+/* 2. ANIMAÇÕES */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* 3. HEADER RESPONSIVO */
+header {
+  padding: 1rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 14, 23, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header h1 { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
+
+header .brand-locations { display: flex; flex-direction: column; gap: 0.2rem; }
+header .location-text { font-size: 0.82rem; color: var(--text-dim); margin: 0; }
+
+nav a.btn-primary,
+nav a.btn-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 9px 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+nav a.btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, #007bff 0%, #00a2ff 100%);
+  border: 1px solid rgba(0, 123, 255, 0.5);
+}
+
+nav a.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.35);
+}
+
+nav a.btn-admin {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.8rem;
+  opacity: 0.95;
+}
+
+nav a.btn-admin:hover {
+  opacity: 1;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 4. ELEMENTOS DE FORMULÁRIO E CARDS */
+.card, .form-container, .grid-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  font-size: 16px; /* Evita zoom automático no iPhone */
+}
+
+button {
+  background: var(--accent-blue);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+/* 5. GRID DO ADMIN (ESTRUTURA PRINCIPAL) */
+.admin-layout {
+  display: flex;
+  flex-direction: column; /* Padrão celular: uma coluna */
+}
+
+.admin-main {
+  padding: 1rem;
+  width: 100%;
+}
+
+/* Dashboard Cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  margin-bottom: 2rem;
+}
+
+.dashboard-grid .card {
+  text-align: center;
+  padding: 1rem;
+}
+
+/* 6. TABELAS RESPONSIVAS (O segredo para telas pequenas) */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Permite rolar a tabela no celular */
+  margin-top: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px; /* Garante que a tabela não esmague os dados */
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+th { color: var(--accent-blue); font-size: 0.8rem; text-transform: uppercase; }
+
+/* 7. SLOTS DE HORÁRIO (AGENDAMENTO) */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.slot-btn {
+  padding: 10px;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.slot-btn.selected {
+  background: var(--accent-blue) !important;
+  border-color: #fff;
+}
+
+/* 5a. AGENDA */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 100px repeat(4, minmax(100px, 1fr));
+  gap: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.schedule-row {
+  display: contents;
+}
+
+.schedule-row > div,
+.schedule-row.header > div {
+  padding: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.schedule-row.header > div {
+  font-weight: 700;
+  background: rgba(0, 123, 255, 0.13);
+}
+
+.schedule-grid .time-cell {
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+}
+
+.slot-cell {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  text-align: center;
+  line-height: 1.2;
+  height: 54px;
+}
+
+.slot-cell:hover {
+  background: rgba(0, 123, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.slot-cell.booked {
+  background: rgba(40, 167, 69, 0.38);
+  color: #fff;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 2000;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  width: min(600px, 100%);
+  background: #0f1320;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.modal-content h2 { margin-top: 0; margin-bottom: 1rem; }
+
+.form-group { margin-bottom: 0.75rem; }
+
+.form-group label { font-size: 0.8rem; margin-bottom: 0.2rem; display: block; color: var(--text-dim); }
+
+.form-group input,
+.form-group select,
+.form-group textarea { width: 100%; }
+
+/* CONTROLES DA AGENDA */
+.agenda-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.agenda-controls button {
+  min-width: 80px;
+  max-width: 120px;
+  padding: 6px 8px;
+  font-size: 0.78rem;
+  border-radius: 8px;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.agenda-controls .agenda-week-label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* Responsividade da agenda */
+@media (max-width: 768px) {
+  .agenda-controls {
+    gap: 0.4rem;
+  }
+
+  .agenda-controls button {
+    min-width: 80px;
+    padding: 7px 8px;
+    font-size: 0.8rem;
+  }
+
+  .agenda-controls .agenda-week-label {
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .agenda-controls button {
+    min-width: 70px;
+    padding: 6px 7px;
+    font-size: 0.75rem;
+  }
+
+  .agenda-controls .agenda-week-label {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .schedule-grid {
+    grid-template-columns: 80px repeat(4, minmax(60px, 1fr));
+    font-size: 0.75rem;
+  }
+
+  .schedule-row > div,
+  .schedule-row.header > div {
+    padding: 8px;
+    min-height: 40px;
+  }
+
+  .slot-cell {
+    height: 40px;
+    font-size: 0.7rem;
+  }
+
+  .time-cell {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-grid {
+    grid-template-columns: 70px repeat(4, minmax(50px, 1fr));
+  }
+
+  .schedule-row > div,
+  .schedule-row.header > div {
+    padding: 6px;
+    min-height: 35px;
+  }
+
+  .slot-cell {
+    height: 35px;
+    font-size: 0.65rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .admin-layout {
+    flex-direction: row;
+  }
+
+  .admin-sidebar {
+    width: 250px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    border-right: 1px solid var(--glass-border);
+    padding: 2rem;
+  }
+
+  .admin-main {
+    padding: 2.5rem;
+    flex: 1;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grid-two-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+}
+
+/* BOTÃO VOLTAR */
+.btn-back {
+  width: auto;
+  padding: 8px 15px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  font-size: 0.9rem;
+}
+
+.admin-sidebar {
+  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(10,14,23,0.9));
+}
+
+.admin-sidebar a {
+  padding: 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.admin-sidebar a:hover {
+  background: rgba(0,123,255,0.2);
+}
+
+.admin-sidebar a.active {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.schedule-grid {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.slot-cell {
+  position: relative;
+  font-weight: 600;
+}
+
+.slot-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,255,150,0.05);
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.slot-cell:hover::after {
+  opacity: 1;
+}
+
+.slot-cell.booked {
+  background: linear-gradient(135deg, #28a745, #1e7e34);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.time-cell {
+  font-weight: bold;
+  background: rgba(0,0,0,0.4);
+}

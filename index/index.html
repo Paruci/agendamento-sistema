@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adriano Hair Style</title>
-  
   <link rel="stylesheet" href="style.css">
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
@@ -23,17 +21,113 @@
   </nav>
 </header>
 
-<main style="padding: 2rem 5%;">
-  
-  <section class="animate" style="text-align: center; padding: 4rem 1rem; background: var(--card-bg); border-radius: 20px; border: 1px solid var(--glass-border); margin-bottom: 3rem;">
-    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">O SEU ESTILO <br><span style="color: var(--accent-blue);">COMEÇA AQUI</span></h2>
-    <p style="color: var(--text-dim); margin-bottom: 2rem; max-width: 600px; margin-inline: auto;">Experiência premium em corte e barba com o cuidado que você merece.</p>
-    <a href="agendamento.html">
-        <button style="max-width: 300px; height: 60px; font-size: 1.2rem;">RESERVAR HORÁRIO</button>
-    </a>
+<main class="home-main">
+  <section class="hero-section animate">
+    <div class="hero-content">
+      <span class="hero-badge">BARBEARIA PREMIUM EM JUNDIAÍ</span>
+      <h2>Seu estilo começa aqui</h2>
+      <p>
+        Corte, barba e atendimento com experiência profissional.
+        Agende seu horário em poucos cliques e tenha uma experiência moderna do começo ao fim.
+      </p>
+
+      <div class="hero-actions">
+        <a href="agendamento.html" class="hero-btn-primary">Reservar horário</a>
+        <a href="login.html" class="hero-btn-secondary">Área administrativa</a>
+      </div>
+
+      <div class="hero-highlights">
+        <div class="highlight-card">
+          <strong>+ rapidez</strong>
+          <span>Agendamento simples e direto</span>
+        </div>
+        <div class="highlight-card">
+          <strong>+ organização</strong>
+          <span>Controle visual dos horários</span>
+        </div>
+        <div class="highlight-card">
+          <strong>+ estilo</strong>
+          <span>Experiência premium do início ao fim</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="hero-panel-card">
+        <small>Funcionamento</small>
+        <h3>Terça a sábado</h3>
+        <p>09h às 19h</p>
+      </div>
+
+      <div class="hero-panel-card">
+        <small>Serviços</small>
+        <ul>
+          <li>Corte masculino</li>
+          <li>Corte + sobrancelha</li>
+          <li>Combo corte e barba</li>
+          <li>Acabamento</li>
+        </ul>
+      </div>
+
+      <div class="hero-panel-card">
+        <small>Agendamento</small>
+        <p>Escolha a data, o horário e finalize seu pedido com rapidez.</p>
+      </div>
+    </div>
   </section>
 
+  <section class="services-section animate">
+    <div class="section-title">
+      <span>NOSSOS SERVIÇOS</span>
+      <h3>Visual alinhado em todos os detalhes</h3>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <i class="fa-solid fa-scissors"></i>
+        <h4>Corte Masculino</h4>
+        <p>Corte moderno com acabamento refinado.</p>
+        <strong>R$ 50,00</strong>
+      </div>
+
+      <div class="service-card">
+        <i class="fa-solid fa-face-smile"></i>
+        <h4>Corte + Sobrancelha</h4>
+        <p>Mais definição e aparência mais limpa.</p>
+        <strong>R$ 55,00</strong>
+      </div>
+
+      <div class="service-card">
+        <i class="fa-solid fa-user-tie"></i>
+        <h4>Combo Corte e Barba</h4>
+        <p>Experiência completa para renovar o visual.</p>
+        <strong>R$ 90,00</strong>
+      </div>
+
+      <div class="service-card">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <h4>Acabamento</h4>
+        <p>Ajuste rápido de contorno e nuca.</p>
+        <strong>R$ 20,00</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section animate">
+    <div class="cta-box">
+      <div>
+        <span class="section-mini-title">PRONTO PARA AGENDAR?</span>
+        <h3>Garanta seu horário agora</h3>
+        <p>Faça seu agendamento com praticidade e chegue com tudo organizado.</p>
+      </div>
+      <a href="agendamento.html" class="hero-btn-primary">Agendar agora</a>
+    </div>
+  </section>
 </main>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Adriano Hair Style - Todos os direitos reservados</p>
+</footer>
 
 </body>
 </html>

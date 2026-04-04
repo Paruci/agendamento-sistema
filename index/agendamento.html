@@ -10,60 +10,229 @@
 <body>
 
 <header>
-  <button class="btn-back" onclick="window.history.back()">
+  <button class="btn-back" onclick="window.location.href='index.html'">
     <i class="fa-solid fa-chevron-left"></i> Voltar
   </button>
   <h1 style="font-size: 1.2rem; font-weight: 800; letter-spacing: 1px;">ADRIANO <span style="color: var(--accent-blue);">HAIR STYLE</span></h1>
 </header>
 
-<main class="container-small animate" style="max-width: 500px; margin: 2rem auto; padding: 0 1rem;">
-  <div class="form-container card">
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <h2 style="font-size: 1.5rem;">Reserve seu Horário</h2>
-      <p style="color: var(--text-dim); font-size: 0.9rem;">Escolha o serviço e a data desejada</p>
+<main style="padding: 2rem 5%;">
+  <section style="max-width: 1150px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px;">
+    <div class="card animate" style="padding: 2rem;">
+      <div style="margin-bottom: 2rem;">
+        <span style="display:inline-block; margin-bottom:0.8rem; padding:8px 14px; border-radius:999px; background:var(--accent-soft); color:#8ec5ff; font-size:0.8rem; font-weight:700; letter-spacing:0.8px;">AGENDAMENTO ONLINE</span>
+        <h2 style="font-size: 2.2rem; line-height: 1.1; margin-bottom: 0.8rem;">Reserve seu horário em poucos cliques</h2>
+        <p style="color: var(--text-dim); max-width: 600px;">
+          Escolha o serviço, selecione a data e depois clique em um horário disponível.
+          Tudo de forma simples, rápida e organizada.
+        </p>
+      </div>
+
+      <form id="formAgendamento">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="input-group">
+            <label><i class="fa-solid fa-user"></i> Nome completo</label>
+            <input type="text" name="nome" placeholder="Ex: João Silva" required>
+          </div>
+
+          <div class="input-group">
+            <label><i class="fa-brands fa-whatsapp"></i> WhatsApp</label>
+            <input type="tel" name="telefone" placeholder="11999999999" required>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="input-group">
+            <label><i class="fa-solid fa-scissors"></i> Serviço</label>
+            <select name="servico" required>
+              <option value="">Selecione o serviço</option>
+              <option value="Corte Masculino">Corte Masculino - R$ 50</option>
+              <option value="Corte com Sobrancelha">Corte + Sobrancelha - R$ 55</option>
+              <option value="Combo Corte e Barba">Combo corte e barba - R$ 90</option>
+              <option value="Acabamento">Acabamento - R$ 20</option>
+              <option value="Progressiva">Progressiva - R$ 90</option>
+              <option value="Platinado">Platinado - R$ 110</option>
+            </select>
+          </div>
+
+          <div class="date-selector">
+            <label><i class="fa-solid fa-calendar-days"></i> Data</label>
+            <input type="date" id="appointmentDate" required style="display:none;">
+            <input type="text" id="appointmentDateFormatted" placeholder="Selecione a data" readonly required>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom: 12px;">
+            <h4 style="font-size: 0.95rem; color: var(--text-main); margin:0;">Horários disponíveis</h4>
+            <span id="selectedDateText" style="color: var(--text-dim); font-size: 0.9rem;"></span>
+          </div>
+
+          <div class="slots" id="slots" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px;"></div>
+        </div>
+
+        <input type="hidden" name="hora" id="horaSelecionada" required>
+
+        <div id="msgAgendamento" style="margin-top: 1rem; color: #8ec5ff; font-size: 0.95rem;"></div>
+
+        <button type="submit" style="margin-top: 1.8rem; height: 56px; font-size: 1.05rem;">
+          Finalizar agendamento <i class="fa-solid fa-check" style="margin-left: 10px;"></i>
+        </button>
+      </form>
     </div>
 
-    <form id="formAgendamento">
-      <div class="input-group">
-        <label><i class="fa-solid fa-user"></i> Nome Completo</label>
-        <input type="text" name="nome" placeholder="Ex: João Silva" required>
-      </div>
-
-      <div class="input-group">
-        <label><i class="fa-brands fa-whatsapp"></i> WhatsApp</label>
-        <input type="tel" name="telefone" placeholder="(11) 99999-9999" pattern="\d{10,11}" required>
-      </div>
-
-      <div class="input-group">
-        <label><i class="fa-solid fa-scissors"></i> Selecione o Serviço</label>
-        <select name="servico" required>
-          <option value="">Clique para escolher...</option>
-          <option value="Corte Masculino">Corte Masculino - R$50</option>
-          <option value="Corte + Sobrancelha">Corte + Sobrancelha - R$55</option>
-          <option value="Combo corte e barba">Combo corte e barba - R$90</option>
-          <option value="Acabamento">Acabamento - R$25</option>
-        </select>
-      </div>
-
-      <div class="date-selector">
-        <label><i class="fa-solid fa-calendar-days"></i> Data</label>
-        <input type="date" name="data" required>
-      </div>
-
-      <div class="slots-wrap" style="margin-top: 1.5rem;">
-        <h4 style="margin-bottom: 10px; font-size: 0.9rem; color: var(--accent-blue);">Horários Disponíveis</h4>
-        <div class="slots" id="slots" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+    <div style="display:grid; gap: 18px;">
+      <div class="card animate" style="padding: 1.6rem;">
+        <small style="display:block; color:#8ec5ff; margin-bottom:0.5rem; letter-spacing:0.8px;">COMO FUNCIONA</small>
+        <h3 style="margin-bottom:0.7rem;">Agendamento simples</h3>
+        <div style="display:grid; gap: 12px;">
+          <div style="padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+            <strong>1. Preencha seus dados</strong>
+            <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Informe nome, WhatsApp e o serviço desejado.</p>
           </div>
+          <div style="padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+            <strong>2. Escolha a data</strong>
+            <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Selecione o melhor dia para seu atendimento.</p>
+          </div>
+          <div style="padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+            <strong>3. Selecione o horário</strong>
+            <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Clique em um horário disponível para concluir.</p>
+          </div>
+        </div>
       </div>
 
-      <input type="hidden" name="hora" id="horaSelecionada" required>
-
-      <button type="submit" style="margin-top: 2rem; height: 55px; font-size: 1.1rem;">
-        Finalizar Agendamento <i class="fa-solid fa-check" style="margin-left: 10px;"></i>
-      </button>
-    </form>
-  </div>
+      <div class="card animate" style="padding: 1.6rem;">
+        <small style="display:block; color:#8ec5ff; margin-bottom:0.5rem; letter-spacing:0.8px;">INFORMAÇÕES</small>
+        <h3 style="margin-bottom:0.7rem;">Atendimento</h3>
+        <div style="display:grid; gap: 10px;">
+          <div style="display:flex; justify-content:space-between; gap:1rem; padding: 0.9rem 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+            <span style="color:var(--text-dim);">Funcionamento</span>
+            <strong>Terça a sábado</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:1rem; padding: 0.9rem 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+            <span style="color:var(--text-dim);">Horário</span>
+            <strong>09h às 19h</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:1rem; padding: 0.9rem 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+            <span style="color:var(--text-dim);">Local</span>
+            <strong>Rua Tiradentes, 1470 - Horto Florestal, Jundiaí, SP</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
+
+<script>
+  const formAgendamento = document.getElementById('formAgendamento');
+  const slotsContainer = document.getElementById('slots');
+  const horaSelecionada = document.getElementById('horaSelecionada');
+  const appointmentDate = document.getElementById('appointmentDate');
+  const selectedDateText = document.getElementById('selectedDateText');
+  const msgAgendamento = document.getElementById('msgAgendamento');
+  const appointmentDateFormatted = document.getElementById('appointmentDateFormatted');
+  appointmentDateFormatted.addEventListener('click', () => {
+  appointmentDate.showPicker();
+  });
+  appointmentDate.addEventListener('change', () => {
+  appointmentDateFormatted.value = formatDate(appointmentDate.value);
+  renderSlots();
+  });
+
+  const horarios = [
+    '09:00', '10:00', '11:00', '13:00',
+    '14:00', '15:00',  '16:00', '17:00', 
+    '18:00', '19:00'
+  ];
+
+  function toYMD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatDate(dateString) {
+  const date = new Date(dateString + 'T00:00:00');
+
+  const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const diaSemana = dias[date.getDay()];
+
+  const dia = String(date.getDate()).padStart(2, '0');
+  const mes = String(date.getMonth() + 1).padStart(2, '0');
+
+  return `${diaSemana} ${dia}/${mes}`;
+}
+
+  function getAppointments() {
+    return JSON.parse(localStorage.getItem('ahasSchedule') || '[]');
+  }
+
+  function renderSlots() {
+    const selectedDate = appointmentDate.value;
+    const appointments = getAppointments();
+
+    slotsContainer.innerHTML = '';
+    horaSelecionada.value = '';
+
+    if (!selectedDate) {
+      selectedDateText.textContent = 'Selecione uma data para ver os horários';
+      return;
+    }
+
+    selectedDateText.textContent = formatDate(selectedDate);
+
+    const bookedHours = appointments
+      .filter(item => item.date === selectedDate)
+      .map(item => item.time);
+
+    horarios.forEach(hora => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'slot-btn';
+      button.textContent = hora;
+
+      if (bookedHours.includes(hora)) {
+        button.disabled = true;
+        button.textContent = `${hora} • Ocupado`;
+        button.style.opacity = '0.5';
+        button.style.cursor = 'not-allowed';
+      } else {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          horaSelecionada.value = hora;
+        });
+      }
+
+      slotsContainer.appendChild(button);
+    });
+  }
+
+  appointmentDate.addEventListener('change', renderSlots);
+
+  formAgendamento.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const nome = formAgendamento.nome.value.trim();
+    const telefone = formAgendamento.telefone.value.trim();
+    const servico = formAgendamento.servico.value;
+    const data = formAgendamento.data.value;
+    const hora = horaSelecionada.value;
+
+    if (!nome || !telefone || !servico || !data || !hora) {
+      msgAgendamento.textContent = 'Preencha tudo e selecione um horário.';
+      return;
+    }
+
+    msgAgendamento.textContent = 'Pedido de agendamento registrado com sucesso.';
+    formAgendamento.reset();
+    horaSelecionada.value = '';
+    renderSlots();
+  });
+
+  appointmentDate.min = toYMD(new Date());
+</script>
 
 </body>
 </html>

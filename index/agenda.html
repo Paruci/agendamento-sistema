@@ -11,16 +11,38 @@
 
 <header style="padding: 1rem 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(10,14,23,0.9); border-bottom:1px solid var(--glass-border); position:sticky; top:0; z-index:1000;">
   <div>
-    <h1 style="margin:0; font-size:1.2rem;">Agenda</h1>
-    <p style="color: var(--text-dim); margin:0;">Admin / Calendário de horários</p>
+    <p style="color:#8ec5ff; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; margin:0 0 0.35rem 0;">Painel interno</p>
+    <h1 style="margin:0; font-size:1.5rem;">Agenda de horários</h1>
+    <p style="color: var(--text-dim); margin:0.3rem 0 0 0;">Visual por profissional com controle diário</p>
   </div>
-  <div style="display:flex; align-items:center; gap:0.5rem;">
-    <a href="admin.html" class="btn-admin" style="padding:8px 12px;">← Voltar</a>
-    <button id="btnNovoHorario" class="btn-primary" style="padding:8px 12px;">+ Novo horário</button>
+  <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+    <a href="admin.html" class="btn-admin" style="padding:10px 14px;">← Voltar</a>
+    <button id="btnNovoHorario" class="btn-primary" style="padding:10px 14px;">+ Novo horário</button>
   </div>
 </header>
 
 <main style="padding: 1.5rem 5%;">
+  <section class="card animate" style="margin-bottom: 1rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
+      <div>
+        <small style="display:block; color:#8ec5ff; margin-bottom:0.45rem; letter-spacing:0.8px;">CONTROLE DIÁRIO</small>
+        <h2 style="margin:0; font-size:1.5rem;">Agenda operacional</h2>
+        <p style="color:var(--text-dim); margin-top:0.35rem;">Navegue pelos dias e clique em um horário disponível para agendar.</p>
+      </div>
+
+      <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+        <div style="padding:0.7rem 0.9rem; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); font-size:0.9rem;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#1e7e34; margin-right:8px;"></span>
+          Ocupado
+        </div>
+        <div style="padding:0.7rem 0.9rem; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); font-size:0.9rem;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#007bff; margin-right:8px;"></span>
+          Disponível
+        </div>
+      </div>
+    </div>
+  </section>
+
   <aside class="agenda-controls" style="margin-bottom: 1rem;">
     <button id="goToday" class="btn-primary">Hoje</button>
     <button id="prevDay" class="btn-admin">← Dia anterior</button>
@@ -28,17 +50,21 @@
     <span class="agenda-week-label">Data: <strong id="currentDateLabel"></strong></span>
   </aside>
 
-  <section class="schedule-grid" id="scheduleGrid">
-    <div class="schedule-row header">
-      <div>Hora</div>
-      <div>Adriano</div>
-      <div>Arthur</div>
-      <div>Igor</div>
-      <div>Vinícius</div>
-    </div>
+  <section class="card animate" style="padding:0; overflow:hidden;">
+    <section class="schedule-grid" id="scheduleGrid">
+      <div class="schedule-row header">
+        <div>Hora</div>
+        <div>Adriano</div>
+        <div>Arthur</div>
+        <div>Igor</div>
+        <div>Vinícius</div>
+      </div>
+    </section>
   </section>
 
-  <div style="margin-top:1rem; color: var(--text-dim); font-size:0.9rem;">Clique em um horário disponível para agendar.</div>
+  <div style="margin-top:1rem; color: var(--text-dim); font-size:0.9rem;">
+    Clique em um horário livre para criar um agendamento.
+  </div>
 </main>
 
 <div id="appointmentModal" class="modal">
@@ -117,13 +143,13 @@
     return `${year}-${month}-${day}`;
   }
 
-  function formatDate(date) {
-    return date.toLocaleDateString('pt-BR', {
-      weekday: 'long',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+  function formatDate(dateString) {
+    const date = new Date(dateString + 'T00:00:00');
+    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    const diaSemana = dias[date.getDay()];
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    return `${diaSemana} ${dia}/${mes}`;
   }
 
   function renderSchedule() {
@@ -150,7 +176,7 @@
   }
 
   function openModal(time, stylist) {
-    slotDate.value = formatDate(currentDate);
+    slotDate.value = formatDate(toYMD(currentDate));
     slotTime.value = time;
     slotStylist.value = stylist;
     clientName.value = '';
@@ -167,7 +193,6 @@
   grid.addEventListener('click', (event) => {
     const slot = event.target.closest('.slot-cell');
     if (!slot) return;
-
     if (slot.classList.contains('booked')) return;
 
     const time = slot.getAttribute('data-time');
@@ -236,7 +261,7 @@
   });
 
   function updateDisplay() {
-    currentDateLabel.textContent = formatDate(currentDate);
+    currentDateLabel.textContent = formatDate(toYMD(currentDate));
     renderSchedule();
   }
 

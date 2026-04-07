@@ -55,14 +55,25 @@
             </select>
           </div>
 
-          <div class="date-selector">
-            <label><i class="fa-solid fa-calendar-days"></i> Data</label>
-            <input type="date" id="appointmentDate" required style="display:none;">
-            <input type="text" id="appointmentDateFormatted" placeholder="Selecione a data" readonly required>
+          <div class="input-group">
+            <label><i class="fa-solid fa-user-tie"></i> Profissional</label>
+            <select name="profissional" id="profissionalSelect" required>
+              <option value="">Selecione o profissional</option>
+              <option value="Adriano">Adriano</option>
+              <option value="Arthur">Arthur</option>
+              <option value="Igor">Igor</option>
+              <option value="Vinícius">Vinícius</option>
+            </select>
           </div>
         </div>
 
-        <div style="margin-top: 1.5rem;">
+        <div class="date-selector" style="margin-bottom: 0;">
+          <label><i class="fa-solid fa-calendar-days"></i> Data</label>
+          <input type="date" id="appointmentDate" required style="display:none;">
+          <input type="text" id="appointmentDateFormatted" placeholder="Selecione a data" readonly required>
+        </div>
+
+        <div style="margin-top: 1.5rem; margin-bottom: 1rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom: 12px;">
             <h4 style="font-size: 0.95rem; color: var(--text-main); margin:0;">Horários disponíveis</h4>
             <span id="selectedDateText" style="color: var(--text-dim); font-size: 0.9rem;"></span>
@@ -131,18 +142,12 @@
   const selectedDateText = document.getElementById('selectedDateText');
   const msgAgendamento = document.getElementById('msgAgendamento');
   const appointmentDateFormatted = document.getElementById('appointmentDateFormatted');
-  appointmentDateFormatted.addEventListener('click', () => {
-  appointmentDate.showPicker();
-  });
-  appointmentDate.addEventListener('change', () => {
-  appointmentDateFormatted.value = formatDate(appointmentDate.value);
-  renderSlots();
-  });
+  const profissionalSelect = document.getElementById('profissionalSelect');
 
   const horarios = [
-    '09:00', '10:00', '11:00', '13:00',
-    '14:00', '15:00',  '16:00', '17:00', 
-    '18:00', '19:00'
+    '09:00', '10:00', '11:00', '12:00',
+    '13:00', '14:00', '15:00', '16:00',
+    '17:00', '18:00', '19:00'
   ];
 
   function toYMD(date) {
@@ -153,51 +158,49 @@
   }
 
   function formatDate(dateString) {
-  const date = new Date(dateString + 'T00:00:00');
-
-  const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const diaSemana = dias[date.getDay()];
-
-  const dia = String(date.getDate()).padStart(2, '0');
-  const mes = String(date.getMonth() + 1).padStart(2, '0');
-
-  return `${diaSemana} ${dia}/${mes}`;
-}
+    const date = new Date(dateString + 'T00:00:00');
+    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    const diaSemana = dias[date.getDay()];
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    return `${diaSemana} ${dia}/${mes}`;
+  }
 
   function getAppointments() {
     return JSON.parse(localStorage.getItem('ahasSchedule') || '[]');
   }
-
   function renderSlots() {
     const selectedDate = appointmentDate.value;
-    const appointments = getAppointments();
+    const profissional = profissionalSelect.value;
 
     slotsContainer.innerHTML = '';
     horaSelecionada.value = '';
 
-    if (!selectedDate) {
-      selectedDateText.textContent = 'Selecione uma data para ver os horários';
+    if (!selectedDate || !profissional) {
+      selectedDateText.textContent = 'Selecione a data e o profissional para ver os horários disponíveis.';
       return;
     }
 
-    selectedDateText.textContent = formatDate(selectedDate);
+    selectedDateText.textContent = `${formatDate(selectedDate)} — ${profissional}`;
+
+    const appointments = getAppointments();
 
     const bookedHours = appointments
-      .filter(item => item.date === selectedDate)
+      .filter(item => item.date === selectedDate && item.stylist === profissional)
       .map(item => item.time);
 
     horarios.forEach(hora => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'slot-btn';
-      button.textContent = hora;
 
       if (bookedHours.includes(hora)) {
         button.disabled = true;
         button.textContent = `${hora} • Ocupado`;
-        button.style.opacity = '0.5';
+        button.style.opacity = '0.45';
         button.style.cursor = 'not-allowed';
       } else {
+        button.textContent = hora;
         button.addEventListener('click', () => {
           document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
@@ -209,7 +212,16 @@
     });
   }
 
-  appointmentDate.addEventListener('change', renderSlots);
+  appointmentDateFormatted.addEventListener('click', () => {
+    appointmentDate.showPicker();
+  });
+
+  appointmentDate.addEventListener('change', () => {
+    appointmentDateFormatted.value = formatDate(appointmentDate.value);
+    renderSlots();
+  });
+
+  profissionalSelect.addEventListener('change', renderSlots);
 
   formAgendamento.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -217,18 +229,50 @@
     const nome = formAgendamento.nome.value.trim();
     const telefone = formAgendamento.telefone.value.trim();
     const servico = formAgendamento.servico.value;
-    const data = formAgendamento.data.value;
+    const profissional = profissionalSelect.value;
+    const data = appointmentDate.value;
     const hora = horaSelecionada.value;
 
-    if (!nome || !telefone || !servico || !data || !hora) {
-      msgAgendamento.textContent = 'Preencha tudo e selecione um horário.';
+    if (!nome || !telefone || !servico || !profissional || !data || !hora) {
+      msgAgendamento.style.color = '#ff4d4f';
+      msgAgendamento.textContent = 'Preencha todos os campos e selecione um horário.';
       return;
     }
 
-    msgAgendamento.textContent = 'Pedido de agendamento registrado com sucesso.';
+    const appointments = getAppointments();
+
+    const conflito = appointments.find(a =>
+      a.date === data && a.time === hora && a.stylist === profissional
+    );
+
+    if (conflito) {
+      msgAgendamento.style.color = '#ff4d4f';
+      msgAgendamento.textContent = 'Este horário acabou de ser ocupado. Escolha outro.';
+      renderSlots();
+      return;
+    }
+
+    const novoAgendamento = {
+      client: nome,
+      phone: telefone,
+      service: servico,
+      stylist: profissional,
+      date: data,
+      time: hora,
+      createdAt: new Date().toISOString()
+    };
+
+    appointments.push(novoAgendamento);
+    localStorage.setItem('ahasSchedule', JSON.stringify(appointments));
+
+    msgAgendamento.style.color = '#8ec5ff';
+    msgAgendamento.textContent = `✅ Agendamento confirmado! ${nome}, ${formatDate(data)} às ${hora} com ${profissional}.`;
+
     formAgendamento.reset();
+    appointmentDateFormatted.value = '';
     horaSelecionada.value = '';
-    renderSlots();
+    slotsContainer.innerHTML = '';
+    selectedDateText.textContent = '';
   });
 
   appointmentDate.min = toYMD(new Date());

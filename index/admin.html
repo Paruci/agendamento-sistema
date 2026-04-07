@@ -92,21 +92,28 @@
         </div>
 
         <form id="formCaixa">
-          <input type="text" placeholder="Nome do Cliente">
-          <select>
-            <option>Corte Masculino - R$50</option>
-            <option>Corte/Sobrancelha - R$55</option>
-            <option>Combo corte e barba - R$90</option>
-            <option>Acabamento - R$20</option>
-            <option>Progressiva - R$90</option>
-            <option>Platinado - R$110</option>
+          <input type="text" id="caixaCliente" placeholder="Nome do Cliente" required>
+          <select id="caixaServico">
+            <option value="Corte Masculino|50">Corte Masculino - R$50</option>
+            <option value="Corte com Sobrancelha|55">Corte/Sobrancelha - R$55</option>
+            <option value="Combo Corte e Barba|90">Combo corte e barba - R$90</option>
+            <option value="Acabamento|20">Acabamento - R$20</option>
+            <option value="Progressiva|90">Progressiva - R$90</option>
+            <option value="Platinado|110">Platinado - R$110</option>
+          </select>
+          <select id="caixaBarbeiro">
+            <option value="Adriano">Adriano</option>
+            <option value="Arthur">Arthur</option>
+            <option value="Igor">Igor</option>
+            <option value="Vinícius">Vinícius</option>
           </select>
           <button type="submit">Confirmar Pagamento</button>
+          <p id="caixaMsg" style="color:#8ec5ff; font-size:0.9rem; margin-top:0.5rem; display:none;"></p>
         </form>
 
         <div style="margin-top:1rem; padding:1rem; border-radius:14px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
           <small style="color:#8ec5ff; display:block; margin-bottom:0.4rem;">Dica</small>
-          <p style="color:var(--text-dim); font-size:0.9rem; margin:0;">Depois vamos ligar essa parte ao financeiro real e ao histórico de atendimentos.</p>
+          <p style="color:var(--text-dim); font-size:0.9rem; margin:0;">O lançamento é registrado com data e hora atuais e aparece no dashboard da semana.</p>
         </div>
       </div>
     </section>
@@ -296,6 +303,50 @@
   document.getElementById('goTodayAdmin').addEventListener('click', () => {
     currentWeekStart = startOfWeek(new Date());
     renderRevenue();
+  });
+
+  document.getElementById('formCaixa').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const cliente = document.getElementById('caixaCliente').value.trim();
+    const servicoRaw = document.getElementById('caixaServico').value;
+    const barbeiro = document.getElementById('caixaBarbeiro').value;
+    const msg = document.getElementById('caixaMsg');
+
+    if (!cliente) {
+      msg.style.color = '#ff4d4f';
+      msg.textContent = 'Informe o nome do cliente.';
+      msg.style.display = 'block';
+      return;
+    }
+
+    const [servico] = servicoRaw.split('|');
+
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const date = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+    const novo = {
+      client: cliente,
+      service: servico,
+      stylist: barbeiro,
+      date,
+      time,
+      createdAt: now.toISOString()
+    };
+
+    scheduleData.push(novo);
+    localStorage.setItem('ahasSchedule', JSON.stringify(scheduleData));
+
+    msg.style.color = '#8ec5ff';
+    msg.textContent = `✅ ${cliente} registrado com sucesso!`;
+    msg.style.display = 'block';
+
+    document.getElementById('caixaCliente').value = '';
+    renderRevenue();
+    renderUpcomingAppointments();
+
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
   });
 
   renderRevenue();

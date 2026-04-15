@@ -1,19 +1,16 @@
+// Import Firebase via CDN
 const firebaseConfig = {
-  aapiKey: "AIzaSyBuSnsFEDEmdTSSMGEuP22OsCpmjsXvVBk",
-
-  authDomain: "adriano-hair-style-60ba7.firebaseapp.com",
-
-  projectId: "adriano-hair-style-60ba7",
-
-  storageBucket: "adriano-hair-style-60ba7.firebasestorage.app",
-
-  messagingSenderId: "555260640841",
-
-  appId: "1:555260640841:web:69acb5bb1ddc2404cfc998"
-
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_DOMINIO.firebaseapp.com",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_BUCKET.appspot.com",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID"
 };
 
+// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 
+// Referências úteis
 const auth = firebase.auth();
 const db = firebase.firestore();

@@ -134,6 +134,11 @@
   </section>
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+
 <script>
   const formAgendamento = document.getElementById('formAgendamento');
   const slotsContainer = document.getElementById('slots');
@@ -166,10 +171,28 @@
     return `${diaSemana} ${dia}/${mes}`;
   }
 
-  function getAppointments() {
-    return JSON.parse(localStorage.getItem('ahasSchedule') || '[]');
+  async function getAppointments() {
+    const selectedDate = appointmentDate.value;
+    const profissional = profissionalSelect.value;
+
+    let query = db.collection('agendamentos');
+
+    if (selectedDate) {
+      query = query.where('date', '==', selectedDate);
+    }
+
+    if (profissional) {
+      query = query.where('stylist', '==', profissional);
+    }
+
+    const snapshot = await query.get();
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
   }
-  function renderSlots() {
+
+  async function renderSlots() {
     const selectedDate = appointmentDate.value;
     const profissional = profissionalSelect.value;
 
@@ -183,7 +206,7 @@
 
     selectedDateText.textContent = `${formatDate(selectedDate)} — ${profissional}`;
 
-    const appointments = getAppointments();
+    const appointments = await getAppointments();
 
     const bookedHours = appointments
       .filter(item => item.date === selectedDate && item.stylist === profissional)
@@ -216,14 +239,14 @@
     appointmentDate.showPicker();
   });
 
-  appointmentDate.addEventListener('change', () => {
+  appointmentDate.addEventListener('change', async () => {
     appointmentDateFormatted.value = formatDate(appointmentDate.value);
-    renderSlots();
+    await renderSlots();
   });
 
   profissionalSelect.addEventListener('change', renderSlots);
 
-  formAgendamento.addEventListener('submit', (event) => {
+  formAgendamento.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const nome = formAgendamento.nome.value.trim();
@@ -239,40 +262,50 @@
       return;
     }
 
-    const appointments = getAppointments();
+    const snapshot = await db.collection('agendamentos')
+      .where('date', '==', data)
+      .where('time', '==', hora)
+      .where('stylist', '==', profissional)
+      .get();
 
-    const conflito = appointments.find(a =>
-      a.date === data && a.time === hora && a.stylist === profissional
-    );
-
-    if (conflito) {
+    if (!snapshot.empty) {
       msgAgendamento.style.color = '#ff4d4f';
       msgAgendamento.textContent = 'Este horário acabou de ser ocupado. Escolha outro.';
-      renderSlots();
+      await renderSlots();
       return;
     }
 
     const novoAgendamento = {
       client: nome,
+      nome: nome,
       phone: telefone,
+      telefone: telefone,
       service: servico,
+      servico: servico,
       stylist: profissional,
+      profissional: profissional,
       date: data,
+      data: data,
       time: hora,
+      horario: hora,
       createdAt: new Date().toISOString()
     };
 
-    appointments.push(novoAgendamento);
-    localStorage.setItem('ahasSchedule', JSON.stringify(appointments));
+    try {
+      await db.collection('agendamentos').add(novoAgendamento);
 
-    msgAgendamento.style.color = '#8ec5ff';
-    msgAgendamento.textContent = `✅ Agendamento confirmado! ${nome}, ${formatDate(data)} às ${hora} com ${profissional}.`;
+      msgAgendamento.style.color = '#8ec5ff';
+      msgAgendamento.textContent = `✅ Agendamento confirmado! ${nome}, ${formatDate(data)} às ${hora} com ${profissional}.`;
 
-    formAgendamento.reset();
-    appointmentDateFormatted.value = '';
-    horaSelecionada.value = '';
-    slotsContainer.innerHTML = '';
-    selectedDateText.textContent = '';
+      formAgendamento.reset();
+      appointmentDateFormatted.value = '';
+      horaSelecionada.value = '';
+      slotsContainer.innerHTML = '';
+      selectedDateText.textContent = '';
+    } catch (error) {
+      msgAgendamento.style.color = '#ff4d4f';
+      msgAgendamento.textContent = 'Erro ao salvar o agendamento.';
+    }
   });
 
   appointmentDate.min = toYMD(new Date());

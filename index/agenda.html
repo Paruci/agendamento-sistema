@@ -22,23 +22,14 @@
 </header>
 
 <main style="padding: 1.5rem 5%;">
+  <ul id="lista"></ul>
+
   <section class="card animate" style="margin-bottom: 1rem;">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
       <div>
         <small style="display:block; color:#8ec5ff; margin-bottom:0.45rem; letter-spacing:0.8px;">CONTROLE DIÁRIO</small>
         <h2 style="margin:0; font-size:1.5rem;">Agenda operacional</h2>
         <p style="color:var(--text-dim); margin-top:0.35rem;">Navegue pelos dias e clique em um horário disponível para agendar.</p>
-      </div>
-
-      <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-        <div style="padding:0.7rem 0.9rem; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); font-size:0.9rem;">
-          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#1e7e34; margin-right:8px;"></span>
-          Ocupado
-        </div>
-        <div style="padding:0.7rem 0.9rem; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); font-size:0.9rem;">
-          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#007bff; margin-right:8px;"></span>
-          Disponível
-        </div>
       </div>
     </div>
   </section>
@@ -62,9 +53,6 @@
     </section>
   </section>
 
-  <div style="margin-top:1rem; color: var(--text-dim); font-size:0.9rem;">
-    Clique em um horário livre para criar um agendamento.
-  </div>
 </main>
 
 <div id="appointmentModal" class="modal">
@@ -72,200 +60,111 @@
     <button class="close-modal" id="closeModal"><i class="fa-solid fa-x"></i></button>
     <h2>Agendar horário</h2>
     <form id="appointmentForm">
-      <div class="form-group">
-        <label>Data selecionada</label>
-        <input type="text" id="slotDate" readonly>
-      </div>
-      <div class="form-group">
-        <label>Horário selecionado</label>
-        <input type="text" id="slotTime" readonly>
-      </div>
-      <div class="form-group">
-        <label>Profissional</label>
-        <input type="text" id="slotStylist" readonly>
-      </div>
-      <div class="form-group">
-        <label>Cliente</label>
-        <input type="text" id="clientName" required>
-      </div>
-      <div class="form-group">
-        <label>Serviço</label>
-        <select id="service" required>
-          <option value="Corte Masculino">Corte Masculino - R$ 50</option>
-          <option value="Corte com Sobrancelha">Corte/Sobrancelha - R$ 55</option>
-          <option value="Combo Corte e Barba">Combo corte e barba - R$ 90</option>
-          <option value="Acabamento">Acabamento - R$ 20</option>
-          <option value="Progressiva">Progressiva - R$ 90</option>
-          <option value="Platinado">Platinado - R$ 110</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Telefone</label>
-        <input type="tel" id="clientPhone">
-      </div>
-      <div class="form-group">
-        <label>Observações</label>
-        <textarea id="notes" rows="3"></textarea>
-      </div>
-      <button type="submit" class="btn-primary">Salvar Agendamento</button>
+      <input type="text" id="slotDate" readonly>
+      <input type="text" id="slotTime" readonly>
+      <input type="text" id="slotStylist" readonly>
+      <input type="text" id="clientName" required>
+      <select id="service" required>
+        <option value="Corte Masculino">Corte Masculino</option>
+        <option value="Corte com Sobrancelha">Corte/Sobrancelha</option>
+      </select>
+      <input type="tel" id="clientPhone">
+      <textarea id="notes"></textarea>
+      <button type="submit">Salvar</button>
     </form>
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+
 <script>
-  const grid = document.getElementById('scheduleGrid');
-  const modal = document.getElementById('appointmentModal');
-  const closeModal = document.getElementById('closeModal');
-  const appointmentForm = document.getElementById('appointmentForm');
-  const slotDate = document.getElementById('slotDate');
-  const slotTime = document.getElementById('slotTime');
-  const slotStylist = document.getElementById('slotStylist');
-  const clientName = document.getElementById('clientName');
-  const service = document.getElementById('service');
-  const clientPhone = document.getElementById('clientPhone');
-  const notes = document.getElementById('notes');
-  const currentDateLabel = document.getElementById('currentDateLabel');
-  const btnNovoHorario = document.getElementById('btnNovoHorario');
-  const prevDay = document.getElementById('prevDay');
-  const nextDay = document.getElementById('nextDay');
-  const goToday = document.getElementById('goToday');
+const grid = document.getElementById('scheduleGrid');
+const modal = document.getElementById('appointmentModal');
+const closeModal = document.getElementById('closeModal');
+const appointmentForm = document.getElementById('appointmentForm');
+const slotDate = document.getElementById('slotDate');
+const slotTime = document.getElementById('slotTime');
+const slotStylist = document.getElementById('slotStylist');
+const clientName = document.getElementById('clientName');
+const service = document.getElementById('service');
+const clientPhone = document.getElementById('clientPhone');
+const notes = document.getElementById('notes');
+const currentDateLabel = document.getElementById('currentDateLabel');
+const btnNovoHorario = document.getElementById('btnNovoHorario');
+const prevDay = document.getElementById('prevDay');
+const nextDay = document.getElementById('nextDay');
+const goToday = document.getElementById('goToday');
 
-  const staff = ['Adriano', 'Arthur', 'Igor', 'Vinícius'];
-  const hours = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+const staff = ['Adriano', 'Arthur', 'Igor', 'Vinícius'];
+const hours = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
 
-  let busySlots = JSON.parse(localStorage.getItem('ahasSchedule') || '[]');
-  let currentDate = new Date();
+let currentDate = new Date();
 
-  function toYMD(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
+function toYMD(date) {
+  return date.toISOString().split('T')[0];
+}
 
-  function formatDate(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    const diaSemana = dias[date.getDay()];
-    const dia = String(date.getDate()).padStart(2, '0');
-    const mes = String(date.getMonth() + 1).padStart(2, '0');
-    return `${diaSemana} ${dia}/${mes}`;
-  }
+function renderSchedule() {
+  const selectedDate = toYMD(currentDate);
+  grid.innerHTML = '<div class="schedule-row header"><div>Hora</div>' + staff.map(n => `<div>${n}</div>`).join('') + '</div>';
 
-  function renderSchedule() {
-    const selectedDate = toYMD(currentDate);
-    const daySlots = busySlots.filter(slot => slot.date === selectedDate);
+  hours.forEach(hour => {
+    const row = document.createElement('div');
+    row.className = 'schedule-row';
 
-    grid.innerHTML = '<div class="schedule-row header"><div>Hora</div>' + staff.map(name => `<div>${name}</div>`).join('') + '</div>';
+    row.innerHTML = `<div>${hour}</div>` + staff.map(name => {
+      return `<div class="slot-cell" data-time="${hour}" data-stylist="${name}">Disponível</div>`;
+    }).join('');
 
-    hours.forEach(hour => {
-      const row = document.createElement('div');
-      row.className = 'schedule-row';
+    grid.appendChild(row);
+  });
+}
 
-      row.innerHTML = `<div class="time-cell">${hour}</div>` + staff.map(name => {
-        const appointment = daySlots.find(a => a.time === hour && a.stylist === name);
-        return `
-          <div class="slot-cell ${appointment ? 'booked' : ''}" data-time="${hour}" data-stylist="${name}">
-            ${appointment ? `<strong>${appointment.client}</strong><br>${appointment.service}` : 'Disponível'}
-          </div>
-        `;
-      }).join('');
+function openModal(time, stylist) {
+  slotDate.value = toYMD(currentDate);
+  slotTime.value = time;
+  slotStylist.value = stylist;
+  modal.classList.add('open');
+}
 
-      grid.appendChild(row);
-    });
-  }
+grid.addEventListener('click', (e) => {
+  const slot = e.target.closest('.slot-cell');
+  if (!slot) return;
+  openModal(slot.dataset.time, slot.dataset.stylist);
+});
 
-  function openModal(time, stylist) {
-    slotDate.value = formatDate(toYMD(currentDate));
-    slotTime.value = time;
-    slotStylist.value = stylist;
-    clientName.value = '';
-    service.value = 'Corte Masculino';
-    clientPhone.value = '';
-    notes.value = '';
-    modal.classList.add('open');
-  }
+closeModal.addEventListener('click', () => modal.classList.remove('open'));
 
-  function closeAppointmentModal() {
+appointmentForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  db.collection("agendamentos").add({
+    nome: clientName.value,
+    data: slotDate.value,
+    horario: slotTime.value,
+    profissional: slotStylist.value
+  }).then(() => {
     modal.classList.remove('open');
-  }
-
-  grid.addEventListener('click', (event) => {
-    const slot = event.target.closest('.slot-cell');
-    if (!slot) return;
-    if (slot.classList.contains('booked')) return;
-
-    const time = slot.getAttribute('data-time');
-    const stylist = slot.getAttribute('data-stylist');
-    openModal(time, stylist);
   });
+});
 
-  btnNovoHorario.addEventListener('click', () => openModal('', ''));
-  closeModal.addEventListener('click', closeAppointmentModal);
+function carregarAgenda() {
+  db.collection("agendamentos")
+    .onSnapshot(snapshot => {
+      const lista = document.getElementById("lista");
+      lista.innerHTML = "";
+      snapshot.forEach(doc => {
+        const ag = doc.data();
+        lista.innerHTML += `<li>${ag.nome} - ${ag.data} ${ag.horario}</li>`;
+      });
+    });
+}
 
-  modal.addEventListener('click', (event) => {
-    if (event.target === modal) closeAppointmentModal();
-  });
-
-  prevDay.addEventListener('click', () => {
-    currentDate.setDate(currentDate.getDate() - 1);
-    updateDisplay();
-  });
-
-  nextDay.addEventListener('click', () => {
-    currentDate.setDate(currentDate.getDate() + 1);
-    updateDisplay();
-  });
-
-  goToday.addEventListener('click', () => {
-    currentDate = new Date();
-    updateDisplay();
-  });
-
-  appointmentForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    if (!slotTime.value || !slotStylist.value || !clientName.value.trim()) {
-      alert('Preencha cliente, horário e profissional.');
-      return;
-    }
-
-    const selectedDate = toYMD(currentDate);
-
-    const newAppointment = {
-      time: slotTime.value,
-      stylist: slotStylist.value,
-      client: clientName.value.trim(),
-      service: service.value,
-      phone: clientPhone.value.trim(),
-      notes: notes.value.trim(),
-      date: selectedDate,
-      createdAt: new Date().toISOString()
-    };
-
-    const existing = busySlots.find(a =>
-      a.time === newAppointment.time &&
-      a.stylist === newAppointment.stylist &&
-      a.date === newAppointment.date
-    );
-
-    if (existing) {
-      alert('Este horário já está ocupado para este profissional.');
-      return;
-    }
-
-    busySlots.push(newAppointment);
-    localStorage.setItem('ahasSchedule', JSON.stringify(busySlots));
-    renderSchedule();
-    closeAppointmentModal();
-  });
-
-  function updateDisplay() {
-    currentDateLabel.textContent = formatDate(toYMD(currentDate));
-    renderSchedule();
-  }
-
-  updateDisplay();
+renderSchedule();
+carregarAgenda();
 </script>
 
 </body>

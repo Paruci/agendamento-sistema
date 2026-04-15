@@ -37,7 +37,7 @@
 
         <div style="padding:1rem; border-radius:16px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
           <strong>Base pronta para evolução</strong>
-          <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Depois vamos conectar isso ao Firebase com autenticação real.</p>
+          <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Painel conectado ao Firebase com autenticação real.</p>
         </div>
       </div>
     </div>
@@ -54,8 +54,8 @@
 
       <form id="loginForm">
         <div style="text-align:left; margin-bottom:14px;">
-          <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:6px;">Usuário</label>
-          <input type="text" id="loginUser" placeholder="Digite seu usuário" required>
+          <label style="font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:6px;">E-mail</label>
+          <input type="email" id="loginEmail" placeholder="Digite seu e-mail" required>
         </div>
 
         <div style="text-align:left; margin-bottom:14px;">
@@ -65,9 +65,7 @@
 
         <button type="submit" style="margin-top:8px; height:52px;">Entrar no painel</button>
 
-        <p id="errorMessage" style="color:#ff4d4f; font-size:0.85rem; margin-top:12px; display:none; text-align:center;">
-          Credenciais incorretas. Tente novamente.
-        </p>
+        <p id="errorMessage" style="color:#ff4d4f; font-size:0.85rem; margin-top:12px; display:none; text-align:center;"></p>
       </form>
 
       <a href="index.html" style="display:block; margin-top:20px; color:var(--text-dim); text-align:center; font-size:0.9rem;">
@@ -77,42 +75,38 @@
   </section>
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+
 <script>
   const loginForm = document.getElementById('loginForm');
   const errorMsg = document.getElementById('errorMessage');
 
-  const HASH_USER = 'b3f5b87f2e4c1a3d6e9f0c2b4a8d7e1f3c5b9a2d4e6f8c0b2a4d6e8f0c2b4a6'; 
-  const HASH_PASS = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2';
-
-  async function sha256(message) {
-    const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      window.location.href = 'admin.html';
+    }
+  });
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const user = document.getElementById('loginUser').value.trim();
+    const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
 
-    const [hashUser, hashPass] = await Promise.all([sha256(user), sha256(pass)]);
+    errorMsg.style.display = 'none';
+    errorMsg.textContent = '';
 
-    const validUser = await sha256('admin');
-    const validPass = await sha256('1234');
-
-    if (hashUser === validUser && hashPass === validPass) {
-      localStorage.setItem('ahs_logged', 'true');
+    try {
+      await auth.signInWithEmailAndPassword(email, pass);
       window.location.href = 'admin.html';
-    } else {
+    } catch (error) {
       errorMsg.style.display = 'block';
+      errorMsg.textContent = 'E-mail ou senha incorretos.';
     }
   });
-
-  if (localStorage.getItem('ahs_logged') === 'true') {
-    window.location.href = 'admin.html';
-  }
 </script>
 
 </body>

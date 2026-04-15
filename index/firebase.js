@@ -1,9 +1,19 @@
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-  appId: "SEU_APP_ID",
-  measurementId: "SEU_MEASUREMENT_ID"
+  aapiKey: "AIzaSyBuSnsFEDEmdTSSMGEuP22OsCpmjsXvVBk",
+
+  authDomain: "adriano-hair-style-60ba7.firebaseapp.com",
+
+  projectId: "adriano-hair-style-60ba7",
+
+  storageBucket: "adriano-hair-style-60ba7.firebasestorage.app",
+
+  messagingSenderId: "555260640841",
+
+  appId: "1:555260640841:web:69acb5bb1ddc2404cfc998"
+
 };
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();

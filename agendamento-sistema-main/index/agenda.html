@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda | Adriano Hair Style</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header style="padding: 1rem 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(10,14,23,0.9); border-bottom:1px solid var(--glass-border); position:sticky; top:0; z-index:1000;">
+  <div>
+    <p style="color:#8ec5ff; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; margin:0 0 0.35rem 0;">Painel interno</p>
+    <h1 style="margin:0; font-size:1.5rem;">Agenda de horários</h1>
+    <p style="color: var(--text-dim); margin:0.3rem 0 0 0;">Visual por profissional com controle diário</p>
+  </div>
+  <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+    <a href="admin.html" class="btn-admin" style="padding:10px 14px;">← Voltar</a>
+  </div>
+</header>
+
+<main style="padding: 1.5rem 5%;">
+  <section class="card animate" style="margin-bottom: 1rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
+      <div>
+        <small style="display:block; color:#8ec5ff; margin-bottom:0.45rem; letter-spacing:0.8px;">CONTROLE DIÁRIO</small>
+        <h2 style="margin:0; font-size:1.5rem;">Agenda operacional</h2>
+        <p style="color:var(--text-dim); margin-top:0.35rem;">Veja os horários reservados, confirme manualmente ou remova reservas.</p>
+      </div>
+    </div>
+  </section>
+
+  <aside class="agenda-controls" style="margin-bottom: 1rem;">
+    <button id="goToday" class="btn-primary">Hoje</button>
+    <button id="prevDay" class="btn-admin">← Dia anterior</button>
+    <button id="nextDay" class="btn-admin">Próximo dia →</button>
+    <span class="agenda-week-label">Data: <strong id="currentDateLabel"></strong></span>
+  </aside>
+
+  <section class="card animate" style="padding:0; overflow:hidden;">
+    <section class="schedule-grid" id="scheduleGrid">
+      <div class="schedule-row header">
+        <div>Hora</div>
+        <div>Adriano</div>
+        <div>Arthur</div>
+        <div>Igor</div>
+        <div>Vinícius</div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="appointmentModal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="closeModal"><i class="fa-solid fa-x"></i></button>
+    <h2>Detalhes do horário</h2>
+
+    <div id="modalInfo" style="display:grid; gap:10px; margin-top:1rem;"></div>
+
+    <div style="display:grid; gap:10px; margin-top:1rem;">
+      <button id="btnConfirmar" type="button">Confirmar horário</button>
+      <button id="btnWhatsApp" type="button" class="btn-admin">Chamar no WhatsApp</button>
+      <button id="btnExcluir" type="button" style="background:#ff4d4f;">Excluir reserva</button>
+    </div>
+  </div>
+</div>
+
+<script src="storage.js"></script>
+
+<script>
+  protegerAdmin();
+
+  const grid = document.getElementById('scheduleGrid');
+  const modal = document.getElementById('appointmentModal');
+  const closeModal = document.getElementById('closeModal');
+  const currentDateLabel = document.getElementById('currentDateLabel');
+  const prevDay = document.getElementById('prevDay');
+  const nextDay = document.getElementById('nextDay');
+  const goToday = document.getElementById('goToday');
+  const modalInfo = document.getElementById('modalInfo');
+  const btnConfirmar = document.getElementById('btnConfirmar');
+  const btnExcluir = document.getElementById('btnExcluir');
+  const btnWhatsApp = document.getElementById('btnWhatsApp');
+
+  const staff = ['Adriano', 'Arthur', 'Igor', 'Vinícius'];
+
+  const hours = [
+    '09:00',
+    '10:00',
+    '11:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00'
+  ];
+
+  let currentDate = new Date();
+  let selectedAppointment = null;
+
+  function toYMD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('pt-BR');
+  }
+
+  function getAppointmentsByDate() {
+    const selectedDate = toYMD(currentDate);
+    return buscarAgendamentos().filter(item => item.date === selectedDate);
+  }
+
+  function findAppointment(appointments, hour, stylist) {
+    return appointments.find(item => item.time === hour && item.stylist === stylist);
+  }
+
+  function statusStyle(status) {
+    if (status === 'Confirmado') {
+      return 'background:rgba(40,167,69,0.18); border:1px solid rgba(40,167,69,0.35); color:#8ff0a4;';
+    }
+
+    return 'background:rgba(255,193,7,0.16); border:1px solid rgba(255,193,7,0.35); color:#ffd666;';
+  }
+
+  function renderSchedule() {
+    const selectedDate = toYMD(currentDate);
+    const appointments = getAppointmentsByDate();
+
+    currentDateLabel.textContent = formatDate(selectedDate);
+
+    grid.innerHTML = '<div class="schedule-row header"><div>Hora</div>' + staff.map(name => `<div>${name}</div>`).join('') + '</div>';
+
+    hours.forEach(hour => {
+      const row = document.createElement('div');
+      row.className = 'schedule-row';
+
+      let rowContent = `<div>${hour}</div>`;
+
+      staff.forEach(name => {
+        const appointment = findAppointment(appointments, hour, name);
+
+        if (appointment) {
+          const status = appointment.status || 'Não confirmado';
+
+          rowContent += `
+            <div class="slot-cell ocupado" data-id="${appointment.id}" style="${statusStyle(status)} cursor:pointer;">
+              <strong>${appointment.client || appointment.nome || 'Cliente'}</strong>
+              <small style="display:block; margin-top:4px;">${appointment.service || appointment.servico || 'Serviço'}</small>
+              <small style="display:block; margin-top:4px;">${status}</small>
+            </div>
+          `;
+        } else {
+          rowContent += `
+            <div class="slot-cell disponivel" style="opacity:0.55;">
+              Disponível
+            </div>
+          `;
+        }
+      });
+
+      row.innerHTML = rowContent;
+      grid.appendChild(row);
+    });
+  }
+
+  function abrirModal(appointment) {
+    selectedAppointment = appointment;
+
+    const status = appointment.status || 'Não confirmado';
+
+    modalInfo.innerHTML = `
+      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+        <strong>Cliente</strong>
+        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.client || appointment.nome || 'Não informado'}</p>
+      </div>
+
+      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+        <strong>Telefone</strong>
+        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.phone || appointment.telefone || 'Não informado'}</p>
+      </div>
+
+      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+        <strong>Serviço</strong>
+        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.service || appointment.servico || 'Não informado'}</p>
+      </div>
+
+      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+        <strong>Data e horário</strong>
+        <p style="margin:4px 0 0 0; color:var(--text-dim);">${formatDate(appointment.date)} às ${appointment.time}</p>
+      </div>
+
+      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
+        <strong>Barbeiro</strong>
+        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.stylist || appointment.profissional || 'Não informado'}</p>
+      </div>
+
+      <div style="padding:12px; border-radius:12px; ${statusStyle(status)}">
+        <strong>Status</strong>
+        <p style="margin:4px 0 0 0;">${status}</p>
+      </div>
+    `;
+
+    btnConfirmar.style.display = status === 'Confirmado' ? 'none' : 'block';
+
+    modal.classList.add('open');
+  }
+
+  grid.addEventListener('click', event => {
+    const slot = event.target.closest('.slot-cell');
+    if (!slot || !slot.dataset.id) return;
+
+    const appointment = buscarAgendamentos().find(item => item.id === slot.dataset.id);
+    if (!appointment) return;
+
+    abrirModal(appointment);
+  });
+
+  closeModal.addEventListener('click', () => {
+    modal.classList.remove('open');
+    selectedAppointment = null;
+  });
+
+  btnConfirmar.addEventListener('click', () => {
+    if (!selectedAppointment) return;
+
+    const agendamentos = buscarAgendamentos().map(item => {
+      if (item.id === selectedAppointment.id) {
+        return {
+          ...item,
+          status: 'Confirmado'
+        };
+      }
+
+      return item;
+    });
+
+    salvarAgendamentos(agendamentos);
+    modal.classList.remove('open');
+    selectedAppointment = null;
+    renderSchedule();
+  });
+
+  btnExcluir.addEventListener('click', () => {
+    if (!selectedAppointment) return;
+
+    const confirmar = confirm('Tem certeza que deseja excluir esta reserva?');
+
+    if (!confirmar) return;
+
+    removerAgendamento(selectedAppointment.id);
+    modal.classList.remove('open');
+    selectedAppointment = null;
+    renderSchedule();
+  });
+
+  btnWhatsApp.addEventListener('click', () => {
+    if (!selectedAppointment) return;
+
+    const telefone = selectedAppointment.phone || selectedAppointment.telefone || '';
+    const numeroLimpo = telefone.replace(/\D/g, '');
+
+    if (!numeroLimpo) {
+      alert('Este cliente não tem telefone cadastrado.');
+      return;
+    }
+
+    const mensagem = `Olá, ${selectedAppointment.client || selectedAppointment.nome}. Aqui é da Adriano Hair Style.%0A%0AEstamos entrando em contato para confirmar sua reserva:%0A%0AData: ${formatDate(selectedAppointment.date)}%0AHorário: ${selectedAppointment.time}%0AServiço: ${selectedAppointment.service || selectedAppointment.servico}%0ABarbeiro: ${selectedAppointment.stylist || selectedAppointment.profissional}%0A%0APode confirmar esse horário para nós?`;
+
+    window.open(`https://wa.me/55${numeroLimpo}?text=${mensagem}`, '_blank');
+  });
+
+  prevDay.addEventListener('click', () => {
+    currentDate.setDate(currentDate.getDate() - 1);
+    renderSchedule();
+  });
+
+  nextDay.addEventListener('click', () => {
+    currentDate.setDate(currentDate.getDate() + 1);
+    renderSchedule();
+  });
+
+  goToday.addEventListener('click', () => {
+    currentDate = new Date();
+    renderSchedule();
+  });
+
+  renderSchedule();
+</script>
+
+</body>
+</html>

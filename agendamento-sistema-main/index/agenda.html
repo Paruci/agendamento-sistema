@@ -4,296 +4,308 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda | Adriano Hair Style</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
-<header style="padding: 1rem 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(10,14,23,0.9); border-bottom:1px solid var(--glass-border); position:sticky; top:0; z-index:1000;">
-  <div>
-    <p style="color:#8ec5ff; font-size:0.8rem; letter-spacing:1px; text-transform:uppercase; margin:0 0 0.35rem 0;">Painel interno</p>
-    <h1 style="margin:0; font-size:1.5rem;">Agenda de horários</h1>
-    <p style="color: var(--text-dim); margin:0.3rem 0 0 0;">Visual por profissional com controle diário</p>
-  </div>
-  <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-    <a href="admin.html" class="btn-admin" style="padding:10px 14px;">← Voltar</a>
-  </div>
-</header>
-
-<main style="padding: 1.5rem 5%;">
-  <section class="card animate" style="margin-bottom: 1rem;">
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
-      <div>
-        <small style="display:block; color:#8ec5ff; margin-bottom:0.45rem; letter-spacing:0.8px;">CONTROLE DIÁRIO</small>
-        <h2 style="margin:0; font-size:1.5rem;">Agenda operacional</h2>
-        <p style="color:var(--text-dim); margin-top:0.35rem;">Veja os horários reservados, confirme manualmente ou remova reservas.</p>
+  <header class="site-header">
+    <a href="admin.html" class="brand-block">
+      <div class="brand-icon-box">
+        <i class="fa-solid fa-calendar-days"></i>
       </div>
-    </div>
-  </section>
+      <div class="brand-text-block">
+        <span class="brand-name-text">Agenda <strong>Interna</strong></span>
+        <span class="brand-sub-text">Controle de horários</span>
+      </div>
+    </a>
 
-  <aside class="agenda-controls" style="margin-bottom: 1rem;">
-    <button id="goToday" class="btn-primary">Hoje</button>
-    <button id="prevDay" class="btn-admin">← Dia anterior</button>
-    <button id="nextDay" class="btn-admin">Próximo dia →</button>
-    <span class="agenda-week-label">Data: <strong id="currentDateLabel"></strong></span>
-  </aside>
+    <nav class="header-nav">
+      <a href="admin.html" class="btn btn-ghost">Voltar</a>
+      <a href="index.html" class="btn btn-primary">Site</a>
+    </nav>
+  </header>
 
-  <section class="card animate" style="padding:0; overflow:hidden;">
-    <section class="schedule-grid" id="scheduleGrid">
-      <div class="schedule-row header">
-        <div>Hora</div>
-        <div>Adriano</div>
-        <div>Arthur</div>
-        <div>Igor</div>
-        <div>Vinícius</div>
+  <main class="agenda-page">
+    <section class="agenda-hero">
+      <div>
+        <span class="eyebrow">Controle Diário</span>
+        <h1>Agenda operacional</h1>
+        <p>Visualize horários reservados e clique em horários livres para marcar manualmente.</p>
+      </div>
+
+      <div class="agenda-actions">
+        <button id="todayBtn" type="button">Hoje</button>
+        <button id="prevBtn" type="button">← Dia anterior</button>
+        <button id="nextBtn" type="button">Próximo dia →</button>
       </div>
     </section>
-  </section>
-</main>
 
-<div id="appointmentModal" class="modal">
-  <div class="modal-content">
-    <button class="close-modal" id="closeModal"><i class="fa-solid fa-x"></i></button>
-    <h2>Detalhes do horário</h2>
+    <section class="agenda-toolbar">
+      <div class="form-group">
+        <label for="agendaDate">Data</label>
+        <input id="agendaDate" type="date">
+      </div>
 
-    <div id="modalInfo" style="display:grid; gap:10px; margin-top:1rem;"></div>
+      <div class="agenda-legend">
+        <span><i class="legend-free"></i> Livre</span>
+        <span><i class="legend-booked"></i> Ocupado</span>
+      </div>
+    </section>
 
-    <div style="display:grid; gap:10px; margin-top:1rem;">
-      <button id="btnConfirmar" type="button">Confirmar horário</button>
-      <button id="btnWhatsApp" type="button" class="btn-admin">Chamar no WhatsApp</button>
-      <button id="btnExcluir" type="button" style="background:#ff4d4f;">Excluir reserva</button>
+    <section class="agenda-shell">
+      <div id="scheduleGrid" class="schedule-grid premium-schedule"></div>
+    </section>
+  </main>
+
+  <div id="manualModal" class="modal">
+    <div class="modal-content premium-modal">
+      <button id="closeManualModal" class="close-modal" type="button">×</button>
+      <h2>Novo agendamento manual</h2>
+      <p class="muted-text" id="manualInfo"></p>
+
+      <form id="manualForm">
+        <div class="form-group">
+          <label for="manualName">Nome do cliente</label>
+          <input id="manualName" type="text" required>
+        </div>
+
+        <div class="form-group">
+          <label for="manualPhone">WhatsApp</label>
+          <input id="manualPhone" type="tel" placeholder="Ex: 11999999999" required>
+        </div>
+
+        <div class="form-group">
+          <label for="manualService">Serviço</label>
+          <select id="manualService" required>
+            <option value="Corte Masculino - R$ 50">Corte Masculino - R$ 50</option>
+            <option value="Corte + Sobrancelha - R$ 55">Corte + Sobrancelha - R$ 55</option>
+            <option value="Combo corte e barba - R$ 90">Combo corte e barba - R$ 90</option>
+            <option value="Acabamento - R$ 20">Acabamento - R$ 20</option>
+            <option value="Progressiva - R$ 90">Progressiva - R$ 90</option>
+            <option value="Platinado - R$ 110">Platinado - R$ 110</option>
+          </select>
+        </div>
+
+        <button type="submit">Salvar agendamento manual</button>
+      </form>
     </div>
   </div>
-</div>
 
-<script src="storage.js"></script>
+  <div id="detailsModal" class="modal">
+    <div class="modal-content premium-modal">
+      <button id="closeDetailsModal" class="close-modal" type="button">×</button>
+      <h2>Detalhes do horário</h2>
+      <div id="detailsContent"></div>
 
-<script>
-  protegerAdmin();
+      <div class="modal-actions">
+        <button id="confirmBtn" type="button">Confirmar horário</button>
+        <button id="whatsBtn" type="button">Chamar no WhatsApp</button>
+        <button id="deleteBtn" type="button" class="danger-btn">Excluir reserva</button>
+      </div>
+    </div>
+  </div>
 
-  const grid = document.getElementById('scheduleGrid');
-  const modal = document.getElementById('appointmentModal');
-  const closeModal = document.getElementById('closeModal');
-  const currentDateLabel = document.getElementById('currentDateLabel');
-  const prevDay = document.getElementById('prevDay');
-  const nextDay = document.getElementById('nextDay');
-  const goToday = document.getElementById('goToday');
-  const modalInfo = document.getElementById('modalInfo');
-  const btnConfirmar = document.getElementById('btnConfirmar');
-  const btnExcluir = document.getElementById('btnExcluir');
-  const btnWhatsApp = document.getElementById('btnWhatsApp');
+  <script src="storage.js"></script>
 
-  const staff = ['Adriano', 'Arthur', 'Igor', 'Vinícius'];
+  <script>
+    protegerAdmin();
 
-  const hours = [
-    '09:00',
-    '10:00',
-    '11:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00'
-  ];
+    const stylists = ["Adriano", "Arthur", "Igor", "Vinícius"];
+    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
-  let currentDate = new Date();
-  let selectedAppointment = null;
+    const agendaDate = document.getElementById("agendaDate");
+    const scheduleGrid = document.getElementById("scheduleGrid");
 
-  function toYMD(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
+    const manualModal = document.getElementById("manualModal");
+    const manualForm = document.getElementById("manualForm");
+    const manualInfo = document.getElementById("manualInfo");
 
-  function formatDate(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('pt-BR');
-  }
+    const detailsModal = document.getElementById("detailsModal");
+    const detailsContent = document.getElementById("detailsContent");
 
-  function getAppointmentsByDate() {
-    const selectedDate = toYMD(currentDate);
-    return buscarAgendamentos().filter(item => item.date === selectedDate);
-  }
+    let selectedSlot = null;
+    let selectedBooking = null;
 
-  function findAppointment(appointments, hour, stylist) {
-    return appointments.find(item => item.time === hour && item.stylist === stylist);
-  }
+    const today = new Date().toISOString().split("T")[0];
+    agendaDate.value = today;
 
-  function statusStyle(status) {
-    if (status === 'Confirmado') {
-      return 'background:rgba(40,167,69,0.18); border:1px solid rgba(40,167,69,0.35); color:#8ff0a4;';
+    function formatDate(dateString) {
+      const [year, month, day] = dateString.split("-");
+      return `${day}/${month}/${year}`;
     }
 
-    return 'background:rgba(255,193,7,0.16); border:1px solid rgba(255,193,7,0.35); color:#ffd666;';
-  }
+    function renderAgenda() {
+      const bookings = buscarAgendamentos();
+      const date = agendaDate.value;
 
-  function renderSchedule() {
-    const selectedDate = toYMD(currentDate);
-    const appointments = getAppointmentsByDate();
+      scheduleGrid.innerHTML = "";
 
-    currentDateLabel.textContent = formatDate(selectedDate);
+      const header = document.createElement("div");
+      header.className = "schedule-row header";
+      header.innerHTML = `<div>Hora</div>${stylists.map(name => `<div>${name}</div>`).join("")}`;
+      scheduleGrid.appendChild(header);
 
-    grid.innerHTML = '<div class="schedule-row header"><div>Hora</div>' + staff.map(name => `<div>${name}</div>`).join('') + '</div>';
+      times.forEach(time => {
+        const row = document.createElement("div");
+        row.className = "schedule-row";
 
-    hours.forEach(hour => {
-      const row = document.createElement('div');
-      row.className = 'schedule-row';
+        row.innerHTML = `<div class="time-cell">${time}</div>`;
 
-      let rowContent = `<div>${hour}</div>`;
+        stylists.forEach(stylist => {
+          const booking = bookings.find(item => item.date === date && item.time === time && item.stylist === stylist);
 
-      staff.forEach(name => {
-        const appointment = findAppointment(appointments, hour, name);
+          const cell = document.createElement("div");
+          cell.className = booking ? "slot-cell booked premium-slot" : "slot-cell free premium-slot";
 
-        if (appointment) {
-          const status = appointment.status || 'Não confirmado';
+          if (booking) {
+            cell.innerHTML = `
+              <strong>${booking.name}</strong>
+              <span>${booking.service}</span>
+            `;
 
-          rowContent += `
-            <div class="slot-cell ocupado" data-id="${appointment.id}" style="${statusStyle(status)} cursor:pointer;">
-              <strong>${appointment.client || appointment.nome || 'Cliente'}</strong>
-              <small style="display:block; margin-top:4px;">${appointment.service || appointment.servico || 'Serviço'}</small>
-              <small style="display:block; margin-top:4px;">${status}</small>
-            </div>
-          `;
-        } else {
-          rowContent += `
-            <div class="slot-cell disponivel" style="opacity:0.55;">
-              Disponível
-            </div>
-          `;
-        }
+            cell.addEventListener("click", () => openDetails(booking));
+          } else {
+            cell.innerHTML = `
+              <strong>Livre</strong>
+              <span>Marcar</span>
+            `;
+
+            cell.addEventListener("click", () => openManual({ date, time, stylist }));
+          }
+
+          row.appendChild(cell);
+        });
+
+        scheduleGrid.appendChild(row);
       });
+    }
 
-      row.innerHTML = rowContent;
-      grid.appendChild(row);
-    });
-  }
+    function openManual(slot) {
+      selectedSlot = slot;
+      manualInfo.textContent = `${slot.stylist} • ${formatDate(slot.date)} • ${slot.time}`;
+      manualForm.reset();
+      manualModal.classList.add("open");
+    }
 
-  function abrirModal(appointment) {
-    selectedAppointment = appointment;
+    function closeManual() {
+      manualModal.classList.remove("open");
+      selectedSlot = null;
+    }
 
-    const status = appointment.status || 'Não confirmado';
+    manualForm.addEventListener("submit", event => {
+      event.preventDefault();
 
-    modalInfo.innerHTML = `
-      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-        <strong>Cliente</strong>
-        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.client || appointment.nome || 'Não informado'}</p>
-      </div>
+      if (!selectedSlot) return;
 
-      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-        <strong>Telefone</strong>
-        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.phone || appointment.telefone || 'Não informado'}</p>
-      </div>
+      const agendamento = {
+        name: document.getElementById("manualName").value.trim(),
+        phone: document.getElementById("manualPhone").value.trim(),
+        service: document.getElementById("manualService").value,
+        stylist: selectedSlot.stylist,
+        date: selectedSlot.date,
+        time: selectedSlot.time,
+        status: "Manual"
+      };
 
-      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-        <strong>Serviço</strong>
-        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.service || appointment.servico || 'Não informado'}</p>
-      </div>
+      const resultado = adicionarAgendamento(agendamento);
 
-      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-        <strong>Data e horário</strong>
-        <p style="margin:4px 0 0 0; color:var(--text-dim);">${formatDate(appointment.date)} às ${appointment.time}</p>
-      </div>
-
-      <div style="padding:12px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-        <strong>Barbeiro</strong>
-        <p style="margin:4px 0 0 0; color:var(--text-dim);">${appointment.stylist || appointment.profissional || 'Não informado'}</p>
-      </div>
-
-      <div style="padding:12px; border-radius:12px; ${statusStyle(status)}">
-        <strong>Status</strong>
-        <p style="margin:4px 0 0 0;">${status}</p>
-      </div>
-    `;
-
-    btnConfirmar.style.display = status === 'Confirmado' ? 'none' : 'block';
-
-    modal.classList.add('open');
-  }
-
-  grid.addEventListener('click', event => {
-    const slot = event.target.closest('.slot-cell');
-    if (!slot || !slot.dataset.id) return;
-
-    const appointment = buscarAgendamentos().find(item => item.id === slot.dataset.id);
-    if (!appointment) return;
-
-    abrirModal(appointment);
-  });
-
-  closeModal.addEventListener('click', () => {
-    modal.classList.remove('open');
-    selectedAppointment = null;
-  });
-
-  btnConfirmar.addEventListener('click', () => {
-    if (!selectedAppointment) return;
-
-    const agendamentos = buscarAgendamentos().map(item => {
-      if (item.id === selectedAppointment.id) {
-        return {
-          ...item,
-          status: 'Confirmado'
-        };
+      if (!resultado.sucesso) {
+        alert(resultado.mensagem);
+        renderAgenda();
+        closeManual();
+        return;
       }
 
-      return item;
+      closeManual();
+      renderAgenda();
     });
 
-    salvarAgendamentos(agendamentos);
-    modal.classList.remove('open');
-    selectedAppointment = null;
-    renderSchedule();
-  });
+    function openDetails(booking) {
+      selectedBooking = booking;
 
-  btnExcluir.addEventListener('click', () => {
-    if (!selectedAppointment) return;
+      detailsContent.innerHTML = `
+        <div class="details-list">
+          <p><strong>Cliente:</strong> ${booking.name}</p>
+          <p><strong>WhatsApp:</strong> ${booking.phone}</p>
+          <p><strong>Serviço:</strong> ${booking.service}</p>
+          <p><strong>Profissional:</strong> ${booking.stylist}</p>
+          <p><strong>Data:</strong> ${formatDate(booking.date)}</p>
+          <p><strong>Horário:</strong> ${booking.time}</p>
+          <p><strong>Status:</strong> ${booking.status || "Pendente"}</p>
+        </div>
+      `;
 
-    const confirmar = confirm('Tem certeza que deseja excluir esta reserva?');
-
-    if (!confirmar) return;
-
-    removerAgendamento(selectedAppointment.id);
-    modal.classList.remove('open');
-    selectedAppointment = null;
-    renderSchedule();
-  });
-
-  btnWhatsApp.addEventListener('click', () => {
-    if (!selectedAppointment) return;
-
-    const telefone = selectedAppointment.phone || selectedAppointment.telefone || '';
-    const numeroLimpo = telefone.replace(/\D/g, '');
-
-    if (!numeroLimpo) {
-      alert('Este cliente não tem telefone cadastrado.');
-      return;
+      detailsModal.classList.add("open");
     }
 
-    const mensagem = `Olá, ${selectedAppointment.client || selectedAppointment.nome}. Aqui é da Adriano Hair Style.%0A%0AEstamos entrando em contato para confirmar sua reserva:%0A%0AData: ${formatDate(selectedAppointment.date)}%0AHorário: ${selectedAppointment.time}%0AServiço: ${selectedAppointment.service || selectedAppointment.servico}%0ABarbeiro: ${selectedAppointment.stylist || selectedAppointment.profissional}%0A%0APode confirmar esse horário para nós?`;
+    function closeDetails() {
+      detailsModal.classList.remove("open");
+      selectedBooking = null;
+    }
 
-    window.open(`https://wa.me/55${numeroLimpo}?text=${mensagem}`, '_blank');
-  });
+    document.getElementById("confirmBtn").addEventListener("click", () => {
+      if (!selectedBooking) return;
 
-  prevDay.addEventListener('click', () => {
-    currentDate.setDate(currentDate.getDate() - 1);
-    renderSchedule();
-  });
+      const bookings = buscarAgendamentos().map(item => {
+        if (item.id === selectedBooking.id) {
+          return { ...item, status: "Confirmado" };
+        }
 
-  nextDay.addEventListener('click', () => {
-    currentDate.setDate(currentDate.getDate() + 1);
-    renderSchedule();
-  });
+        return item;
+      });
 
-  goToday.addEventListener('click', () => {
-    currentDate = new Date();
-    renderSchedule();
-  });
+      salvarAgendamentos(bookings);
+      closeDetails();
+      renderAgenda();
+    });
 
-  renderSchedule();
-</script>
+    document.getElementById("whatsBtn").addEventListener("click", () => {
+      if (!selectedBooking) return;
 
+      const phone = selectedBooking.phone.replace(/\D/g, "");
+      const text = `Olá, ${selectedBooking.name}! Estamos entrando em contato sobre seu horário na Adriano Hair Style: ${selectedBooking.date} às ${selectedBooking.time}.`;
+      window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(text)}`, "_blank");
+    });
+
+    document.getElementById("deleteBtn").addEventListener("click", () => {
+      if (!selectedBooking) return;
+
+      if (confirm("Deseja excluir este agendamento?")) {
+        removerAgendamento(selectedBooking.id);
+        closeDetails();
+        renderAgenda();
+      }
+    });
+
+    document.getElementById("closeManualModal").addEventListener("click", closeManual);
+    document.getElementById("closeDetailsModal").addEventListener("click", closeDetails);
+
+    document.getElementById("todayBtn").addEventListener("click", () => {
+      agendaDate.value = today;
+      renderAgenda();
+    });
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      const date = new Date(agendaDate.value);
+      date.setDate(date.getDate() - 1);
+      agendaDate.value = date.toISOString().split("T")[0];
+      renderAgenda();
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      const date = new Date(agendaDate.value);
+      date.setDate(date.getDate() + 1);
+      agendaDate.value = date.toISOString().split("T")[0];
+      renderAgenda();
+    });
+
+    agendaDate.addEventListener("change", renderAgenda);
+
+    renderAgenda();
+  </script>
 </body>
 </html>

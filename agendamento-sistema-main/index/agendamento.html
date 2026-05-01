@@ -4,301 +4,206 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento | Adriano Hair Style</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+  <header class="site-header">
+    <a href="index.html" class="brand-block">
+      <div class="brand-icon-box">
+        <i class="fa-solid fa-scissors"></i>
+      </div>
+      <div class="brand-text-block">
+        <span class="brand-name-text">Adriano <strong>Hair Style</strong></span>
+        <span class="brand-sub-text">Agendamento online</span>
+      </div>
+    </a>
 
-<header>
-  <button class="btn-back" onclick="window.location.href='index.html'">
-    <i class="fa-solid fa-chevron-left"></i> Voltar
-  </button>
-  <h1 style="font-size: 1.2rem; font-weight: 800; letter-spacing: 1px;">ADRIANO <span style="color: var(--accent-blue);">HAIR STYLE</span></h1>
-</header>
+    <nav class="header-nav">
+      <a href="index.html" class="btn btn-ghost">Voltar</a>
+      <a href="login.html" class="btn btn-ghost">Admin</a>
+    </nav>
+  </header>
 
-<main style="padding: 2rem 5%;">
-  <section style="max-width: 1150px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px;">
-    <div class="card animate" style="padding: 2rem;">
-      <div style="margin-bottom: 2rem;">
-        <span style="display:inline-block; margin-bottom:0.8rem; padding:8px 14px; border-radius:999px; background:var(--accent-soft); color:#8ec5ff; font-size:0.8rem; font-weight:700; letter-spacing:0.8px;">AGENDAMENTO ONLINE</span>
-        <h2 style="font-size: 2.2rem; line-height: 1.1; margin-bottom: 0.8rem;">Reserve seu horário em poucos cliques</h2>
-        <p style="color: var(--text-dim); max-width: 600px;">
-          Escolha o serviço, selecione a data e depois clique em um horário disponível.
-          Tudo de forma simples, rápida e organizada.
-        </p>
+  <main class="booking-page">
+    <section class="booking-hero">
+      <div>
+        <span class="eyebrow">Agendamento Online</span>
+        <h1>Reserve seu horário em poucos cliques</h1>
+        <p>Preencha seus dados, escolha o serviço, selecione o profissional e clique em um horário disponível.</p>
       </div>
 
-      <form id="formAgendamento">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-          <div class="input-group">
-            <label><i class="fa-solid fa-user"></i> Nome completo</label>
-            <input type="text" name="nome" placeholder="Ex: João Silva" required>
-          </div>
+      <div class="booking-mini-card">
+        <i class="fa-solid fa-clock"></i>
+        <strong>Terça a sábado</strong>
+        <span>09h às 19h</span>
+      </div>
+    </section>
 
-          <div class="input-group">
-            <label><i class="fa-brands fa-whatsapp"></i> WhatsApp</label>
-            <input type="tel" name="telefone" placeholder="11999999999" required>
-          </div>
+    <section class="booking-grid">
+      <form id="bookingForm" class="booking-card">
+        <h2>Dados do agendamento</h2>
+
+        <div class="form-group">
+          <label for="name">Nome completo</label>
+          <input id="name" type="text" placeholder="Ex: João Silva" required>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-          <div class="input-group">
-            <label><i class="fa-solid fa-scissors"></i> Serviço</label>
-            <select name="servico" required>
-              <option value="">Selecione o serviço</option>
-              <option value="Corte Masculino">Corte Masculino - R$ 50</option>
-              <option value="Corte com Sobrancelha">Corte + Sobrancelha - R$ 55</option>
-              <option value="Combo Corte e Barba">Combo corte e barba - R$ 90</option>
-              <option value="Acabamento">Acabamento - R$ 20</option>
-              <option value="Progressiva">Progressiva - R$ 90</option>
-              <option value="Platinado">Platinado - R$ 110</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label><i class="fa-solid fa-user-tie"></i> Profissional</label>
-            <select name="profissional" id="profissionalSelect" required>
-              <option value="">Selecione o profissional</option>
-              <option value="Adriano">Adriano</option>
-              <option value="Arthur">Arthur</option>
-              <option value="Igor">Igor</option>
-              <option value="Vinícius">Vinícius</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="phone">WhatsApp</label>
+          <input id="phone" type="tel" placeholder="Ex: 11999999999" required>
         </div>
 
-        <div class="date-selector" style="margin-bottom: 0;">
-          <label><i class="fa-solid fa-calendar-days"></i> Data</label>
-          <input type="date" id="appointmentDate" required style="display:none;">
-          <input type="text" id="appointmentDateFormatted" placeholder="Selecione a data" readonly required>
+        <div class="form-group">
+          <label for="service">Serviço</label>
+          <select id="service" required>
+            <option value="">Selecione o serviço</option>
+            <option value="Corte Masculino - R$ 50">Corte Masculino - R$ 50</option>
+            <option value="Corte + Sobrancelha - R$ 55">Corte + Sobrancelha - R$ 55</option>
+            <option value="Combo corte e barba - R$ 90">Combo corte e barba - R$ 90</option>
+            <option value="Acabamento - R$ 20">Acabamento - R$ 20</option>
+            <option value="Progressiva - R$ 90">Progressiva - R$ 90</option>
+            <option value="Platinado - R$ 110">Platinado - R$ 110</option>
+          </select>
         </div>
 
-        <div style="margin-top: 1.5rem; margin-bottom: 1rem;">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom: 12px;">
-            <h4 style="font-size: 0.95rem; color: var(--text-main); margin:0;">Horários disponíveis</h4>
-            <span id="selectedDateText" style="color: var(--text-dim); font-size: 0.9rem;"></span>
-          </div>
-
-          <div class="slots" id="slots" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px;"></div>
+        <div class="form-group">
+          <label for="stylist">Profissional</label>
+          <select id="stylist" required>
+            <option value="">Selecione o profissional</option>
+            <option value="Adriano">Adriano</option>
+            <option value="Arthur">Arthur</option>
+            <option value="Igor">Igor</option>
+            <option value="Vinícius">Vinícius</option>
+          </select>
         </div>
 
-        <input type="hidden" name="hora" id="horaSelecionada" required>
+        <div class="form-group">
+          <label for="date">Data</label>
+          <input id="date" type="date" required>
+        </div>
 
-        <div id="msgAgendamento" style="margin-top: 1rem; color: #8ec5ff; font-size: 0.95rem;"></div>
+        <input id="time" type="hidden" required>
 
-        <button type="submit" style="margin-top: 1.8rem; height: 56px; font-size: 1.05rem;">
-          Finalizar agendamento <i class="fa-solid fa-check" style="margin-left: 10px;"></i>
-        </button>
+        <div class="selected-time-box" id="selectedTimeBox">
+          <span>Horário selecionado</span>
+          <strong>Nenhum horário escolhido</strong>
+        </div>
+
+        <button type="submit">Finalizar agendamento</button>
       </form>
-    </div>
 
-    <div style="display:grid; gap: 18px;">
-      <div class="card animate" style="padding: 1.6rem;">
-        <small style="display:block; color:#8ec5ff; margin-bottom:0.5rem; letter-spacing:0.8px;">COMO FUNCIONA</small>
-        <h3 style="margin-bottom:0.7rem;">Agendamento simples</h3>
-        <div style="display:grid; gap: 12px;">
-          <div style="padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-            <strong>1. Preencha seus dados</strong>
-            <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Informe nome, WhatsApp e o serviço desejado.</p>
-          </div>
-          <div style="padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-            <strong>2. Escolha a data</strong>
-            <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Selecione o melhor dia para seu atendimento.</p>
-          </div>
-          <div style="padding: 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-            <strong>3. Selecione o horário</strong>
-            <p style="margin-top:0.35rem; color:var(--text-dim); font-size:0.92rem;">Clique em um horário disponível para concluir.</p>
-          </div>
+      <aside class="booking-card">
+        <h2>Horários disponíveis</h2>
+        <p class="muted-text">Escolha uma data e profissional para visualizar os horários livres.</p>
+
+        <div id="slots" class="booking-slots"></div>
+
+        <div class="booking-help">
+          <h3>Como funciona?</h3>
+          <ul>
+            <li>Preencha seus dados.</li>
+            <li>Escolha data e profissional.</li>
+            <li>Clique em um horário livre.</li>
+            <li>Finalize e confirme pelo WhatsApp.</li>
+          </ul>
         </div>
-      </div>
+      </aside>
+    </section>
+  </main>
 
-      <div class="card animate" style="padding: 1.6rem;">
-        <small style="display:block; color:#8ec5ff; margin-bottom:0.5rem; letter-spacing:0.8px;">INFORMAÇÕES</small>
-        <h3 style="margin-bottom:0.7rem;">Atendimento</h3>
-        <div style="display:grid; gap: 10px;">
-          <div style="display:flex; justify-content:space-between; gap:1rem; padding: 0.9rem 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-            <span style="color:var(--text-dim);">Funcionamento</span>
-            <strong>Terça a sábado</strong>
-          </div>
-          <div style="display:flex; justify-content:space-between; gap:1rem; padding: 0.9rem 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-            <span style="color:var(--text-dim);">Horário</span>
-            <strong>09h às 19h</strong>
-          </div>
-          <div style="display:flex; justify-content:space-between; gap:1rem; padding: 0.9rem 1rem; border-radius: 14px; background: rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-            <span style="color:var(--text-dim);">Local</span>
-            <strong>Rua Tiradentes, 1470 - Horto Florestal, Jundiaí, SP</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+  <script src="storage.js"></script>
 
-<script src="storage.js"></script>
+  <script>
+    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+    const form = document.getElementById("bookingForm");
+    const slotsEl = document.getElementById("slots");
+    const dateEl = document.getElementById("date");
+    const stylistEl = document.getElementById("stylist");
+    const timeEl = document.getElementById("time");
+    const selectedTimeBox = document.getElementById("selectedTimeBox");
 
-<script>
-  const formAgendamento = document.getElementById('formAgendamento');
-  const slotsContainer = document.getElementById('slots');
-  const horaSelecionada = document.getElementById('horaSelecionada');
-  const appointmentDate = document.getElementById('appointmentDate');
-  const selectedDateText = document.getElementById('selectedDateText');
-  const msgAgendamento = document.getElementById('msgAgendamento');
-  const appointmentDateFormatted = document.getElementById('appointmentDateFormatted');
-  const profissionalSelect = document.getElementById('profissionalSelect');
+    const today = new Date().toISOString().split("T")[0];
+    dateEl.min = today;
+    dateEl.value = today;
 
-  const horarios = [
-    '09:00', '10:00', '11:00',
-    '13:00', '14:00', '15:00', '16:00',
-    '17:00', '18:00', '19:00'
-  ];
+    function renderSlots() {
+      const date = dateEl.value;
+      const stylist = stylistEl.value;
+      const bookings = buscarAgendamentos();
 
-  function toYMD(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
+      slotsEl.innerHTML = "";
 
-  function formatDate(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    const diaSemana = dias[date.getDay()];
-    const dia = String(date.getDate()).padStart(2, '0');
-    const mes = String(date.getMonth() + 1).padStart(2, '0');
-    return `${diaSemana} ${dia}/${mes}`;
-  }
-
-  function getAppointments() {
-    const selectedDate = appointmentDate.value;
-    const profissional = profissionalSelect.value;
-
-    return buscarAgendamentos().filter(item => {
-      const mesmaData = selectedDate ? item.date === selectedDate : true;
-      const mesmoProfissional = profissional ? item.stylist === profissional : true;
-      return mesmaData && mesmoProfissional;
-    });
-  }
-
-  function renderSlots() {
-    const selectedDate = appointmentDate.value;
-    const profissional = profissionalSelect.value;
-
-    slotsContainer.innerHTML = '';
-    horaSelecionada.value = '';
-
-    if (!selectedDate || !profissional) {
-      selectedDateText.textContent = 'Selecione a data e o profissional para ver os horários disponíveis.';
-      return;
-    }
-
-    selectedDateText.textContent = `${formatDate(selectedDate)} — ${profissional}`;
-
-    const appointments = getAppointments();
-
-    const bookedHours = appointments
-      .filter(item => item.date === selectedDate && item.stylist === profissional)
-      .map(item => item.time);
-
-    horarios.forEach(hora => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'slot-btn';
-
-      if (bookedHours.includes(hora)) {
-        button.disabled = true;
-        button.textContent = `${hora} • Ocupado`;
-        button.style.opacity = '0.45';
-        button.style.cursor = 'not-allowed';
-      } else {
-        button.textContent = hora;
-        button.addEventListener('click', () => {
-          document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          horaSelecionada.value = hora;
-        });
+      if (!date || !stylist) {
+        slotsEl.innerHTML = `<p class="empty-message">Selecione a data e o profissional.</p>`;
+        return;
       }
 
-      slotsContainer.appendChild(button);
-    });
-  }
+      times.forEach(time => {
+        const booked = bookings.find(item => item.date === date && item.time === time && item.stylist === stylist);
 
-  appointmentDateFormatted.addEventListener('click', () => {
-    if (appointmentDate.showPicker) {
-      appointmentDate.showPicker();
-    } else {
-      appointmentDate.click();
-    }
-  });
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = booked ? "booking-slot booked" : "booking-slot";
+        button.textContent = booked ? `${time} ocupado` : time;
+        button.disabled = Boolean(booked);
 
-  appointmentDate.addEventListener('change', () => {
-    appointmentDateFormatted.value = formatDate(appointmentDate.value);
-    renderSlots();
-  });
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".booking-slot").forEach(btn => btn.classList.remove("selected"));
+          button.classList.add("selected");
+          timeEl.value = time;
+          selectedTimeBox.innerHTML = `<span>Horário selecionado</span><strong>${time}</strong>`;
+        });
 
-  profissionalSelect.addEventListener('change', renderSlots);
-
-  formAgendamento.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const nome = formAgendamento.nome.value.trim();
-    const telefone = formAgendamento.telefone.value.trim();
-    const servico = formAgendamento.servico.value;
-    const profissional = profissionalSelect.value;
-    const data = appointmentDate.value;
-    const hora = horaSelecionada.value;
-
-    if (!nome || !telefone || !servico || !profissional || !data || !hora) {
-      msgAgendamento.style.color = '#ff4d4f';
-      msgAgendamento.textContent = 'Preencha todos os campos e selecione um horário.';
-      return;
-    }
-
-    const novoAgendamento = {
-      client: nome,
-      nome: nome,
-      phone: telefone,
-      telefone: telefone,
-      service: servico,
-      servico: servico,
-      stylist: profissional,
-      profissional: profissional,
-      date: data,
-      data: data,
-      time: hora,
-      horario: hora,
-      status: 'Agendado'
-    };
-
-    const resultado = adicionarAgendamento(novoAgendamento);
-
-    if (!resultado.sucesso) {
-      msgAgendamento.style.color = '#ff4d4f';
-      msgAgendamento.textContent = resultado.mensagem;
-      renderSlots();
-      return;
-    }
-
-    msgAgendamento.style.color = '#8ec5ff';
-    msgAgendamento.textContent = `✅ Horário reservado! Agora envie a mensagem pelo WhatsApp para confirmar com a barbearia.`;
-
-    const mensagem = `Olá, gostaria de confirmar meu agendamento:%0A%0ANome completo: ${nome}%0AData: ${formatDate(data)}%0AHorário: ${hora}%0AServiço: ${servico}%0ABarbeiro: ${profissional}%0A%0AAguardo a confirmação.`;
-
-    const whatsappUrl = `https://wa.me/5511950277744?text=${mensagem}`;
-
-    setTimeout(() => {
-      window.open(whatsappUrl, '_blank');
-    }, 700);
-
-    formAgendamento.reset();
-    appointmentDateFormatted.value = '';
-    horaSelecionada.value = '';
-    slotsContainer.innerHTML = '';
-    selectedDateText.textContent = '';
+        slotsEl.appendChild(button);
       });
+    }
 
-  appointmentDate.min = toYMD(new Date());
-  selectedDateText.textContent = 'Selecione a data e o profissional para ver os horários disponíveis.';
-</script>
+    form.addEventListener("submit", event => {
+      event.preventDefault();
 
+      if (!timeEl.value) {
+        alert("Selecione um horário disponível.");
+        return;
+      }
+
+      const agendamento = {
+        name: document.getElementById("name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        service: document.getElementById("service").value,
+        stylist: stylistEl.value,
+        date: dateEl.value,
+        time: timeEl.value,
+        status: "Pendente"
+      };
+
+      const resultado = adicionarAgendamento(agendamento);
+
+      if (!resultado.sucesso) {
+        alert(resultado.mensagem);
+        renderSlots();
+        return;
+      }
+
+      const mensagem = `Olá! Quero confirmar meu agendamento:%0A%0ANome: ${agendamento.name}%0AWhatsApp: ${agendamento.phone}%0AServiço: ${agendamento.service}%0AProfissional: ${agendamento.stylist}%0AData: ${agendamento.date}%0AHorário: ${agendamento.time}`;
+      window.open(`https://wa.me/5511999999999?text=${mensagem}`, "_blank");
+
+      alert("Agendamento criado com sucesso!");
+      form.reset();
+      dateEl.value = today;
+      timeEl.value = "";
+      selectedTimeBox.innerHTML = `<span>Horário selecionado</span><strong>Nenhum horário escolhido</strong>`;
+      renderSlots();
+    });
+
+    dateEl.addEventListener("change", renderSlots);
+    stylistEl.addEventListener("change", renderSlots);
+
+    renderSlots();
+  </script>
 </body>
 </html>

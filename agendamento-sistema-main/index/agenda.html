@@ -170,9 +170,8 @@
             cell.addEventListener("click", () => openDetails(booking));
           } else {
             cell.innerHTML = `
-              <strong>Livre</strong>
-              <span>Marcar</span>
-            `;
+            <strong>Disponível</strong>
+          `;
 
             cell.addEventListener("click", () => openManual({ date, time, stylist }));
           }

@@ -1582,4 +1582,135 @@ tr:hover td {
       grid-template-columns: repeat(2, 1fr);
     }
   }
+  .header-nav .btn,
+.hero-actions .btn,
+.cta-actions .btn,
+.agenda-actions button,
+.booking-slot,
+.slot-btn,
+.btn {
+  width: auto;
+}
+
+.header-nav .btn {
+  min-height: 38px;
+  padding: 0.62rem 0.9rem;
+  font-size: 0.84rem;
+  border-radius: 999px;
+}
+
+.hero-actions .btn,
+.cta-actions .btn {
+  min-height: 46px;
+  padding: 0.8rem 1.25rem;
+  border-radius: 999px;
+}
+
+.agenda-actions button {
+  min-height: 40px;
+  padding: 0.62rem 0.9rem;
+  margin: 0;
+  font-size: 0.82rem;
+  border-radius: 999px;
+}
+
+.booking-slot {
+  min-height: 42px;
+  padding: 0.65rem 0.75rem;
+  margin: 0;
+  border-radius: 999px;
+  font-size: 0.86rem;
+}
+
+.premium-slot {
+  min-height: 58px;
+  padding: 0.7rem;
+  border-radius: 0;
+  letter-spacing: 0;
+}
+
+.premium-slot strong {
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.premium-slot.free {
+  color: #9ed0ff;
+  background:
+    linear-gradient(180deg, rgba(41, 121, 255, 0.105), rgba(255, 255, 255, 0.028));
+}
+
+.premium-slot.free strong {
+  color: #9ed0ff;
+}
+
+.premium-slot.free:hover {
+  background:
+    linear-gradient(135deg, rgba(41, 121, 255, 0.32), rgba(0, 194, 255, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(125, 199, 255, 0.35);
+}
+
+.premium-slot.booked {
+  background:
+    linear-gradient(135deg, rgba(57, 217, 138, 0.9), rgba(31, 127, 54, 0.96));
+}
+
+.premium-slot.booked strong {
+  color: #fff;
+}
+
+.premium-slot.booked span {
+  margin-top: 0.15rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.68rem;
+}
+
+.schedule-row > div,
+.schedule-row.header > div {
+  min-height: 52px;
+}
+
+.schedule-row.header > div {
+  background: rgba(41, 121, 255, 0.18);
+  color: #dceeff;
+  font-size: 0.76rem;
+  letter-spacing: 0.5px;
+}
+
+.time-cell {
+  color: #9ed0ff;
+}
+
+.modal-content.premium-modal {
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(41, 121, 255, 0.18), transparent 32%),
+    #0b1222;
+}
+
+.modal-actions button {
+  min-height: 44px;
+  margin: 0;
+  border-radius: 999px;
+}
+
+@media (max-width: 768px) {
+  .header-nav .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .hero-actions .btn,
+  .cta-actions .btn {
+    width: 100%;
+  }
+
+  .agenda-actions {
+    width: 100%;
+  }
+
+  .agenda-actions button {
+    flex: 1;
+  }
+}
 }

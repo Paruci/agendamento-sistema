@@ -42,14 +42,13 @@
     </div>
 
     <nav class="header-nav" aria-label="Navegação principal">
+      <a href="#servicos" class="btn btn-ghost">Serviços</a>
+      <a href="#localizacao" class="btn btn-ghost">Localização</a>
       <a href="login.html" class="btn btn-ghost">
         <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
         Admin
       </a>
-
-      <a href="agendamento.html" class="btn btn-primary">
-        Agendar agora
-      </a>
+      <a href="agendamento.html" class="btn btn-primary">Agendar</a>
     </nav>
   </header>
 
@@ -72,13 +71,8 @@
         </p>
 
         <div class="hero-actions">
-          <a href="agendamento.html" class="btn btn-primary btn-large">
-            Reservar horário
-          </a>
-
-          <a href="#servicos" class="btn btn-ghost btn-large">
-            Ver serviços
-          </a>
+          <a href="agendamento.html" class="btn btn-primary btn-large">Reservar horário</a>
+          <a href="#servicos" class="btn btn-ghost btn-large">Ver serviços</a>
         </div>
 
         <div class="hero-stats">
@@ -106,7 +100,7 @@
           <p>Das 09h às 19h</p>
           <span class="open-badge">
             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-            Aberto hoje
+            Atendimento presencial
           </span>
         </div>
 
@@ -137,7 +131,7 @@
         </div>
 
         <div class="hero-panel-card">
-          <small>Como funciona</small>
+          <small>Agendamento</small>
           <p>
             Escolha data, horário e barbeiro. Depois, confirme o agendamento direto pelo WhatsApp da barbearia.
           </p>
@@ -206,6 +200,54 @@
       </div>
     </section>
 
+    <section id="localizacao" class="location-section animate" aria-labelledby="location-title">
+      <div class="section-title">
+        <span>Localização</span>
+        <h2 id="location-title">Estamos no Horto Florestal em Jundiaí</h2>
+      </div>
+
+      <div class="location-grid">
+        <div class="location-card">
+          <div class="location-icon">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          </div>
+
+          <h3>Adriano Hair Style</h3>
+          <p>Rua Tiradentes, 1470 — Horto Florestal, Jundiaí SP</p>
+
+          <div class="location-info">
+            <div>
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              <span>Terça a sábado, das 09h às 19h</span>
+            </div>
+
+            <div>
+              <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
+              <span>Mapa com pin direto da barbearia</span>
+            </div>
+          </div>
+
+          <a
+            href="https://www.google.com/maps/place/Adriano+Hair+Style/@-23.1662058,-46.8960047,17z"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-large"
+          >
+            Abrir no Google Maps
+          </a>
+        </div>
+
+        <div class="map-box">
+          <iframe
+            title="Mapa Adriano Hair Style"
+            src="https://www.google.com/maps?q=Adriano%20Hair%20Style%20Rua%20Tiradentes%201470%20Horto%20Florestal%20Jundia%C3%AD%20SP&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
     <section class="cta-section animate" aria-labelledby="cta-title">
       <div class="cta-box">
         <div>
@@ -215,10 +257,7 @@
         </div>
 
         <div class="cta-actions">
-          <a href="agendamento.html" class="btn btn-primary btn-large">
-            Agendar agora
-          </a>
-
+          <a href="agendamento.html" class="btn btn-primary btn-large">Agendar agora</a>
           <small>Redirecionado ao WhatsApp para confirmação</small>
         </div>
       </div>

@@ -37,17 +37,19 @@
         <p>Visualize horários reservados e clique em horários livres para marcar manualmente.</p>
       </div>
 
-      <div class="agenda-actions">
-        <button id="todayBtn" class="btn btn-ghost">Hoje</button>
-        <button id="prevBtn" class="btn btn-ghost">← Dia anterior</button>
-        <button id="nextBtn" class="btn btn-ghost">Próximo dia →</button>
-      </div>
+      
     </section>
 
     <section class="agenda-toolbar">
       <div class="form-group">
         <label for="agendaDate">Data</label>
         <input id="agendaDate" type="date">
+      </div>
+
+      <div class="agenda-actions">
+        <button id="todayBtn" class="btn btn-ghost">Hoje</button>
+        <button id="prevBtn" class="btn btn-ghost">← Dia anterior</button>
+        <button id="nextBtn" class="btn btn-ghost">Próximo dia →</button>
       </div>
 
       <div class="agenda-legend">
@@ -115,7 +117,7 @@
     protegerAdmin();
 
     const stylists = ["Adriano", "Arthur", "Igor", "Vinícius"];
-    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00","20:00"];
 
     const agendaDate = document.getElementById("agendaDate");
     const scheduleGrid = document.getElementById("scheduleGrid");

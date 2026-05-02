@@ -4,24 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | Adriano Hair Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="admin-layout">
-  <aside class="admin-sidebar" style="padding: 2rem; border-right: 1px solid var(--glass-border);">
+  <aside class="admin-sidebar">
     <div style="margin-bottom: 2rem;">
-      <p style="color: #8ec5ff; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.5rem;">Painel interno</p>
-      <h2 style="color: var(--text-main); margin: 0;">AHS Admin</h2>
-      <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem;">Gestão da barbearia em um só lugar</p>
+      <p class="eyebrow">Painel interno</p>
+      <h2 style="margin: 0;">AHS Admin</h2>
+      <p class="muted-text" style="font-size: 0.9rem; margin-top: 0.5rem;">Gestão da barbearia em um só lugar</p>
     </div>
 
     <nav style="display: flex; flex-direction: column; gap: 12px;">
-      <a href="admin.html" class="active" style="margin:0;">📊 Dashboard</a>
-      <a href="agenda.html" style="margin:0;">📅 Agenda</a>
-      <a href="#" style="margin:0;">👥 Clientes</a>
-      <a href="#" style="margin:0;">💰 Financeiro</a>
-      <a href="#" id="logoutLink" style="margin:0; margin-top: 40px; color: #ff7070;">Sair</a>
+      <a href="admin.html" class="active">📊 Dashboard</a>
+      <a href="agenda.html">📅 Agenda</a>
+      <a href="#clientesArea">👥 Clientes</a>
+      <a href="#financeiroArea">💰 Financeiro</a>
+      <a href="#" id="logoutLink" style="margin-top: 40px; color: #ff7070;">Sair</a>
     </nav>
   </aside>
 
@@ -29,92 +33,171 @@
     <section class="animate" style="margin-bottom: 1.5rem;">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
         <div>
-          <p style="color:#8ec5ff; font-size:0.82rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:0.3rem;">Dashboard</p>
+          <span class="eyebrow">Dashboard</span>
           <h1 style="margin:0; font-size:2rem;">Visão geral da operação</h1>
-          <p style="color: var(--text-dim); margin-top:0.4rem;">Acompanhe agenda, faturamento e desempenho da semana.</p>
+          <p class="muted-text" style="margin-top:0.4rem;">Acompanhe agenda, faturamento, status e desempenho dos barbeiros.</p>
         </div>
-        <a href="agenda.html" class="btn-primary" style="width:auto; margin:0; padding:12px 18px;">Abrir agenda</a>
+        <a href="agenda.html" class="btn btn-primary">Abrir agenda</a>
       </div>
     </section>
 
-    <section class="dashboard animate">
+    <section class="dashboard-grid animate">
       <div class="card" style="margin-bottom:0;">
-        <small style="color: var(--text-dim); display:block; margin-bottom:0.5rem;">Faturamento semanal</small>
-        <h2 id="faturamento" style="font-size:2rem; margin:0;">R$ 0,00</h2>
+        <small class="muted-text">Faturamento hoje</small>
+        <h2 id="faturamentoHoje" style="font-size:2rem; margin:0.35rem 0 0;">R$ 0,00</h2>
       </div>
 
       <div class="card" style="margin-bottom:0;">
-        <small style="color: var(--text-dim); display:block; margin-bottom:0.5rem;">Agendamentos semanais</small>
-        <h2 id="totalAgendamentos" style="font-size:2rem; margin:0;">0</h2>
+        <small class="muted-text">Faturamento semanal</small>
+        <h2 id="faturamentoSemana" style="font-size:2rem; margin:0.35rem 0 0;">R$ 0,00</h2>
       </div>
 
       <div class="card" style="margin-bottom:0;">
-        <small style="color: var(--text-dim); display:block; margin-bottom:0.5rem;">Participação Adriano</small>
-        <h2 id="receitaTotal" style="font-size:2rem; margin:0;">R$ 0,00</h2>
+        <small class="muted-text">Agendamentos hoje</small>
+        <h2 id="agendamentosHoje" style="font-size:2rem; margin:0.35rem 0 0;">0</h2>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <small class="muted-text">Pendentes</small>
+        <h2 id="totalPendentes" style="font-size:2rem; margin:0.35rem 0 0;">0</h2>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <small class="muted-text">Confirmados</small>
+        <h2 id="totalConfirmados" style="font-size:2rem; margin:0.35rem 0 0;">0</h2>
       </div>
     </section>
 
-    <section class="card animate" style="margin-top: 1rem;">
+    <section id="financeiroArea" class="card animate" style="margin-top: 1rem;">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
         <div>
           <h3 style="margin:0;">Faturamento por barbeiro</h3>
-          <p style="color: var(--text-dim); font-size:0.9rem; margin-top:0.3rem;">Resumo da semana selecionada</p>
+          <p class="muted-text" style="font-size:0.9rem; margin-top:0.3rem;">Resumo da semana selecionada</p>
         </div>
 
-        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-          <button id="prevWeekAdmin" class="btn-admin" style="width:auto; margin:0; padding:8px 10px;">←</button>
-          <span id="currentWeekAdmin" style="align-self:center; color: var(--text-dim); font-size:0.9rem;"></span>
-          <button id="nextWeekAdmin" class="btn-admin" style="width:auto; margin:0; padding:8px 10px;">→</button>
-          <button id="goTodayAdmin" class="btn-primary" style="width:auto; margin:0; padding:8px 12px;">Hoje</button>
+        <div class="agenda-controls">
+          <button id="prevWeekAdmin" class="btn-admin" type="button">←</button>
+          <span id="currentWeekAdmin" class="agenda-week-label"></span>
+          <button id="nextWeekAdmin" class="btn-admin" type="button">→</button>
+          <button id="goTodayAdmin" class="btn-primary" type="button">Hoje</button>
         </div>
       </div>
 
       <ul id="barberRevenue" style="list-style:none; padding-left:0; margin:0; display:grid; gap:10px;"></ul>
     </section>
 
-    <section class="animate" style="display:grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-top: 1rem;">
-      <div class="grid-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-          <div>
-            <h3 style="margin:0;">Próximos horários</h3>
-            <p style="color: var(--text-dim); font-size:0.9rem; margin-top:0.3rem;">Agendamentos mais próximos da agenda</p>
-          </div>
-          <a href="agenda.html" class="btn-admin" style="width:auto; margin:0; padding:10px 12px;">Ver agenda</a>
+    <section class="grid-panel animate" style="margin-top: 1rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+        <div>
+          <h3 style="margin:0;">Agendamentos</h3>
+          <p class="muted-text" style="font-size:0.9rem; margin-top:0.3rem;">Filtre, confirme, chame no WhatsApp ou exclua horários</p>
         </div>
-
-        <ul id="lista" style="list-style:none; padding:0; margin:0; display:grid; gap:12px;"></ul>
+        <a href="agenda.html" class="btn btn-ghost">Ver grade da agenda</a>
       </div>
 
-      <div class="grid-panel">
-        <div style="margin-bottom:1rem;">
-          <h3 style="margin:0;">Lançar entrada</h3>
-          <p style="color: var(--text-dim); font-size:0.9rem; margin-top:0.3rem;">Registro rápido de atendimento pago</p>
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+        <div class="form-group" style="margin:0;">
+          <label for="filterDate">Data</label>
+          <input id="filterDate" type="date" style="margin-bottom:0;">
         </div>
 
-        <form id="formCaixa">
-          <input type="text" id="caixaCliente" placeholder="Nome do Cliente" required>
-          <select id="caixaServico">
-            <option value="Corte Masculino|50">Corte Masculino - R$50</option>
-            <option value="Corte com Sobrancelha|55">Corte/Sobrancelha - R$55</option>
-            <option value="Combo Corte e Barba|90">Combo corte e barba - R$90</option>
-            <option value="Acabamento|20">Acabamento - R$20</option>
-            <option value="Progressiva|90">Progressiva - R$90</option>
-            <option value="Platinado|110">Platinado - R$110</option>
-          </select>
-          <select id="caixaBarbeiro">
+        <div class="form-group" style="margin:0;">
+          <label for="filterBarber">Barbeiro</label>
+          <select id="filterBarber" style="margin-bottom:0;">
+            <option value="">Todos</option>
             <option value="Adriano">Adriano</option>
             <option value="Arthur">Arthur</option>
             <option value="Igor">Igor</option>
             <option value="Vinícius">Vinícius</option>
           </select>
-          <button type="submit">Confirmar Pagamento</button>
+        </div>
+
+        <div class="form-group" style="margin:0;">
+          <label for="filterStatus">Status</label>
+          <select id="filterStatus" style="margin-bottom:0;">
+            <option value="">Todos</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Confirmado">Confirmado</option>
+            <option value="Manual">Manual</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin:0; align-self:end;">
+          <button id="clearFilters" type="button" class="btn btn-ghost btn-full">Limpar filtros</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>WhatsApp</th>
+              <th>Serviço</th>
+              <th>Barbeiro</th>
+              <th>Data</th>
+              <th>Hora</th>
+              <th>Status</th>
+              <th>Valor</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="animate" style="display:grid; grid-template-columns: 1fr 0.85fr; gap: 20px; margin-top: 1rem;">
+      <div id="clientesArea" class="grid-panel">
+        <div style="margin-bottom:1rem;">
+          <h3 style="margin:0;">Clientes recentes</h3>
+          <p class="muted-text" style="font-size:0.9rem; margin-top:0.3rem;">Últimos clientes únicos registrados</p>
+        </div>
+        <ul id="clientesRecentes" style="list-style:none; padding:0; margin:0; display:grid; gap:12px;"></ul>
+      </div>
+
+      <div class="grid-panel">
+        <div style="margin-bottom:1rem;">
+          <h3 style="margin:0;">Lançar entrada</h3>
+          <p class="muted-text" style="font-size:0.9rem; margin-top:0.3rem;">Registro rápido de atendimento pago</p>
+        </div>
+
+        <form id="formCaixa">
+          <div class="form-group">
+            <label for="caixaCliente">Nome do cliente</label>
+            <input type="text" id="caixaCliente" placeholder="Ex: João Silva" required>
+          </div>
+
+          <div class="form-group">
+            <label for="caixaTelefone">WhatsApp</label>
+            <input type="tel" id="caixaTelefone" placeholder="Ex: 11999999999">
+          </div>
+
+          <div class="form-group">
+            <label for="caixaServico">Serviço</label>
+            <select id="caixaServico" required>
+              <option value="Corte Masculino - R$ 50|50">Corte Masculino - R$50</option>
+              <option value="Corte + Sobrancelha - R$ 55|55">Corte + Sobrancelha - R$55</option>
+              <option value="Combo corte e barba - R$ 90|90">Combo corte e barba - R$90</option>
+              <option value="Acabamento - R$ 20|20">Acabamento - R$20</option>
+              <option value="Progressiva - R$ 90|90">Progressiva - R$90</option>
+              <option value="Platinado - R$ 110|110">Platinado - R$110</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="caixaBarbeiro">Barbeiro</label>
+            <select id="caixaBarbeiro" required>
+              <option value="Adriano">Adriano</option>
+              <option value="Arthur">Arthur</option>
+              <option value="Igor">Igor</option>
+              <option value="Vinícius">Vinícius</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">Confirmar pagamento</button>
           <p id="caixaMsg" style="color:#8ec5ff; font-size:0.9rem; margin-top:0.5rem; display:none;"></p>
         </form>
-
-        <div style="margin-top:1rem; padding:1rem; border-radius:14px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);">
-          <small style="color:#8ec5ff; display:block; margin-bottom:0.4rem;">Dica</small>
-          <p style="color:var(--text-dim); font-size:0.9rem; margin:0;">O lançamento manual entra como atendimento confirmado e aparece no dashboard da semana.</p>
-        </div>
       </div>
     </section>
   </main>
@@ -125,24 +208,65 @@
 <script>
   protegerAdmin();
 
+  const stylists = ["Adriano", "Arthur", "Igor", "Vinícius"];
+
   const servicePrices = {
-    'Corte Masculino': 50,
-    'Corte com Sobrancelha': 55,
-    'Combo Corte e Barba': 90,
-    'Acabamento': 20,
-    'Progressiva': 90,
-    'Platinado': 110
+    "Corte Masculino": 50,
+    "Corte Masculino - R$ 50": 50,
+    "Corte com Sobrancelha": 55,
+    "Corte + Sobrancelha - R$ 55": 55,
+    "Combo Corte e Barba": 90,
+    "Combo corte e barba - R$ 90": 90,
+    "Acabamento": 20,
+    "Acabamento - R$ 20": 20,
+    "Progressiva": 90,
+    "Progressiva - R$ 90": 90,
+    "Platinado": 110,
+    "Platinado - R$ 110": 110
   };
 
   const barberShare = {
-    'Adriano': 1,
-    'Arthur': 0.5666666667,
-    'Igor': 0.5,
-    'Vinícius': 0.5
+    "Adriano": 1,
+    "Arthur": 0.5666666667,
+    "Igor": 0.5,
+    "Vinícius": 0.5
   };
 
   let currentWeekStart = startOfWeek(new Date());
-  let scheduleData = buscarAgendamentos();
+  let scheduleData = [];
+
+  function normalizeAppointment(item) {
+    const name = item.name || item.client || item.nome || "Cliente não informado";
+    const phone = item.phone || item.telefone || "";
+    const service = item.service || item.servico || "Serviço não informado";
+    const stylist = item.stylist || item.profissional || "Profissional";
+    const date = item.date || item.data || "";
+    const time = item.time || item.horario || "";
+    const status = item.status || "Pendente";
+    const price = Number(item.price || item.valor || servicePrices[service] || extractPrice(service) || 0);
+
+    return {
+      ...item,
+      id: item.id,
+      name,
+      phone,
+      service,
+      stylist,
+      date,
+      time,
+      status,
+      price
+    };
+  }
+
+  function extractPrice(service) {
+    const match = String(service).match(/R\$\s*(\d+)/i);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function refreshData() {
+    scheduleData = buscarAgendamentos().map(normalizeAppointment);
+  }
 
   function startOfWeek(date) {
     const d = new Date(date);
@@ -158,150 +282,203 @@
     return end;
   }
 
+  function getTodayString() {
+    const now = new Date();
+    const pad = value => String(value).padStart(2, "0");
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  }
+
   function formatWeek(start) {
     const end = endOfWeek(start);
-    return `${start.toLocaleDateString('pt-BR')} - ${end.toLocaleDateString('pt-BR')}`;
+    return `${start.toLocaleDateString("pt-BR")} - ${end.toLocaleDateString("pt-BR")}`;
   }
 
   function formatMoney(value) {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
   function formatDate(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('pt-BR');
+    if (!dateString) return "--/--/----";
+    const date = new Date(dateString + "T00:00:00");
+    return date.toLocaleDateString("pt-BR");
   }
 
-  function calculateWeeklyRevenue(weekStart) {
-    const weekEnd = endOfWeek(weekStart);
+  function getDateTime(item) {
+    return new Date(`${item.date}T${item.time || "00:00"}:00`);
+  }
 
-    const allWeekly = scheduleData.filter(item => {
-      if (!item.date) return false;
-      const d = new Date(item.date + 'T00:00:00');
-      return d >= weekStart && d <= weekEnd;
-    });
+  function isInCurrentWeek(item) {
+    if (!item.date) return false;
+    const d = new Date(item.date + "T00:00:00");
+    return d >= currentWeekStart && d <= endOfWeek(currentWeekStart);
+  }
+
+  function calculateStats() {
+    const today = getTodayString();
+    const todayItems = scheduleData.filter(item => item.date === today);
+    const weeklyItems = scheduleData.filter(isInCurrentWeek);
 
     const stats = {
-      totalValue: 0,
-      totalAppointments: allWeekly.length,
-      ownerValue: 0,
-      breakdown: {
-        Adriano: 0,
-        Arthur: 0,
-        Igor: 0,
-        Vinícius: 0
-      }
+      todayRevenue: todayItems.reduce((sum, item) => sum + item.price, 0),
+      weeklyRevenue: weeklyItems.reduce((sum, item) => sum + item.price, 0),
+      todayAppointments: todayItems.length,
+      pending: scheduleData.filter(item => item.status === "Pendente").length,
+      confirmed: scheduleData.filter(item => item.status === "Confirmado" || item.status === "Manual").length,
+      breakdown: {}
     };
 
-    allWeekly.forEach(appointment => {
-      const serviceName = appointment.service || appointment.servico || '';
-      const price = servicePrices[serviceName] || Number(appointment.price || appointment.valor || 0);
-      const stylist = appointment.stylist || appointment.profissional;
+    stylists.forEach(stylist => {
+      const items = weeklyItems.filter(item => item.stylist === stylist);
+      const gross = items.reduce((sum, item) => sum + item.price, 0);
+      const barberValue = gross * (barberShare[stylist] || 0);
+      const ownerValue = gross - barberValue;
 
-      stats.totalValue += price;
-
-      if (stylist && barberShare[stylist] !== undefined) {
-        const share = price * barberShare[stylist];
-        stats.breakdown[stylist] += share;
-
-        if (stylist === 'Adriano') {
-          stats.ownerValue += price;
-        }
-      }
+      stats.breakdown[stylist] = {
+        appointments: items.length,
+        gross,
+        barberValue,
+        ownerValue
+      };
     });
 
     return stats;
   }
 
+  function renderCards() {
+    const stats = calculateStats();
+    document.getElementById("faturamentoHoje").textContent = formatMoney(stats.todayRevenue);
+    document.getElementById("faturamentoSemana").textContent = formatMoney(stats.weeklyRevenue);
+    document.getElementById("agendamentosHoje").textContent = stats.todayAppointments;
+    document.getElementById("totalPendentes").textContent = stats.pending;
+    document.getElementById("totalConfirmados").textContent = stats.confirmed;
+  }
+
   function renderRevenue() {
-    const stats = calculateWeeklyRevenue(currentWeekStart);
+    const stats = calculateStats();
+    const list = document.getElementById("barberRevenue");
 
-    document.getElementById('faturamento').textContent = formatMoney(stats.totalValue);
-    document.getElementById('totalAgendamentos').textContent = stats.totalAppointments;
-    document.getElementById('receitaTotal').textContent = formatMoney(stats.ownerValue);
+    list.innerHTML = "";
 
-    const list = document.getElementById('barberRevenue');
-    list.innerHTML = '';
+    stylists.forEach(stylist => {
+      const item = stats.breakdown[stylist];
+      const pct = ((barberShare[stylist] || 0) * 100).toFixed(2).replace(".", ",");
+      const li = document.createElement("li");
 
-    Object.keys(stats.breakdown).forEach(barber => {
-      const li = document.createElement('li');
-      const shareValue = stats.breakdown[barber];
-      const pct = (barberShare[barber] * 100).toFixed(2).replace('.', ',');
-
-      li.style.padding = '14px';
-      li.style.borderRadius = '14px';
-      li.style.background = 'rgba(255,255,255,0.04)';
-      li.style.border = '1px solid var(--glass-border)';
-      li.style.display = 'flex';
-      li.style.justifyContent = 'space-between';
-      li.style.alignItems = 'center';
-      li.style.gap = '1rem';
-      li.style.flexWrap = 'wrap';
+      li.style.padding = "14px";
+      li.style.borderRadius = "14px";
+      li.style.background = "rgba(255,255,255,0.04)";
+      li.style.border = "1px solid var(--border)";
+      li.style.display = "grid";
+      li.style.gridTemplateColumns = "1.1fr repeat(3, minmax(120px, 1fr))";
+      li.style.gap = "1rem";
+      li.style.alignItems = "center";
 
       li.innerHTML = `
         <div>
-          <strong>${barber}</strong>
-          <div style="color: var(--text-dim); font-size:0.85rem; margin-top:0.25rem;">${pct}% do serviço</div>
+          <strong>${stylist}</strong>
+          <div class="muted-text" style="font-size:0.85rem; margin-top:0.25rem;">${item.appointments} atendimento(s) • ${pct}% comissão</div>
         </div>
-        <strong style="font-size:1rem;">${formatMoney(shareValue)}</strong>
+        <div><small class="muted-text">Bruto</small><strong style="display:block;">${formatMoney(item.gross)}</strong></div>
+        <div><small class="muted-text">Barbeiro</small><strong style="display:block;">${formatMoney(item.barberValue)}</strong></div>
+        <div><small class="muted-text">Barbearia</small><strong style="display:block;">${formatMoney(item.ownerValue)}</strong></div>
       `;
 
       list.appendChild(li);
     });
 
-    document.getElementById('currentWeekAdmin').textContent = formatWeek(currentWeekStart);
+    document.getElementById("currentWeekAdmin").textContent = formatWeek(currentWeekStart);
   }
 
-  function renderUpcomingAppointments() {
-    const list = document.getElementById('lista');
-    list.innerHTML = '';
+  function getFilteredAppointments() {
+    const date = document.getElementById("filterDate").value;
+    const barber = document.getElementById("filterBarber").value;
+    const status = document.getElementById("filterStatus").value;
 
-    const now = new Date();
+    return [...scheduleData]
+      .filter(item => !date || item.date === date)
+      .filter(item => !barber || item.stylist === barber)
+      .filter(item => !status || item.status === status)
+      .sort((a, b) => getDateTime(a) - getDateTime(b));
+  }
 
-    const upcoming = [...scheduleData]
-      .filter(item => item.date && item.time)
-      .filter(item => new Date(`${item.date}T${item.time}:00`) >= now)
-      .sort((a, b) => {
-        const dateA = new Date(`${a.date}T${a.time}:00`);
-        const dateB = new Date(`${b.date}T${b.time}:00`);
-        return dateA - dateB;
-      })
-      .slice(0, 8);
+  function renderAppointmentsTable() {
+    const tbody = document.getElementById("appointmentsTable");
+    const items = getFilteredAppointments();
 
-    if (upcoming.length === 0) {
-      list.innerHTML = `
-        <li style="padding:14px; border-radius:14px; background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); color:var(--text-dim);">
-          Nenhum horário futuro agendado ainda.
-        </li>
+    tbody.innerHTML = "";
+
+    if (items.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" style="text-align:center; color:var(--muted); padding:1.2rem;">Nenhum agendamento encontrado.</td>
+        </tr>
       `;
       return;
     }
 
-    upcoming.forEach(item => {
-      const status = item.status || 'Não confirmado';
+    items.forEach(item => {
+      const phoneDigits = item.phone.replace(/\D/g, "");
+      const tr = document.createElement("tr");
+      const statusColor = item.status === "Confirmado" || item.status === "Manual" ? "#8ff0bc" : "#ffd666";
 
-      const li = document.createElement('li');
-      li.style.padding = '14px';
-      li.style.borderRadius = '14px';
-      li.style.background = 'rgba(255,255,255,0.04)';
-      li.style.border = '1px solid var(--glass-border)';
+      tr.innerHTML = `
+        <td><strong>${item.name}</strong></td>
+        <td>${item.phone || "-"}</td>
+        <td>${item.service}</td>
+        <td>${item.stylist}</td>
+        <td>${formatDate(item.date)}</td>
+        <td>${item.time || "--:--"}</td>
+        <td><strong style="color:${statusColor};">${item.status}</strong></td>
+        <td>${formatMoney(item.price)}</td>
+        <td>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <button type="button" class="btn-admin" style="min-height:34px; padding:0.5rem 0.7rem;" data-action="confirm" data-id="${item.id}">OK</button>
+            <button type="button" class="btn-admin" style="min-height:34px; padding:0.5rem 0.7rem;" data-action="whatsapp" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
+            <button type="button" class="danger-btn" style="min-height:34px; padding:0.5rem 0.7rem;" data-action="delete" data-id="${item.id}">Excluir</button>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderClients() {
+    const list = document.getElementById("clientesRecentes");
+    const map = new Map();
+
+    [...scheduleData]
+      .sort((a, b) => getDateTime(b) - getDateTime(a))
+      .forEach(item => {
+        const key = `${item.name}-${item.phone}`;
+        if (!map.has(key)) map.set(key, item);
+      });
+
+    const clients = [...map.values()].slice(0, 8);
+
+    list.innerHTML = "";
+
+    if (clients.length === 0) {
+      list.innerHTML = `<li class="empty-message">Nenhum cliente registrado ainda.</li>`;
+      return;
+    }
+
+    clients.forEach(item => {
+      const li = document.createElement("li");
+      li.style.padding = "14px";
+      li.style.borderRadius = "14px";
+      li.style.background = "rgba(255,255,255,0.04)";
+      li.style.border = "1px solid var(--border)";
 
       li.innerHTML = `
         <div style="display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
           <div>
-            <strong>${item.client || item.nome || 'Cliente não informado'}</strong>
-            <div style="color:var(--text-dim); font-size:0.9rem; margin-top:0.25rem;">
-              ${item.service || item.servico || 'Serviço não informado'} com ${item.stylist || item.profissional || 'Profissional'}
-            </div>
-            <div style="color:${status === 'Confirmado' ? '#8ff0a4' : '#ffd666'}; font-size:0.85rem; margin-top:0.25rem;">
-              ${status}
-            </div>
+            <strong>${item.name}</strong>
+            <div class="muted-text" style="font-size:0.9rem; margin-top:0.25rem;">${item.phone || "WhatsApp não informado"}</div>
           </div>
           <div style="text-align:right;">
-            <strong>${item.time || item.horario || '--:--'}</strong>
-            <div style="color:var(--text-dim); font-size:0.9rem; margin-top:0.25rem;">
-              ${formatDate(item.date)}
-            </div>
+            <strong>${formatDate(item.date)}</strong>
+            <div class="muted-text" style="font-size:0.9rem; margin-top:0.25rem;">${item.service}</div>
           </div>
         </div>
       `;
@@ -311,53 +488,101 @@
   }
 
   function updateDashboard() {
-    scheduleData = buscarAgendamentos();
+    refreshData();
+    renderCards();
     renderRevenue();
-    renderUpcomingAppointments();
+    renderAppointmentsTable();
+    renderClients();
   }
 
-  document.getElementById('prevWeekAdmin').addEventListener('click', () => {
-    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-    renderRevenue();
-  });
+  function updateAppointmentStatus(id, status) {
+    const updated = buscarAgendamentos().map(item => {
+      if (item.id === id) return { ...item, status };
+      return item;
+    });
 
-  document.getElementById('nextWeekAdmin').addEventListener('click', () => {
-    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-    renderRevenue();
-  });
+    salvarAgendamentos(updated);
+    updateDashboard();
+  }
 
-  document.getElementById('goTodayAdmin').addEventListener('click', () => {
-    currentWeekStart = startOfWeek(new Date());
-    renderRevenue();
-  });
+  document.getElementById("appointmentsTable").addEventListener("click", event => {
+    const button = event.target.closest("button");
+    if (!button) return;
 
-  document.getElementById('formCaixa').addEventListener('submit', event => {
-    event.preventDefault();
+    const action = button.dataset.action;
 
-    const cliente = document.getElementById('caixaCliente').value.trim();
-    const servicoRaw = document.getElementById('caixaServico').value;
-    const barbeiro = document.getElementById('caixaBarbeiro').value;
-    const msg = document.getElementById('caixaMsg');
-
-    if (!cliente) {
-      msg.style.color = '#ff4d4f';
-      msg.textContent = 'Informe o nome do cliente.';
-      msg.style.display = 'block';
-      return;
+    if (action === "confirm") {
+      updateAppointmentStatus(button.dataset.id, "Confirmado");
     }
 
-    const [servico, valor] = servicoRaw.split('|');
+    if (action === "delete") {
+      if (confirm("Deseja excluir este agendamento?")) {
+        removerAgendamento(button.dataset.id);
+        updateDashboard();
+      }
+    }
 
+    if (action === "whatsapp") {
+      const phone = button.dataset.phone;
+      if (!phone) {
+        alert("Este cliente não tem WhatsApp cadastrado.");
+        return;
+      }
+
+      const text = `Olá, ${button.dataset.name}! Estamos entrando em contato sobre seu horário na Adriano Hair Style: ${formatDate(button.dataset.date)} às ${button.dataset.time}.`;
+      window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(text)}`, "_blank");
+    }
+  });
+
+  document.getElementById("prevWeekAdmin").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    renderCards();
+    renderRevenue();
+  });
+
+  document.getElementById("nextWeekAdmin").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    renderCards();
+    renderRevenue();
+  });
+
+  document.getElementById("goTodayAdmin").addEventListener("click", () => {
+    currentWeekStart = startOfWeek(new Date());
+    renderCards();
+    renderRevenue();
+  });
+
+  ["filterDate", "filterBarber", "filterStatus"].forEach(id => {
+    document.getElementById(id).addEventListener("change", renderAppointmentsTable);
+  });
+
+  document.getElementById("clearFilters").addEventListener("click", () => {
+    document.getElementById("filterDate").value = "";
+    document.getElementById("filterBarber").value = "";
+    document.getElementById("filterStatus").value = "";
+    renderAppointmentsTable();
+  });
+
+  document.getElementById("formCaixa").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const cliente = document.getElementById("caixaCliente").value.trim();
+    const telefone = document.getElementById("caixaTelefone").value.trim();
+    const servicoRaw = document.getElementById("caixaServico").value;
+    const barbeiro = document.getElementById("caixaBarbeiro").value;
+    const msg = document.getElementById("caixaMsg");
+    const [servico, valor] = servicoRaw.split("|");
     const now = new Date();
-    const pad = n => String(n).padStart(2, '0');
+    const pad = value => String(value).padStart(2, "0");
     const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
     const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
     const novoLancamento = {
+      name: cliente,
       client: cliente,
       nome: cliente,
-      phone: '',
-      telefone: '',
+      phone: telefone,
+      telefone: telefone,
       service: servico,
       servico: servico,
       price: Number(valor),
@@ -368,36 +593,34 @@
       data: date,
       time: time,
       horario: time,
-      status: 'Confirmado',
-      origem: 'Caixa'
+      status: "Confirmado",
+      origem: "Caixa"
     };
 
     const resultado = adicionarAgendamento(novoLancamento);
 
     if (!resultado.sucesso) {
-      msg.style.color = '#ff4d4f';
+      msg.style.color = "#ff4d4f";
       msg.textContent = resultado.mensagem;
-      msg.style.display = 'block';
+      msg.style.display = "block";
       return;
     }
 
-    msg.style.color = '#8ec5ff';
+    msg.style.color = "#8ec5ff";
     msg.textContent = `✅ ${cliente} registrado com sucesso!`;
-    msg.style.display = 'block';
-
-    document.getElementById('caixaCliente').value = '';
-
+    msg.style.display = "block";
+    event.target.reset();
     updateDashboard();
 
     setTimeout(() => {
-      msg.style.display = 'none';
+      msg.style.display = "none";
     }, 3000);
   });
 
-  document.getElementById('logoutLink').addEventListener('click', event => {
+  document.getElementById("logoutLink").addEventListener("click", event => {
     event.preventDefault();
     logoutAdmin();
-    window.location.href = 'login.html';
+    window.location.href = "login.html";
   });
 
   updateDashboard();

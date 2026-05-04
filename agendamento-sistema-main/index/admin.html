@@ -197,15 +197,28 @@
           </div>
 
           <div class="form-group">
-            <label for="caixaDescricao">Descrição</label>
-            <input type="text" id="caixaDescricao" placeholder="Ex: Venda serviço ou Compra insumos" required>
-          </div>
+          <label for="caixaCategoria">Categoria</label>
+          <select id="caixaCategoria" required>
+            <option value="Serviço">Serviço</option>
+            <option value="Produto">Produto</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
 
-          <div class="form-group">
-            <label for="caixaValor">Valor (R$)</label>
-            <input type="number" id="caixaValor" step="0.01" placeholder="Ex: 90.00" required>
-          </div>
+        <div class="form-group" id="produtoGroup" style="display: none;">
+          <label for="caixaProduto">Produto</label>
+          <select id="caixaProduto">
+            <option value="Coca-Cola - R$ 7|7">Coca-Cola - R$ 7</option>
+            <option value="Monster - R$ 13|13">Monster - R$ 13</option>
+            <option value="Pomada - R$ 25|25">Pomada - R$ 25</option>
+            <option value="Gel Fixador - R$ 20|20">Gel Fixador - R$ 20</option>
+            <option value="Shampoo - R$ 15|15">Shampoo - R$ 15</option>
+            <option value="Condicionador - R$ 18|18">Condicionador - R$ 18</option>
+            <option value="Outro produto">Outro produto</option>
+          </select>
+        </div>
 
+        <div class="form-group">
           <div class="form-group">
             <label for="caixaBarbeiro">Barbeiro</label>
             <select id="caixaBarbeiro" required>
@@ -603,6 +616,8 @@
     const cliente = document.getElementById("caixaCliente").value.trim();
     const telefone = document.getElementById("caixaTelefone").value.trim();
     const tipo = document.getElementById("caixaTipo").value;
+    const categoria = document.getElementById("caixaCategoria").value;
+    const produtoRaw = document.getElementById("caixaProduto").value;
     const descricao = document.getElementById("caixaDescricao").value.trim();
     const valor = Number(document.getElementById("caixaValor").value);
     const barbeiro = document.getElementById("caixaBarbeiro").value;
@@ -629,14 +644,22 @@
     const isExpense = tipo === "Despesa";
     const price = isExpense ? -valor : valor;
 
+    // Se for produto, usar o nome do produto como descrição
+    let finalDescricao = descricao;
+    if (categoria === "Produto" && produtoRaw && produtoRaw !== "Outro produto") {
+      const [produtoNome] = produtoRaw.split(" - R$ ");
+      finalDescricao = produtoNome;
+    }
+
     const novoLancamento = {
-      name: cliente || (isExpense ? `Despesa: ${descricao}` : descricao),
+      name: cliente || (isExpense ? `Despesa: ${finalDescricao}` : finalDescricao),
       client: cliente,
       nome: cliente,
       phone: telefone,
       telefone: telefone,
-      service: descricao,
-      servico: descricao,
+      service: finalDescricao,
+      servico: finalDescricao,
+      categoria: categoria,
       price: price,
       valor: Number(valor),
       stylist: barbeiro,
@@ -659,7 +682,7 @@
     }
 
     msg.style.color = "#8ec5ff";
-    msg.textContent = `✅ ${cliente} registrado com sucesso!`;
+    msg.textContent = `✅ ${cliente || finalDescricao} registrado com sucesso!`;
     msg.style.display = "block";
     event.target.reset();
     updateDashboard();
@@ -676,6 +699,43 @@
   });
 
   updateDashboard();
+
+  // Controle de visibilidade do campo produto
+  document.getElementById("caixaCategoria").addEventListener("change", function() {
+    const categoria = this.value;
+    const produtoGroup = document.getElementById("produtoGroup");
+    const produtoSelect = document.getElementById("caixaProduto");
+    const valorInput = document.getElementById("caixaValor");
+
+    if (categoria === "Produto") {
+      produtoGroup.style.display = "block";
+      produtoSelect.required = true;
+    } else {
+      produtoGroup.style.display = "none";
+      produtoSelect.required = false;
+      produtoSelect.value = "";
+    }
+  });
+
+  // Preencher valor automaticamente quando produto for selecionado
+  document.getElementById("caixaProduto").addEventListener("change", function() {
+    const produtoRaw = this.value;
+    const valorInput = document.getElementById("caixaValor");
+    const descricaoInput = document.getElementById("caixaDescricao");
+
+    if (produtoRaw && produtoRaw !== "Outro produto") {
+      const parts = produtoRaw.split("|");
+      if (parts.length === 2) {
+        const valor = parts[1];
+        valorInput.value = valor;
+        const produtoNome = parts[0].split(" - R$ ")[0];
+        descricaoInput.value = `Venda: ${produtoNome}`;
+      }
+    } else if (produtoRaw === "Outro produto") {
+      valorInput.value = "";
+      descricaoInput.value = "";
+    }
+  });
 </script>
 
 </body>

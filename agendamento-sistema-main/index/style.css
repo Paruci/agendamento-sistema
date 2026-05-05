@@ -231,10 +231,11 @@ button:disabled {
   align-items: center;
   gap: 1.5rem;
   min-height: var(--header-height);
-  padding: 14px var(--container);
-  background: rgba(4, 7, 17, 0.82);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(22px);
+  padding: 16px var(--container);
+  background: rgba(8, 12, 25, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(24px);
 }
 
 .brand-block {
@@ -398,10 +399,11 @@ button.full {
 
 .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.95fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.85fr);
+  gap: 1.75rem;
   align-items: stretch;
   margin-bottom: 3.5rem;
+  min-height: 720px;
 }
 
 .hero-content,
@@ -409,14 +411,15 @@ button.full {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  padding: clamp(1.6rem, 4vw, 3rem);
+  padding: clamp(1.8rem, 4vw, 3rem);
 }
 
 .hero-content {
   background:
-    radial-gradient(circle at 85% 10%, rgba(0, 194, 255, 0.18), transparent 28%),
-    radial-gradient(circle at 20% 85%, rgba(41, 121, 255, 0.22), transparent 32%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.032));
+    radial-gradient(circle at 80% 10%, rgba(0, 194, 255, 0.18), transparent 26%),
+    radial-gradient(circle at 18% 85%, rgba(41, 121, 255, 0.24), transparent 36%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 26px 70px rgba(0, 0, 0, 0.18);
 }
 
 .hero-content::before,
@@ -427,23 +430,23 @@ button.full {
 }
 
 .hero-content::before {
-  width: 280px;
-  height: 280px;
+  width: 300px;
+  height: 300px;
   right: -90px;
   top: -90px;
-  border-radius: var(--radius-pill);
-  background: rgba(41, 121, 255, 0.24);
-  filter: blur(22px);
+  border-radius: 80px;
+  background: rgba(41, 121, 255, 0.28);
+  filter: blur(26px);
 }
 
 .hero-content::after {
   right: 40px;
   bottom: 35px;
-  width: 160px;
-  height: 160px;
-  border-radius: 40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 45px;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  transform: rotate(18deg);
+  transform: rotate(14deg);
   background: rgba(255, 255, 255, 0.035);
 }
 
@@ -501,7 +504,7 @@ button.full {
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem;
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -526,6 +529,9 @@ button.full {
 
 .stat-box {
   padding: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 .stat-box strong {
@@ -638,17 +644,19 @@ button.full {
 .service-card {
   display: flex;
   flex-direction: column;
-  min-height: 250px;
+  min-height: 280px;
   padding: 1.5rem;
-  border-radius: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
 }
 
 .service-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(41, 121, 255, 0.48);
-  background: linear-gradient(180deg, rgba(41, 121, 255, 0.14), rgba(255, 255, 255, 0.04));
-  box-shadow: 0 28px 75px rgba(0, 0, 0, 0.5);
+  transform: translateY(-8px);
+  border-color: rgba(41, 121, 255, 0.56);
+  background: linear-gradient(180deg, rgba(41, 121, 255, 0.16), rgba(255, 255, 255, 0.06));
+  box-shadow: 0 28px 85px rgba(0, 0, 0, 0.2);
 }
 
 .service-icon,
@@ -661,10 +669,11 @@ button.full {
 }
 
 .service-icon {
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   margin-bottom: 1rem;
-  border-radius: 15px;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(41, 121, 255, 0.18);
 }
 
 .service-icon i {
@@ -771,8 +780,10 @@ button.full {
   padding: clamp(1.4rem, 3vw, 2rem);
   border-radius: var(--radius-lg);
   background:
-    linear-gradient(135deg, rgba(41, 121, 255, 0.25), rgba(0, 194, 255, 0.07)),
-    rgba(255, 255, 255, 0.045);
+    linear-gradient(135deg, rgba(41, 121, 255, 0.28), rgba(0, 194, 255, 0.12)),
+    rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 65px rgba(0, 0, 0, 0.12);
 }
 
 .cta-box p {

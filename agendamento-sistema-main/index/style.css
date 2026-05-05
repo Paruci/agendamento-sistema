@@ -25,7 +25,7 @@
   --radius-pill: 999px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
   --shadow-soft: 0 14px 32px rgba(41, 121, 255, 0.28);
-  --container: clamp(1rem, 4vw, 4rem);
+  --container: 5%;
   --transition: 0.22s ease;
   --header-height: 72px;
   --schedule-time-col: 100px;
@@ -166,12 +166,9 @@ button:disabled {
 }
 
 .booking-page {
-  max-width: 1280px;
-  margin: 0 auto;
 }
 
 .booking-grid {
-  max-width: 1180px;
 }
 
 .admin-main {
@@ -909,9 +906,8 @@ textarea {
 
 .booking-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1.05fr);
-  gap: 1.2rem;
-  align-items: start;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(320px, 1.2fr);
+  gap: 1rem;
 }
 
 .booking-card,
@@ -919,10 +915,6 @@ textarea {
 .agenda-shell {
   padding: clamp(1.2rem, 3vw, 1.6rem);
   border-radius: var(--radius-lg);
-}
-
-.booking-card {
-  min-height: 100%;
 }
 
 .booking-card h2 {

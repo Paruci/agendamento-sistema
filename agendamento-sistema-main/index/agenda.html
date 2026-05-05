@@ -104,8 +104,9 @@
       <div id="detailsContent"></div>
 
       <div class="modal-actions">
-        <button id="confirmBtn" type="button">Confirmar horário</button>
-        <button id="whatsBtn" type="button">Chamar no WhatsApp</button>
+        <button id="confirmBtn" type="button" class="btn btn-ghost">Confirmar horário</button>
+        <button id="payBtn" type="button" class="btn btn-primary">Lançar entrada</button>
+        <button id="whatsBtn" type="button" class="btn btn-ghost">Chamar no WhatsApp</button>
         <button id="deleteBtn" type="button" class="danger-btn">Excluir reserva</button>
       </div>
     </div>
@@ -138,6 +139,16 @@
     function formatDate(dateString) {
       const [year, month, day] = dateString.split("-");
       return `${day}/${month}/${year}`;
+    }
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    function extractPrice(service) {
+      const match = String(service).match(/R\$\s*([\d.,]+)/);
+      if (!match) return 0;
+      return Number(match[1].replace(/\./g, "").replace(/,/g, "."));
     }
 
     function renderAgenda() {
@@ -233,6 +244,7 @@
           <p><strong>Cliente:</strong> ${booking.name}</p>
           <p><strong>WhatsApp:</strong> ${booking.phone}</p>
           <p><strong>Serviço:</strong> ${booking.service}</p>
+          <p><strong>Valor:</strong> ${formatMoney(booking.price || extractPrice(booking.service))}</p>
           <p><strong>Profissional:</strong> ${booking.stylist}</p>
           <p><strong>Data:</strong> ${formatDate(booking.date)}</p>
           <p><strong>Horário:</strong> ${booking.time}</p>
@@ -254,6 +266,26 @@
       const bookings = buscarAgendamentos().map(item => {
         if (item.id === selectedBooking.id) {
           return { ...item, status: "Confirmado" };
+        }
+
+        return item;
+      });
+
+      salvarAgendamentos(bookings);
+      closeDetails();
+      renderAgenda();
+    });
+
+    document.getElementById("payBtn").addEventListener("click", () => {
+      if (!selectedBooking) return;
+
+      const bookings = buscarAgendamentos().map(item => {
+        if (item.id === selectedBooking.id) {
+          return {
+            ...item,
+            status: "Pago",
+            paidAt: new Date().toISOString()
+          };
         }
 
         return item;

@@ -4,207 +4,177 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento | Adriano Hair Style</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <header class="site-header">
-    <a href="index.html" class="brand-block">
-      <div class="brand-icon-box">
+  <header>
+    <div class="container nav">
+      <a href="index.html" class="logo">
         <i class="fa-solid fa-scissors"></i>
-      </div>
-      <div class="brand-text-block">
-        <span class="brand-name-text">Adriano <strong>Hair Style</strong></span>
-        <span class="brand-sub-text">Agendamento online</span>
-      </div>
-    </a>
+        Adriano Hair Style
+      </a>
 
-    <nav class="header-nav">
-      <a href="index.html" class="btn btn-ghost">Voltar</a>
-    </nav>
+      <nav class="nav-links">
+        <a href="index.html">Início</a>
+        <a href="index.html#servicos">Serviços</a>
+        <a href="index.html#equipe">Equipe</a>
+        <a href="login.html">Admin</a>
+      </nav>
+    </div>
   </header>
 
   <main class="booking-page">
     <section class="booking-hero">
-      <div>
-        <span class="eyebrow">Agendamento Online</span>
-        <h1>Reserve seu horário em poucos cliques</h1>
-        <p>Preencha seus dados, escolha o serviço, selecione o profissional e clique em um horário disponível.</p>
-      </div>
-
-      <div class="booking-mini-card">
-        <i class="fa-solid fa-clock"></i>
-        <strong>Terça a sábado</strong>
-        <span>09h às 19h</span>
+      <div class="container">
+        <span class="hero-tag">Agendamento online</span>
+        <h1>Agende seu horário</h1>
+        <p>
+          Escolha o serviço, barbeiro, data e horário. Depois é só confirmar pelo WhatsApp.
+        </p>
       </div>
     </section>
 
-    <section class="booking-grid">
-      <form id="bookingForm" class="booking-card">
-        <h2>Dados do agendamento</h2>
+    <section class="section">
+      <div class="container booking-layout">
+        <form id="formAgendamento" class="booking-form card">
+          <div class="form-header">
+            <span>Dados do cliente</span>
+            <h2>Informações do agendamento</h2>
+          </div>
 
-        <div class="form-group">
-          <label for="name">Nome completo</label>
-          <input id="name" type="text" placeholder="Ex: João Silva" required>
-        </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" placeholder="Digite seu nome" required>
+            </div>
 
-        <div class="form-group">
-          <label for="phone">WhatsApp</label>
-          <input id="phone" type="tel" placeholder="Ex: 11999999999" required>
-        </div>
+            <div class="form-group">
+              <label for="telefone">WhatsApp</label>
+              <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+            </div>
 
-        <div class="form-group">
-          <label for="service">Serviço</label>
-          <select id="service" required>
-            <option value="">Selecione o serviço</option>
-            <option value="Corte Masculino - R$ 50">Corte Masculino - R$ 50</option>
-            <option value="Corte + Sobrancelha - R$ 55">Corte + Sobrancelha - R$ 55</option>
-            <option value="Combo corte e barba - R$ 90">Combo corte e barba - R$ 90</option>
-            <option value="Acabamento - R$ 20">Acabamento - R$ 20</option>
-            <option value="Progressiva - R$ 90">Progressiva - R$ 90</option>
-            <option value="Platinado - R$ 110">Platinado - R$ 110</option>
-          </select>
-        </div>
+            <div class="form-group">
+              <label for="servico">Serviço</label>
+              <select id="servico" required>
+                <option value="">Selecione um serviço</option>
+                <option value="Corte masculino">Corte masculino - R$ 50,00</option>
+                <option value="Corte + sobrancelha">Corte + sobrancelha - R$ 55,00</option>
+                <option value="Corte + barba">Corte + barba - R$ 90,00</option>
+                <option value="Acabamento">Acabamento - R$ 20,00</option>
+                <option value="Pigmentação">Pigmentação - Consultar</option>
+                <option value="Química e cor">Química e cor - Consultar</option>
+              </select>
+            </div>
 
-        <div class="form-group">
-          <label for="stylist">Profissional</label>
-          <select id="stylist" required>
-            <option value="">Selecione o profissional</option>
-            <option value="Adriano">Adriano</option>
-            <option value="Arthur">Arthur</option>
-            <option value="Igor">Igor</option>
-            <option value="Vinícius">Vinícius</option>
-          </select>
-        </div>
+            <div class="form-group">
+              <label for="barbeiro">Barbeiro</label>
+              <select id="barbeiro" required>
+                <option value="">Escolha um profissional</option>
+                <option value="Adriano">Adriano</option>
+                <option value="Arthur">Arthur</option>
+                <option value="Igor">Igor</option>
+                <option value="Vinícius">Vinícius</option>
+              </select>
+            </div>
 
-        <div class="form-group">
-          <label for="date">Data</label>
-          <input id="date" type="date" required>
-        </div>
+            <div class="form-group">
+              <label for="data">Data</label>
+              <input type="date" id="data" required>
+            </div>
 
-        <input id="time" type="hidden" required>
+            <div class="form-group">
+              <label for="horario">Horário</label>
+              <select id="horario" required>
+                <option value="">Selecione um horário</option>
+                <option value="09:00">09:00</option>
+                <option value="09:30">09:30</option>
+                <option value="10:00">10:00</option>
+                <option value="10:30">10:30</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="12:00">12:00</option>
+                <option value="12:30">12:30</option>
+                <option value="13:00">13:00</option>
+                <option value="13:30">13:30</option>
+                <option value="14:00">14:00</option>
+                <option value="14:30">14:30</option>
+                <option value="15:00">15:00</option>
+                <option value="15:30">15:30</option>
+                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
+                <option value="17:00">17:00</option>
+                <option value="17:30">17:30</option>
+                <option value="18:00">18:00</option>
+                <option value="18:30">18:30</option>
+              </select>
+            </div>
+          </div>
 
-        <div class="selected-time-box" id="selectedTimeBox">
-          <span>Horário selecionado</span>
-          <strong>Nenhum horário escolhido</strong>
-        </div>
+          <button type="submit" class="btn btn-full booking-submit">
+            <i class="fa-brands fa-whatsapp"></i>
+            Confirmar agendamento
+          </button>
 
-        <button class="btn btn-primary btn-full">
-          Finalizar agendamento
-        </button>
-      </form>
+          <p class="booking-note">
+            Seu horário será enviado para confirmação pelo WhatsApp da barbearia.
+          </p>
+        </form>
 
-      <aside class="booking-card">
-        <h2>Horários disponíveis</h2>
-        <p class="muted-text">Escolha uma data e profissional para visualizar os horários livres.</p>
+        <aside class="booking-summary">
+          <div class="card summary-card">
+            <span>Resumo</span>
+            <h2>Seu atendimento</h2>
 
-        <div id="slots" class="booking-slots"></div>
+            <div class="summary-list">
+              <div>
+                <strong>Serviços</strong>
+                <p>Corte, barba, acabamento e química</p>
+              </div>
 
-        <div class="booking-help">
-          <h3>Como funciona?</h3>
-          <ul>
-            <li>Preencha seus dados.</li>
-            <li>Escolha data e profissional.</li>
-            <li>Clique em um horário livre.</li>
-            <li>Finalize e confirme pelo WhatsApp.</li>
-          </ul>
-        </div>
-      </aside>
+              <div>
+                <strong>Funcionamento</strong>
+                <p>Terça a sábado, das 09h às 19h</p>
+              </div>
+
+              <div>
+                <strong>Local</strong>
+                <p>Rua Tiradentes, 1470 — Jundiaí - SP</p>
+              </div>
+
+              <div>
+                <strong>Confirmação</strong>
+                <p>Direto pelo WhatsApp</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card summary-card">
+            <span>Dica</span>
+            <h2>Chegue no horário</h2>
+            <p>
+              Para manter a agenda organizada, tente chegar alguns minutos antes do horário marcado.
+            </p>
+          </div>
+        </aside>
+      </div>
     </section>
   </main>
 
-  <script src="storage.js"></script>
+  <footer>
+    <p>© 2026 Adriano Hair Style — Todos os direitos reservados</p>
+  </footer>
 
-  <script>
-    const times = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
-    const form = document.getElementById("bookingForm");
-    const slotsEl = document.getElementById("slots");
-    const dateEl = document.getElementById("date");
-    const stylistEl = document.getElementById("stylist");
-    const timeEl = document.getElementById("time");
-    const selectedTimeBox = document.getElementById("selectedTimeBox");
+  <a href="https://wa.me/5511950277744" target="_blank" class="whatsapp-float">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
 
-    const today = new Date().toISOString().split("T")[0];
-    dateEl.min = today;
-    dateEl.value = today;
-
-    function renderSlots() {
-      const date = dateEl.value;
-      const stylist = stylistEl.value;
-      const bookings = buscarAgendamentos();
-
-      slotsEl.innerHTML = "";
-
-      if (!date || !stylist) {
-        slotsEl.innerHTML = `<p class="empty-message">Selecione a data e o profissional.</p>`;
-        return;
-      }
-
-      times.forEach(time => {
-        const booked = bookings.find(item => item.date === date && item.time === time && item.stylist === stylist);
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = booked ? "booking-slot booked" : "booking-slot";
-        button.textContent = booked ? `${time} ocupado` : time;
-        button.disabled = Boolean(booked);
-
-        button.addEventListener("click", () => {
-          document.querySelectorAll(".booking-slot").forEach(btn => btn.classList.remove("selected"));
-          button.classList.add("selected");
-          timeEl.value = time;
-          selectedTimeBox.innerHTML = `<span>Horário selecionado</span><strong>${time}</strong>`;
-        });
-
-        slotsEl.appendChild(button);
-      });
-    }
-
-    form.addEventListener("submit", event => {
-      event.preventDefault();
-
-      if (!timeEl.value) {
-        alert("Selecione um horário disponível.");
-        return;
-      }
-
-      const agendamento = {
-        name: document.getElementById("name").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        service: document.getElementById("service").value,
-        stylist: stylistEl.value,
-        date: dateEl.value,
-        time: timeEl.value,
-        status: "Pendente"
-      };
-
-      const resultado = adicionarAgendamento(agendamento);
-
-      if (!resultado.sucesso) {
-        alert(resultado.mensagem);
-        renderSlots();
-        return;
-      }
-
-      const mensagem = `Olá! Quero confirmar meu agendamento:%0A%0ANome: ${agendamento.name}%0AWhatsApp: ${agendamento.phone}%0AServiço: ${agendamento.service}%0AProfissional: ${agendamento.stylist}%0AData: ${agendamento.date}%0AHorário: ${agendamento.time}`;
-      window.open(`https://wa.me/5511950277744?text=${mensagem}`, "_blank");
-
-      alert("Agendamento criado com sucesso!");
-      form.reset();
-      dateEl.value = today;
-      timeEl.value = "";
-      selectedTimeBox.innerHTML = `<span>Horário selecionado</span><strong>Nenhum horário escolhido</strong>`;
-      renderSlots();
-    });
-
-    dateEl.addEventListener("change", renderSlots);
-    stylistEl.addEventListener("change", renderSlots);
-
-    renderSlots();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

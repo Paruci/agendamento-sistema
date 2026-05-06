@@ -3,232 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Adriano Hair Style — Barbearia premium em Jundiaí. Corte, barba e serviços com experiência profissional. Agende online em poucos cliques.">
-  <meta name="theme-color" content="#2979ff">
-  <meta property="og:title" content="Adriano Hair Style — Barbearia Premium em Jundiaí">
-  <meta property="og:description" content="Corte, barba e atendimento profissional. Agende seu horário online com praticidade.">
-  <meta property="og:type" content="business.business">
-  <meta property="og:locale" content="pt_BR">
+  <title>Adriano Hair Style | Barbearia em Jundiaí</title>
 
-  <title>Adriano Hair Style — Barbearia Premium em Jundiaí</title>
-
-  <link rel="icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
-
-  <header class="site-header">
-    <a href="index.html" class="brand-block" aria-label="Adriano Hair Style">
-      <div class="brand-icon-box">
-        <i class="fa-solid fa-scissors" aria-hidden="true"></i>
-      </div>
-
-      <div class="brand-text-block">
-        <span class="brand-name-text">Adriano <strong>Hair Style</strong></span>
-        <span class="brand-sub-text">Barbearia Premium · Jundiaí</span>
-      </div>
-    </a>
-
-    <div class="header-location" aria-label="Endereço">
-      <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-      <span>Rua Tiradentes, 1470 — Horto Florestal, Jundiaí SP</span>
-    </div>
-
-    <nav class="header-nav" aria-label="Navegação principal">
-      <a href="#servicos" class="btn btn-ghost">Serviços</a>
-      <a href="#localizacao" class="btn btn-ghost">Localização</a>
-      <a href="login.html" class="btn btn-ghost">
-        <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
-        Admin
+  <header>
+    <div class="container nav">
+      <a href="index.html" class="logo">
+        <i class="fa-solid fa-scissors"></i>
+        Adriano Hair Style
       </a>
-      <a href="agendamento.html" class="btn btn-primary">Agendar</a>
-    </nav>
+
+      <nav class="nav-links">
+        <a href="#servicos">Serviços</a>
+        <a href="#equipe">Equipe</a>
+        <a href="#localizacao">Localização</a>
+        <a href="login.html">Admin</a>
+        <a href="agendamento.html" class="btn">Agendar</a>
+      </nav>
+    </div>
   </header>
 
-  <main id="main-content" class="home-main">
-    <section class="hero-section animate" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="hero-badge-dot" aria-hidden="true"></span>
-          Barbearia Premium em Jundiaí
-        </div>
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <span class="hero-tag">Barbearia em Jundiaí</span>
 
-        <h1 id="hero-title">
-          Seu estilo,<br>
-          do <span>jeito certo.</span>
-        </h1>
+          <h1>Seu estilo começa com um bom corte.</h1>
 
-        <p>
-          Corte, barba e atendimento profissional em um só lugar.
-          Agende seu horário online, escolha o serviço e confirme tudo pelo WhatsApp.
-        </p>
-
-        <div class="hero-actions">
-          <a href="agendamento.html" class="btn btn-primary btn-large">Reservar horário</a>
-          <a href="#servicos" class="btn btn-ghost btn-large">Ver serviços</a>
-        </div>
-
-        <div class="hero-stats">
-          <div class="stat-box">
-            <strong>4</strong>
-            <span>Profissionais</span>
-          </div>
-
-          <div class="stat-box">
-            <strong>Ter–Sáb</strong>
-            <span>09h às 19h</span>
-          </div>
-
-          <div class="stat-box">
-            <strong>100%</strong>
-            <span>Online</span>
-          </div>
-        </div>
-      </div>
-
-      <aside class="hero-panel" aria-label="Informações da barbearia">
-        <div class="hero-panel-card highlight-card-green">
-          <small>Funcionamento</small>
-          <h2>Terça a Sábado</h2>
-          <p>Das 09h às 19h</p>
-          <span class="open-badge">
-            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-            Atendimento presencial
-          </span>
-        </div>
-
-        <div class="hero-panel-card">
-          <small>Serviços populares</small>
-
-          <ul class="service-list">
-            <li>
-              <span>Corte masculino</span>
-              <strong>R$ 50</strong>
-            </li>
-
-            <li>
-              <span>Corte + sobrancelha</span>
-              <strong>R$ 55</strong>
-            </li>
-
-            <li>
-              <span>Combo corte e barba</span>
-              <strong>R$ 90</strong>
-            </li>
-          </ul>
-        </div>
-
-        <div class="hero-panel-card">
-          <small>Agendamento</small>
           <p>
-            Escolha data, horário e barbeiro. Depois, confirme o agendamento direto pelo WhatsApp da barbearia.
+            Corte, barba, sobrancelha e acabamento com atendimento profissional.
+            Agende seu horário online e confirme direto pelo WhatsApp.
           </p>
-        </div>
-      </aside>
-    </section>
 
-    <section id="servicos" class="services-section animate" aria-labelledby="services-title">
-      <div class="section-title">
-        <span>Nossos serviços</span>
-        <h2 id="services-title">Visual alinhado em todos os detalhes</h2>
-      </div>
+          <div class="hero-actions">
+            <a href="agendamento.html" class="btn">
+              <i class="fa-solid fa-calendar-check"></i>
+              Agendar horário
+            </a>
 
-      <div class="services-grid">
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fa-solid fa-scissors" aria-hidden="true"></i>
+            <a href="#servicos" class="btn btn-outline">
+              Ver serviços
+            </a>
           </div>
 
-          <h3>Corte Masculino</h3>
-          <p>Corte moderno com acabamento refinado e técnica precisa.</p>
-
-          <div class="service-price">
-            R$ 50<small>,00</small>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fa-solid fa-face-smile" aria-hidden="true"></i>
-          </div>
-
-          <h3>Corte + Sobrancelha</h3>
-          <p>Mais definição e aparência mais limpa no rosto inteiro.</p>
-
-          <div class="service-price">
-            R$ 55<small>,00</small>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
-          </div>
-
-          <h3>Combo Corte e Barba</h3>
-          <p>Experiência completa para renovar o visual de cima a baixo.</p>
-
-          <div class="service-price">
-            R$ 90<small>,00</small>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
-          </div>
-
-          <h3>Acabamento</h3>
-          <p>Ajuste rápido de contorno e nuca para manter o visual em dia.</p>
-
-          <div class="service-price">
-            R$ 20<small>,00</small>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="localizacao" class="location-section animate" aria-labelledby="location-title">
-      <div class="section-title">
-        <span>Localização</span>
-        <h2 id="location-title">Estamos no Horto Florestal em Jundiaí</h2>
-      </div>
-
-      <div class="location-grid">
-        <div class="location-card">
-          <div class="location-icon">
-            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-          </div>
-
-          <h3>Adriano Hair Style</h3>
-          <p>Rua Tiradentes, 1470 — Horto Florestal, Jundiaí SP</p>
-
-          <div class="location-info">
+          <div class="hero-info">
             <div>
-              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              <strong>Terça a sábado</strong>
+              <span>09h às 19h</span>
+            </div>
+
+            <div>
+              <strong>Jundiaí - SP</strong>
+              <span>Horto Florestal</span>
+            </div>
+
+            <div>
+              <strong>Online</strong>
+              <span>Agendamento rápido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <span>Serviços populares</span>
+            <i class="fa-solid fa-star"></i>
+          </div>
+
+          <div class="service-preview">
+            <div>
+              <strong>Corte masculino</strong>
+              <span>Acabamento profissional</span>
+            </div>
+            <p>R$ 50</p>
+          </div>
+
+          <div class="service-preview">
+            <div>
+              <strong>Corte + sobrancelha</strong>
+              <span>Visual mais alinhado</span>
+            </div>
+            <p>R$ 55</p>
+          </div>
+
+          <div class="service-preview">
+            <div>
+              <strong>Corte + barba</strong>
+              <span>Experiência completa</span>
+            </div>
+            <p>R$ 90</p>
+          </div>
+
+          <a href="agendamento.html" class="btn btn-full">
+            Reservar agora
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicos" class="section">
+      <div class="container">
+        <div class="section-title">
+          <span>Nossos serviços</span>
+          <h2>Escolha o melhor para o seu visual</h2>
+        </div>
+
+        <div class="grid grid-3">
+          <article class="card service-card">
+            <div class="service-icon">
+              <i class="fa-solid fa-scissors"></i>
+            </div>
+            <h3>Corte masculino</h3>
+            <p>Corte moderno, degradê, social ou personalizado para o seu estilo.</p>
+            <strong>R$ 50,00</strong>
+          </article>
+
+          <article class="card service-card">
+            <div class="service-icon">
+              <i class="fa-solid fa-face-smile"></i>
+            </div>
+            <h3>Corte + sobrancelha</h3>
+            <p>Mais definição no rosto com corte alinhado e sobrancelha feita.</p>
+            <strong>R$ 55,00</strong>
+          </article>
+
+          <article class="card service-card">
+            <div class="service-icon">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <h3>Corte + barba</h3>
+            <p>Combo completo para renovar o visual com acabamento de qualidade.</p>
+            <strong>R$ 90,00</strong>
+          </article>
+
+          <article class="card service-card">
+            <div class="service-icon">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <h3>Acabamento</h3>
+            <p>Contorno, nuca e detalhes para manter o corte sempre em dia.</p>
+            <strong>R$ 20,00</strong>
+          </article>
+
+          <article class="card service-card">
+            <div class="service-icon">
+              <i class="fa-solid fa-brush"></i>
+            </div>
+            <h3>Pigmentação</h3>
+            <p>Correção e realce para barba ou cabelo com aparência natural.</p>
+            <strong>Consultar</strong>
+          </article>
+
+          <article class="card service-card">
+            <div class="service-icon">
+              <i class="fa-solid fa-spray-can-sparkles"></i>
+            </div>
+            <h3>Química e cor</h3>
+            <p>Procedimentos personalizados para transformar ou ajustar o visual.</p>
+            <strong>Consultar</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="equipe" class="section">
+      <div class="container">
+        <div class="section-title">
+          <span>Nossa equipe</span>
+          <h2>Profissionais da barbearia</h2>
+        </div>
+
+        <div class="grid grid-3">
+          <article class="card barber">
+            <div class="barber-avatar">A</div>
+            <h3>Adriano</h3>
+            <span>Master barber</span>
+          </article>
+
+          <article class="card barber">
+            <div class="barber-avatar">AR</div>
+            <h3>Arthur</h3>
+            <span>Cortes modernos</span>
+          </article>
+
+          <article class="card barber">
+            <div class="barber-avatar">I</div>
+            <h3>Igor</h3>
+            <span>Degradê e barba</span>
+          </article>
+
+          <article class="card barber">
+            <div class="barber-avatar">V</div>
+            <h3>Vinícius</h3>
+            <span>Química e cor</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <span>Agendamento</span>
+          <h2>Como funciona</h2>
+        </div>
+
+        <div class="grid grid-3">
+          <article class="card step-card">
+            <strong>01</strong>
+            <h3>Escolha o serviço</h3>
+            <p>Selecione o que deseja fazer na barbearia.</p>
+          </article>
+
+          <article class="card step-card">
+            <strong>02</strong>
+            <h3>Escolha o barbeiro</h3>
+            <p>Marque com o profissional de sua preferência.</p>
+          </article>
+
+          <article class="card step-card">
+            <strong>03</strong>
+            <h3>Confirme no WhatsApp</h3>
+            <p>Finalize o horário direto com a barbearia.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="localizacao" class="section">
+      <div class="container location-grid">
+        <div class="card location-card">
+          <span>Localização</span>
+          <h2>Adriano Hair Style</h2>
+
+          <p>
+            Rua Tiradentes, 1470 — Horto Florestal, Jundiaí - SP
+          </p>
+
+          <div class="location-list">
+            <div>
+              <i class="fa-solid fa-clock"></i>
               <span>Terça a sábado, das 09h às 19h</span>
             </div>
 
             <div>
-              <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
-              <span>Mapa com pin direto da barbearia</span>
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>(11) 95027-7744</span>
             </div>
           </div>
 
-          <a
-            href="https://www.google.com/maps/place/Adriano+Hair+Style/@-23.1661705,-46.8961137,17.58z/data=!4m6!3m5!1s0x94cf251b1fc93a29:0x97c62ae486f2a5fe!8m2!3d-23.1662058!4d-46.8960047!16s%2Fg%2F11vbjstvgk?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-primary btn-large"
-          >
-            Abrir no Google Maps
+          <a href="https://wa.me/5511950277744" target="_blank" class="btn btn-full">
+            Chamar no WhatsApp
           </a>
         </div>
 
@@ -236,31 +269,30 @@
           <iframe
             title="Mapa Adriano Hair Style"
             src="https://www.google.com/maps?q=Adriano%20Hair%20Style%20Rua%20Tiradentes%201470%20Horto%20Florestal%20Jundia%C3%AD%20SP&output=embed"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
+            loading="lazy">
           </iframe>
         </div>
       </div>
     </section>
 
-    <section class="cta-section animate" aria-labelledby="cta-title">
-      <div class="cta-box">
-        <div>
-          <span>Pronto para agendar?</span>
-          <h2 id="cta-title">Garanta seu horário agora</h2>
-          <p>Faça seu agendamento com praticidade e chegue com tudo organizado.</p>
-        </div>
+    <section class="section">
+      <div class="container cta">
+        <h2>Pronto para mudar o visual?</h2>
+        <p>Agende agora e garanta seu horário na Adriano Hair Style.</p>
 
-        <div class="cta-actions">
-          <a href="agendamento.html" class="btn btn-primary btn-large">Agendar agora</a>
-          <small>Redirecionado ao WhatsApp para confirmação</small>
-        </div>
+        <a href="agendamento.html" class="btn">
+          Agendar horário
+        </a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer" role="contentinfo">
-    <p>&copy; 2026 Adriano Hair Style — Todos os direitos reservados</p>
+  <footer>
+    <p>© 2026 Adriano Hair Style — Todos os direitos reservados</p>
   </footer>
+
+  <a href="https://wa.me/5511950277744" target="_blank" class="whatsapp-float">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
 </body>
 </html>

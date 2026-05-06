@@ -1,66 +1,49 @@
-const STORAGE_KEY = 'ahs_agendamentos';
-const LOGIN_KEY = 'ahs_admin_logado';
+const STORAGE_KEY = "ahs_agendamentos";
+const LOGIN_KEY = "ahs_admin_logado";
 
-// Credenciais de admin (em produção, use backend com hash)
 const ADMIN_CREDENTIALS = {
-  email: 'admin@admin.com',
-  senha: '123456'  // AVISO: Mude isso em produção!
+  email: "admin@admin.com",
+  senha: "123456"
 };
 
-/**
- * Gera um ID único para agendamentos
- * @returns {string} ID gerado
- */
 function gerarId() {
-  return 'ag_' + Date.now() + '_' + Math.random().toString(16).slice(2);
+  return "ag_" + Date.now() + "_" + Math.random().toString(16).slice(2);
 }
 
-/**
- * Busca todos os agendamentos do localStorage
- * @returns {Array} Lista de agendamentos
- */
 function buscarAgendamentos() {
   try {
     const dados = localStorage.getItem(STORAGE_KEY);
     return dados ? JSON.parse(dados) : [];
   } catch (e) {
-    console.error('Erro ao carregar agendamentos:', e);
-    showNotification('Erro ao carregar dados. Dados podem estar corrompidos.', 'error');
+    showNotification("Erro ao carregar dados.", "error");
     return [];
   }
 }
 
-/**
- * Salva agendamentos no localStorage
- * @param {Array} agendamentos - Lista de agendamentos
- */
 function salvarAgendamentos(agendamentos) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(agendamentos));
   } catch (e) {
-    console.error('Erro ao salvar agendamentos:', e);
-    showNotification('Erro ao salvar dados. Verifique o espaço disponível.', 'error');
+    showNotification("Erro ao salvar dados.", "error");
   }
 }
 
-/**
- * Adiciona um novo agendamento
- * @param {Object} agendamento - Dados do agendamento
- * @returns {Object} Resultado com sucesso/mensagem
- */
 function adicionarAgendamento(agendamento) {
   const agendamentos = buscarAgendamentos();
 
-  // Validações básicas
-  if (!agendamento.name || !agendamento.phone || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
-    return { sucesso: false, mensagem: 'Todos os campos são obrigatórios.' };
+  if (!agendamento.name || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
+    return { sucesso: false, mensagem: "Todos os campos são obrigatórios." };
   }
 
-  if (!validatePhone(agendamento.phone)) {
-    return { sucesso: false, mensagem: 'Telefone inválido. Use formato brasileiro.' };
+  if (agendamento.phone && !validatePhone(agendamento.phone)) {
+    return { sucesso: false, mensagem: "Telefone inválido. Use formato brasileiro." };
   }
 
-  // Verifica se horário já está ocupado
+  const hoje = new Date().toISOString().split("T")[0];
+  if (agendamento.date < hoje) {
+    return { sucesso: false, mensagem: "Não é possível agendar para datas passadas." };
+  }
+
   const existe = agendamentos.some(item =>
     item.date === agendamento.date &&
     item.time === agendamento.time &&
@@ -68,78 +51,54 @@ function adicionarAgendamento(agendamento) {
   );
 
   if (existe) {
-    return { sucesso: false, mensagem: 'Este horário já está ocupado.' };
+    return { sucesso: false, mensagem: "Este horário já está ocupado para este barbeiro." };
   }
 
-  // Verifica se data é futura
-  const hoje = new Date().toISOString().split('T')[0];
-  if (agendamento.date < hoje) {
-    return { sucesso: false, mensagem: 'Não é possível agendar para datas passadas.' };
-  }
-
-  // Sanitiza dados
-  const agendamentoSanitizado = {
+  const novo = {
     id: gerarId(),
     name: sanitizeString(agendamento.name),
-    phone: sanitizeString(agendamento.phone),
+    phone: sanitizeString(agendamento.phone || ""),
     service: sanitizeString(agendamento.service),
     stylist: sanitizeString(agendamento.stylist),
     date: agendamento.date,
     time: agendamento.time,
-    status: agendamento.status || 'Pendente',
+    status: agendamento.status || "Pendente",
     price: agendamento.price || extractPrice(agendamento.service),
+    categoria: agendamento.categoria || "Serviço",
+    paymentMethod: agendamento.paymentMethod || "",
+    feeAmount: agendamento.feeAmount || 0,
+    origem: agendamento.origem || "Online",
     createdAt: new Date().toISOString()
   };
 
-  agendamentos.push(agendamentoSanitizado);
+  agendamentos.push(novo);
   salvarAgendamentos(agendamentos);
 
-  return { sucesso: true, mensagem: 'Agendamento salvo com sucesso.' };
+  return { sucesso: true, mensagem: "Agendamento salvo com sucesso." };
 }
 
-/**
- * Remove um agendamento pelo ID
- * @param {string} id - ID do agendamento
- */
 function removerAgendamento(id) {
-  const agendamentos = buscarAgendamentos().filter(item => item.id !== id);
-  salvarAgendamentos(agendamentos);
+  salvarAgendamentos(buscarAgendamentos().filter(item => item.id !== id));
 }
 
-/**
- * Faz login do admin
- * @param {string} email - Email do admin
- * @param {string} senha - Senha do admin
- * @returns {boolean} Verdadeiro se login bem-sucedido
- */
 function loginAdmin(email, senha) {
   if (email === ADMIN_CREDENTIALS.email && senha === ADMIN_CREDENTIALS.senha) {
-    localStorage.setItem(LOGIN_KEY, 'sim');
+    localStorage.setItem(LOGIN_KEY, "sim");
     return true;
   }
   return false;
 }
 
-/**
- * Faz logout do admin
- */
 function logoutAdmin() {
   localStorage.removeItem(LOGIN_KEY);
 }
 
-/**
- * Verifica se admin está logado
- * @returns {boolean} Verdadeiro se logado
- */
 function adminLogado() {
-  return localStorage.getItem(LOGIN_KEY) === 'sim';
+  return localStorage.getItem(LOGIN_KEY) === "sim";
 }
 
-/**
- * Protege páginas admin - redireciona se não logado
- */
 function protegerAdmin() {
   if (!adminLogado()) {
-    window.location.href = 'login.html';
+    window.location.href = "login.html";
   }
 }

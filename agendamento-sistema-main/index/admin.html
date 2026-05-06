@@ -3,161 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Adriano Hair Style</title>
+  <title>Dashboard | Adriano Hair Style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="admin-layout">
   <aside class="admin-sidebar">
-    <div class="admin-panel-intro">
-      <p class="eyebrow">Painel interno</p>
-      <h2>AHS Admin</h2>
-      <p class="muted-text admin-subtitle">Gestão da barbearia em um só lugar</p>
+    <div class="sidebar-brand">
+      <i class="fa-solid fa-scissors"></i>
+      AHS Admin
     </div>
-
-    <nav class="admin-nav-links">
-      <a href="admin.html" class="active">📊 Dashboard</a>
-      <a href="agenda.html">📅 Agenda</a>
-      <a href="#clientesArea">👥 Clientes</a>
-      <a href="#financeiroArea">💰 Financeiro</a>
-      <a href="#" id="logoutLink" class="logout-link">Sair</a>
+    <nav class="sidebar-nav">
+      <a href="admin.html" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+      <a href="agenda.html"><i class="fa-solid fa-calendar-days"></i> Agenda</a>
+      <a href="#clientesArea"><i class="fa-solid fa-users"></i> Clientes</a>
+      <a href="#financeiroArea"><i class="fa-solid fa-wallet"></i> Financeiro</a>
     </nav>
+    <div class="sidebar-logout">
+      <button id="logoutBtn" class="btn btn-ghost btn-full btn-sm">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair
+      </button>
+    </div>
   </aside>
 
   <main class="admin-main">
-    <section class="animate admin-section">
-      <div class="admin-section-header">
-        <div>
-          <span class="eyebrow">Dashboard</span>
-          <h1>Visão geral da operação</h1>
-          <p class="muted-text admin-subtitle">Acompanhe agenda, faturamento, status e desempenho dos barbeiros.</p>
-        </div>
-       <a href="agenda.html" class="btn">Abrir agenda</a>
+    <div class="admin-top">
+      <div>
+        <span class="eyebrow">Painel interno</span>
+        <h1>Dashboard</h1>
+        <p>Acompanhe agenda, faturamento e desempenho dos barbeiros.</p>
       </div>
-    </section>
+      <a href="agenda.html" class="btn btn-sm">
+        <i class="fa-solid fa-calendar-days"></i>
+        Ver agenda
+      </a>
+    </div>
 
-    <section class="dashboard-grid animate">
-      <div class="card admin-metric-card">
-        <small class="muted-text">Receita hoje</small>
+    <div class="metrics-grid">
+      <div class="card metric-card accent">
+        <small>Receita hoje</small>
         <h2 id="faturamentoHoje">R$ 0,00</h2>
       </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Receita bruta semanal</small>
+      <div class="card metric-card">
+        <small>Receita semanal</small>
         <h2 id="faturamentoSemana">R$ 0,00</h2>
       </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Despesas semana</small>
+      <div class="card metric-card">
+        <small>Despesas semana</small>
         <h2 id="despesasSemana">R$ 0,00</h2>
       </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Taxas da maquininha</small>
-        <h2 id="taxasSemana">R$ 0,00</h2>
-      </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Lucro semanal</small>
+      <div class="card metric-card">
+        <small>Lucro semanal</small>
         <h2 id="lucroSemana">R$ 0,00</h2>
       </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Agendamentos hoje</small>
+      <div class="card metric-card">
+        <small>Taxas da maquininha</small>
+        <h2 id="taxasSemana">R$ 0,00</h2>
+      </div>
+      <div class="card metric-card">
+        <small>Agendamentos hoje</small>
         <h2 id="agendamentosHoje">0</h2>
       </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Pendentes</small>
+      <div class="card metric-card">
+        <small>Pendentes</small>
         <h2 id="totalPendentes">0</h2>
       </div>
-
-      <div class="card admin-metric-card">
-        <small class="muted-text">Confirmados</small>
+      <div class="card metric-card">
+        <small>Confirmados</small>
         <h2 id="totalConfirmados">0</h2>
       </div>
-    </section>
+    </div>
 
-    <section id="financeiroArea" class="card animate admin-section">
-      <div class="admin-section-header">
+    <div class="card" id="financeiroArea">
+      <div class="section-head">
         <div>
           <h3>Faturamento por barbeiro</h3>
-          <p class="muted-text admin-subtitle">Resumo da semana selecionada</p>
+          <p>Resumo da semana selecionada</p>
         </div>
-
         <div class="agenda-controls">
-          <button id="prevWeekAdmin" class="btn-admin" type="button">←</button>
+          <button id="prevWeekAdmin" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
           <span id="currentWeekAdmin" class="agenda-week-label"></span>
-          <button id="nextWeekAdmin" class="btn-admin" type="button">→</button>
-          <button id="goTodayAdmin" class="btn-primary" type="button">Hoje</button>
+          <button id="nextWeekAdmin" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+          <button id="goTodayAdmin" class="btn btn-sm">Hoje</button>
         </div>
       </div>
-
       <ul id="barberRevenue" class="revenue-list"></ul>
-    </section>
+    </div>
 
-    <section class="card animate admin-section">
-      <div class="admin-section-header">
+    <div class="card">
+      <div class="section-head">
         <div>
           <h3>Análise financeira</h3>
-          <p class="muted-text admin-subtitle">Visão rápida de receita, despesa e pagamentos por barbeiro</p>
+          <p>Visão rápida de receita, despesa e taxas por barbeiro</p>
         </div>
       </div>
-
-      <div class="finance-grid">
-        <div class="finance-chart-card">
+      <div class="charts-wrap">
+        <div class="chart-card">
           <h4>Receita vs Despesa</h4>
-          <canvas id="financeOverviewChart"></canvas>
+          <canvas id="financeOverviewChart" height="260"></canvas>
         </div>
-        <div class="finance-chart-card">
+        <div class="chart-card">
           <h4>Taxas por barbeiro</h4>
-          <canvas id="barberExpenseChart"></canvas>
+          <canvas id="barberExpenseChart" height="260"></canvas>
         </div>
       </div>
 
-      <div class="admin-panel-header" style="margin-top:1.25rem; padding:0;">
+      <div class="section-head" style="margin-top: 28px;">
         <div>
           <h3>Histórico de pagamentos</h3>
-          <p class="muted-text admin-subtitle">Quanto já foi pago para cada barbeiro nesta semana</p>
+          <p>Quanto já foi pago para cada barbeiro nesta semana</p>
         </div>
       </div>
-
-      <div class="table-container">
+      <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Barbeiro</th>
               <th>Receita</th>
               <th>Despesas</th>
-              <th>Valor pago</th>
-              <th>Último pagamento</th>
+              <th>Taxas</th>
+              <th>Líquido</th>
+              <th>Último pgto</th>
             </tr>
           </thead>
           <tbody id="expenseHistoryTable"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <section class="grid-panel animate admin-section">
-      <div class="admin-section-header">
+    <div class="card">
+      <div class="section-head">
         <div>
           <h3>Agendamentos</h3>
-          <p class="muted-text admin-subtitle">Filtre, confirme, chame no WhatsApp ou exclua horários</p>
+          <p>Filtre, confirme, chame no WhatsApp ou exclua horários</p>
         </div>
-        <a href="agenda.html" class="btn btn-outline">Ver grade da agenda</a>
+        <a href="agenda.html" class="btn btn-outline btn-sm">Ver grade</a>
       </div>
 
-      <div class="admin-filters-grid">
+      <div class="admin-filters">
         <div class="form-group">
           <label for="filterDate">Data</label>
           <input id="filterDate" type="date">
         </div>
-
         <div class="form-group">
           <label for="filterBarber">Barbeiro</label>
           <select id="filterBarber">
@@ -168,7 +160,6 @@
             <option value="Vinícius">Vinícius</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="filterStatus">Status</label>
           <select id="filterStatus">
@@ -179,13 +170,12 @@
             <option value="Despesa">Despesa</option>
           </select>
         </div>
-
-        <div class="form-group align-end">
-          <button id="clearFilters" type="button" class="btn btn-ghost btn-full">Limpar filtros</button>
+        <div class="form-group" style="justify-content: flex-end;">
+          <button id="clearFilters" type="button" class="btn btn-ghost btn-sm">Limpar filtros</button>
         </div>
       </div>
 
-      <div class="table-container">
+      <div class="table-wrap" style="margin-top: 16px;">
         <table>
           <thead>
             <tr>
@@ -203,38 +193,36 @@
           <tbody id="appointmentsTable"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <section class="animate admin-section admin-grid-2">
-      <div id="clientesArea" class="grid-panel">
-        <div class="admin-panel-header">
+    <div class="admin-2col">
+      <div class="card" id="clientesArea">
+        <div class="section-head">
           <div>
             <h3>Clientes recentes</h3>
-            <p class="muted-text admin-subtitle">Últimos clientes únicos registrados</p>
+            <p>Últimos clientes únicos registrados</p>
           </div>
         </div>
         <ul id="clientesRecentes" class="clients-list"></ul>
       </div>
 
-      <div class="grid-panel">
-        <div class="admin-panel-header">
+      <div class="card">
+        <div class="section-head">
           <div>
             <h3>Lançar entrada</h3>
-            <p class="muted-text admin-subtitle">Registro rápido de atendimento pago</p>
+            <p>Registro rápido de atendimento pago</p>
           </div>
         </div>
 
-        <form id="formCaixa" class="admin-form">
+        <form id="formCaixa" style="display: flex; flex-direction: column; gap: 12px;">
           <div class="form-group">
             <label for="caixaCliente">Nome do cliente</label>
             <input type="text" id="caixaCliente" placeholder="Ex: João Silva" required>
           </div>
-
           <div class="form-group">
             <label for="caixaTelefone">WhatsApp</label>
             <input type="tel" id="caixaTelefone" placeholder="Ex: 11999999999">
           </div>
-
           <div class="form-group">
             <label for="caixaTipo">Tipo de lançamento</label>
             <select id="caixaTipo" required>
@@ -242,7 +230,6 @@
               <option value="Despesa">Despesa</option>
             </select>
           </div>
-
           <div class="form-group">
             <label for="caixaPagamento">Meio de pagamento</label>
             <select id="caixaPagamento" required>
@@ -252,66 +239,63 @@
               <option value="Crédito">Crédito (1,25%)</option>
             </select>
           </div>
-
           <div class="form-group">
-          <label for="caixaCategoria">Categoria</label>
-          <select id="caixaCategoria" required>
-            <option value="Serviço">Serviço</option>
-            <option value="Produto">Produto</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="produtoGroup" style="display: none;">
-          <label for="caixaProduto">Produto</label>
-          <select id="caixaProduto">
-            <option value="Coca-Cola - R$ 7|7">Coca-Cola - R$ 7</option>
-            <option value="Monster - R$ 13|13">Monster - R$ 13</option>
-            <option value="Torcida - R$ 10|10">Torcida - R$ 10</option>
-            <option value="Pomada Matte - R$ 40|40">Pomada Matte - R$ 40</option>
-            <option value="Pomada Brilho - R$ 40|40">Pomada Brilho - R$ 40</option>
-            <option value="Pomada em Pó - R$ 60|60">Pomada em Pó - R$ 60</option>
-            <option value="Pomada em Pó Barba Forte - R$ 45|45">Pomada em Pó Barba Forte - R$ 45</option>
-            <option value="Pomada Gomma - R$ 25|25">Pomada Gomma - R$ 25</option>
-            <option value="Shampoo Tonficante - R$ 50|50">Shampoo Tonficante - R$ 50</option>
-            <option value="Shampoo Anticaspa - R$ 60|60">Shampoo Anticaspa - R$ 60</option>
-            <option value="Balm Tonificante - R$ 40|40">Balm Tonificante - R$ 40</option>
-            <option value="Óleo hidratante - R$ 45|45">Óleo hidratante - R$ 45</option>
-            <option value="Óleo hidratante Barba Forte - R$ 20|20">Óleo hidratante Barba Forte - R$ 20</option>
-            <option value="Outro produto">Outro produto</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="caixaDescricao">Descrição</label>
-          <input type="text" id="caixaDescricao" placeholder="Ex: Corte masculino / Venda de produto" required>
-        </div>
-
-        <div class="form-group">
-          <label for="caixaValor">Valor</label>
-          <input type="number" id="caixaValor" min="0" step="0.01" placeholder="Ex: 50" required>
-        </div>
-
-        <div class="form-group">
-          <label for="caixaBarbeiro">Barbeiro</label>
-          <select id="caixaBarbeiro" required>
-            <option value="Adriano">Adriano</option>
-            <option value="Arthur">Arthur</option>
-            <option value="Igor">Igor</option>
-            <option value="Vinícius">Vinícius</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn btn-full">Salvar lançamento</button>
-        <p id="caixaMsg" class="info-message"></p>
-      </form>
+            <label for="caixaCategoria">Categoria</label>
+            <select id="caixaCategoria" required>
+              <option value="Serviço">Serviço</option>
+              <option value="Produto">Produto</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-group" id="produtoGroup" style="display: none;">
+            <label for="caixaProduto">Produto</label>
+            <select id="caixaProduto">
+              <option value="Coca-Cola - R$ 7|7">Coca-Cola — R$ 7</option>
+              <option value="Monster - R$ 13|13">Monster — R$ 13</option>
+              <option value="Torcida - R$ 10|10">Torcida — R$ 10</option>
+              <option value="Pomada Matte - R$ 40|40">Pomada Matte — R$ 40</option>
+              <option value="Pomada Brilho - R$ 40|40">Pomada Brilho — R$ 40</option>
+              <option value="Pomada em Pó - R$ 60|60">Pomada em Pó — R$ 60</option>
+              <option value="Pomada em Pó Barba Forte - R$ 45|45">Pomada em Pó Barba Forte — R$ 45</option>
+              <option value="Pomada Gomma - R$ 25|25">Pomada Gomma — R$ 25</option>
+              <option value="Shampoo Tonificante - R$ 50|50">Shampoo Tonificante — R$ 50</option>
+              <option value="Shampoo Anticaspa - R$ 60|60">Shampoo Anticaspa — R$ 60</option>
+              <option value="Balm Tonificante - R$ 40|40">Balm Tonificante — R$ 40</option>
+              <option value="Óleo Hidratante - R$ 45|45">Óleo Hidratante — R$ 45</option>
+              <option value="Óleo Hidratante Barba Forte - R$ 20|20">Óleo Hidratante Barba Forte — R$ 20</option>
+              <option value="Outro produto">Outro produto</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="caixaDescricao">Descrição</label>
+            <input type="text" id="caixaDescricao" placeholder="Ex: Corte masculino / Venda de produto" required>
+          </div>
+          <div class="form-group">
+            <label for="caixaValor">Valor (R$)</label>
+            <input type="number" id="caixaValor" min="0" step="0.01" placeholder="Ex: 50" required>
+          </div>
+          <div class="form-group">
+            <label for="caixaBarbeiro">Barbeiro</label>
+            <select id="caixaBarbeiro" required>
+              <option value="Adriano">Adriano</option>
+              <option value="Arthur">Arthur</option>
+              <option value="Igor">Igor</option>
+              <option value="Vinícius">Vinícius</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-full">
+            <i class="fa-solid fa-plus"></i>
+            Salvar lançamento
+          </button>
+          <div id="caixaMsg"></div>
+        </form>
       </div>
-    </section>
+    </div>
   </main>
 </div>
 
+<script src="utils.js"></script>
 <script src="storage.js"></script>
-
 <script>
   protegerAdmin();
 
@@ -319,17 +303,13 @@
 
   const servicePrices = {
     "Corte Masculino": 50,
-    "Corte Masculino - R$ 50": 50,
+    "Corte masculino - R$ 50": 50,
     "Corte com Sobrancelha": 55,
-    "Corte + Sobrancelha - R$ 55": 55,
+    "Corte + sobrancelha - R$ 55": 55,
     "Combo Corte e Barba": 90,
-    "Combo corte e barba - R$ 90": 90,
+    "Corte + barba - R$ 90": 90,
     "Acabamento": 20,
-    "Acabamento - R$ 20": 20,
-    "Progressiva": 90,
-    "Progressiva - R$ 90": 90,
-    "Platinado": 110,
-    "Platinado - R$ 110": 110
+    "Acabamento - R$ 20": 20
   };
 
   const barberShare = {
@@ -343,32 +323,17 @@
   let scheduleData = [];
 
   function normalizeAppointment(item) {
-    const name = item.name || item.client || item.nome || "Cliente não informado";
-    const phone = item.phone || item.telefone || "";
-    const service = item.service || item.servico || "Serviço não informado";
-    const stylist = item.stylist || item.profissional || "Profissional";
-    const date = item.date || item.data || "";
-    const time = item.time || item.horario || "";
-    const status = item.status || "Pendente";
-    const price = Number(item.price || item.valor || servicePrices[service] || extractPrice(service) || 0);
-
     return {
       ...item,
-      id: item.id,
-      name,
-      phone,
-      service,
-      stylist,
-      date,
-      time,
-      status,
-      price
+      name: item.name || item.client || item.nome || "Cliente",
+      phone: item.phone || item.telefone || "",
+      service: item.service || item.servico || "Serviço",
+      stylist: item.stylist || item.profissional || "Profissional",
+      date: item.date || item.data || "",
+      time: item.time || item.horario || "",
+      status: item.status || "Pendente",
+      price: Number(item.price || item.valor || servicePrices[item.service] || extractPrice(item.service) || 0)
     };
-  }
-
-  function extractPrice(service) {
-    const match = String(service).match(/R\$\s*(\d+)/i);
-    return match ? Number(match[1]) : 0;
   }
 
   function refreshData() {
@@ -391,23 +356,13 @@
 
   function getTodayString() {
     const now = new Date();
-    const pad = value => String(value).padStart(2, "0");
+    const pad = v => String(v).padStart(2, "0");
     return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
   }
 
   function formatWeek(start) {
     const end = endOfWeek(start);
-    return `${start.toLocaleDateString("pt-BR")} - ${end.toLocaleDateString("pt-BR")}`;
-  }
-
-  function formatMoney(value) {
-    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  }
-
-  function formatDate(dateString) {
-    if (!dateString) return "--/--/----";
-    const date = new Date(dateString + "T00:00:00");
-    return date.toLocaleDateString("pt-BR");
+    return `${start.toLocaleDateString("pt-BR")} – ${end.toLocaleDateString("pt-BR")}`;
   }
 
   function getDateTime(item) {
@@ -422,23 +377,17 @@
 
   function calculateStats() {
     const today = getTodayString();
-    const todayItems = scheduleData.filter(item => item.date === today);
+    const todayItems = scheduleData.filter(i => i.date === today);
     const weeklyItems = scheduleData.filter(isInCurrentWeek);
 
-    const revenueItems = items => items.filter(item => item.price >= 0);
-    const expenseItems = items => items.filter(item => item.price < 0);
-
     const stats = {
-      todayRevenue: revenueItems(todayItems).reduce((sum, item) => sum + item.price, 0),
-      todayExpenses: expenseItems(todayItems).reduce((sum, item) => sum + Math.abs(item.price), 0),
-      todayFees: todayItems.reduce((sum, item) => sum + (item.feeAmount || 0), 0),
-      weeklyRevenue: revenueItems(weeklyItems).reduce((sum, item) => sum + item.price, 0),
-      weeklyExpenses: expenseItems(weeklyItems).reduce((sum, item) => sum + Math.abs(item.price), 0),
-      weeklyFees: weeklyItems.reduce((sum, item) => sum + (item.feeAmount || 0), 0),
-      weeklyProfit: 0,
-      todayAppointments: todayItems.filter(item => item.status !== "Despesa").length,
-      pending: scheduleData.filter(item => item.status === "Pendente").length,
-      confirmed: scheduleData.filter(item => item.status === "Confirmado" || item.status === "Manual").length,
+      todayRevenue: todayItems.filter(i => i.price >= 0).reduce((s, i) => s + i.price, 0),
+      weeklyRevenue: weeklyItems.filter(i => i.price >= 0).reduce((s, i) => s + i.price, 0),
+      weeklyExpenses: weeklyItems.filter(i => i.price < 0).reduce((s, i) => s + Math.abs(i.price), 0),
+      weeklyFees: weeklyItems.reduce((s, i) => s + (i.feeAmount || 0), 0),
+      todayAppointments: todayItems.filter(i => i.status !== "Despesa").length,
+      pending: scheduleData.filter(i => i.status === "Pendente").length,
+      confirmed: scheduleData.filter(i => i.status === "Confirmado" || i.status === "Manual").length,
       breakdown: {},
       feeByStylist: {}
     };
@@ -446,21 +395,14 @@
     stats.weeklyProfit = stats.weeklyRevenue - stats.weeklyExpenses;
 
     stylists.forEach(stylist => {
-      const items = weeklyItems.filter(item => item.stylist === stylist);
-      const gross = items.reduce((sum, item) => sum + item.price, 0);
-      const expense = items.filter(item => item.price < 0).reduce((sum, item) => sum + Math.abs(item.price), 0);
-      const fee = items.reduce((sum, item) => sum + (item.feeAmount || 0), 0);
+      const items = weeklyItems.filter(i => i.stylist === stylist);
+      const gross = items.reduce((s, i) => s + i.price, 0);
+      const expense = items.filter(i => i.price < 0).reduce((s, i) => s + Math.abs(i.price), 0);
+      const fee = items.reduce((s, i) => s + (i.feeAmount || 0), 0);
       const barberValue = gross * (barberShare[stylist] || 0);
       const ownerValue = gross - barberValue;
 
-      stats.breakdown[stylist] = {
-        appointments: items.length,
-        gross,
-        expense,
-        fee,
-        barberValue,
-        ownerValue
-      };
+      stats.breakdown[stylist] = { appointments: items.length, gross, expense, fee, barberValue, ownerValue };
       stats.feeByStylist[stylist] = fee;
     });
 
@@ -482,46 +424,34 @@
   function renderRevenue() {
     const stats = calculateStats();
     const list = document.getElementById("barberRevenue");
-
     list.innerHTML = "";
+
+    document.getElementById("currentWeekAdmin").textContent = formatWeek(currentWeekStart);
 
     stylists.forEach(stylist => {
       const item = stats.breakdown[stylist];
-      const pct = ((barberShare[stylist] || 0) * 100).toFixed(2).replace(".", ",");
-      const revenue = item.gross >= 0 ? item.gross : 0;
+      const pct = ((barberShare[stylist] || 0) * 100).toFixed(0);
+      const revenue = Math.max(item.gross, 0);
       const li = document.createElement("li");
-
-      li.style.padding = "14px";
-      li.style.borderRadius = "14px";
-      li.style.background = "rgba(255,255,255,0.04)";
-      li.style.border = "1px solid var(--border)";
-      li.style.display = "grid";
-      li.style.gridTemplateColumns = "1.1fr repeat(3, minmax(120px, 1fr))";
-      li.style.gap = "1rem";
-      li.style.alignItems = "center";
-
+      li.className = "revenue-item";
       li.innerHTML = `
         <div>
           <strong>${stylist}</strong>
-          <div class="muted-text" style="font-size:0.85rem; margin-top:0.25rem;">${item.appointments} atendimento(s) • ${pct}% comissão</div>
+          <small>${item.appointments} atend. · ${pct}% comissão</small>
         </div>
-        <div><small class="muted-text">Bruto</small><strong style="display:block;">${formatMoney(revenue)}</strong></div>
-        <div><small class="muted-text">Barbeiro</small><strong style="display:block;">${formatMoney(item.barberValue)}</strong></div>
-        <div><small class="muted-text">Barbearia</small><strong style="display:block;">${formatMoney(item.ownerValue)}</strong></div>
+        <div class="col"><small>Bruto</small><strong>${formatMoney(revenue)}</strong></div>
+        <div class="col"><small>Barbeiro</small><strong>${formatMoney(item.barberValue)}</strong></div>
+        <div class="col"><small>Barbearia</small><strong>${formatMoney(item.ownerValue)}</strong></div>
       `;
-
       list.appendChild(li);
     });
-
-    document.getElementById("currentWeekAdmin").textContent = formatWeek(currentWeekStart);
   }
 
   function getLastExpenseDate(stylist) {
     const expenses = scheduleData
-      .filter(item => item.stylist === stylist && item.price < 0 && item.status === "Despesa")
+      .filter(i => i.stylist === stylist && i.price < 0 && i.status === "Despesa")
       .sort((a, b) => getDateTime(b) - getDateTime(a));
-
-    return expenses.length ? formatDate(expenses[0].date) : "-";
+    return expenses.length ? formatDate(expenses[0].date) : "–";
   }
 
   function drawBarChart(canvasId, labels, values, colors) {
@@ -535,35 +465,44 @@
     canvas.height = height;
 
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    ctx.fillStyle = "rgba(26,111,255,0.04)";
     ctx.fillRect(0, 0, width, height);
 
-    const padding = 40 * dpr;
+    const padding = 44 * dpr;
     const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 1.6;
+    const chartHeight = height - padding * 1.8;
     const maxValue = Math.max(...values, 1);
-    const barWidth = chartWidth / (values.length * 2);
+    const barWidth = chartWidth / (values.length * 2.2);
 
-    values.forEach((value, index) => {
+    values.forEach((value, i) => {
       const barHeight = (value / maxValue) * chartHeight;
-      const x = padding + index * barWidth * 2 + barWidth * 0.25;
+      const x = padding + i * barWidth * 2.2 + barWidth * 0.1;
       const y = height - padding - barHeight;
 
-      ctx.fillStyle = colors[index] || "#8ec5ff";
-      ctx.fillRect(x, y, barWidth, barHeight);
+      const grad = ctx.createLinearGradient(0, y, 0, height - padding);
+      grad.addColorStop(0, colors[i] || "#1a6fff");
+      grad.addColorStop(1, colors[i] ? colors[i] + "88" : "#1a6fff88");
+      ctx.fillStyle = grad;
 
-      ctx.font = `${12 * dpr}px Inter`;
-      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(x, y, barWidth, barHeight, [4 * dpr, 4 * dpr, 0, 0]);
+      ctx.fill();
+
+      ctx.font = `${11 * dpr}px DM Sans, sans-serif`;
+      ctx.fillStyle = "rgba(180,200,240,0.7)";
       ctx.textAlign = "center";
-      ctx.fillText(labels[index], x + barWidth / 2, height - padding + 18 * dpr);
-      ctx.fillText(formatMoney(value), x + barWidth / 2, y - 10 * dpr);
+      ctx.fillText(labels[i], x + barWidth / 2, height - padding + 16 * dpr);
+
+      if (value > 0) {
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.fillText(formatMoney(value), x + barWidth / 2, y - 8 * dpr);
+      }
     });
   }
 
   function renderExpenseHistory() {
     const stats = calculateStats();
     const tbody = document.getElementById("expenseHistoryTable");
-
     tbody.innerHTML = "";
 
     stylists.forEach(stylist => {
@@ -571,7 +510,7 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td><strong>${stylist}</strong></td>
-        <td>${formatMoney(item.gross)}</td>
+        <td>${formatMoney(Math.max(item.gross, 0))}</td>
         <td>${formatMoney(item.expense)}</td>
         <td>${formatMoney(item.fee)}</td>
         <td>${formatMoney(item.gross - item.fee)}</td>
@@ -583,19 +522,10 @@
 
   function renderFinanceCharts() {
     const stats = calculateStats();
-    drawBarChart(
-    "financeOverviewChart",
-    ["Receita", "Despesa"],
-    [stats.weeklyRevenue, stats.weeklyExpenses],
-    ["#3b82f6", "#ffffff"]
-    );
-
-    drawBarChart(
-    "barberExpenseChart",
-    stylists,
-    stylists.map(name => stats.feeByStylist[name] || 0),
-    ["#1d4ed8", "#2563eb", "#60a5fa", "#93c5fd"]
-    );
+    setTimeout(() => {
+      drawBarChart("financeOverviewChart", ["Receita", "Despesa"], [stats.weeklyRevenue, stats.weeklyExpenses], ["#1a6fff", "#ef4444"]);
+      drawBarChart("barberExpenseChart", stylists, stylists.map(n => stats.feeByStylist[n] || 0), ["#1a6fff", "#3d87ff", "#60a5fa", "#93c5fd"]);
+    }, 50);
   }
 
   function getFilteredAppointments() {
@@ -604,52 +534,49 @@
     const status = document.getElementById("filterStatus").value;
 
     return [...scheduleData]
-      .filter(item => !date || item.date === date)
-      .filter(item => !barber || item.stylist === barber)
-      .filter(item => !status || item.status === status)
+      .filter(i => !date || i.date === date)
+      .filter(i => !barber || i.stylist === barber)
+      .filter(i => !status || i.status === status)
       .sort((a, b) => getDateTime(a) - getDateTime(b));
   }
 
   function renderAppointmentsTable() {
     const tbody = document.getElementById("appointmentsTable");
     const items = getFilteredAppointments();
-
     tbody.innerHTML = "";
 
     if (items.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="9" style="text-align:center; color:var(--muted); padding:1.2rem;">Nenhum agendamento encontrado.</td>
-        </tr>
-      `;
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--muted); padding:24px;">Nenhum agendamento encontrado.</td></tr>`;
       return;
     }
 
     items.forEach(item => {
       const phoneDigits = item.phone.replace(/\D/g, "");
+      const statusMap = {
+        "Pendente": "badge-pending",
+        "Confirmado": "badge-confirmed",
+        "Manual": "badge-manual",
+        "Despesa": "badge-expense"
+      };
+      const badgeClass = statusMap[item.status] || "badge-pending";
       const tr = document.createElement("tr");
-      let statusColor = "#ffd666";
-      if (item.status === "Confirmado" || item.status === "Manual") statusColor = "#8ff0bc";
-      if (item.status === "Despesa") statusColor = "#ff8a8a";
-
       tr.innerHTML = `
         <td><strong>${item.name}</strong></td>
-        <td>${item.phone || "-"}</td>
+        <td>${item.phone || "–"}</td>
         <td>${item.service}</td>
         <td>${item.stylist}</td>
         <td>${formatDate(item.date)}</td>
         <td>${item.time || "--:--"}</td>
-        <td><strong style="color:${statusColor};">${item.status}</strong></td>
+        <td><span class="badge ${badgeClass}">${item.status}</span></td>
         <td>${formatMoney(item.price)}</td>
         <td>
-          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-            <button type="button" class="btn-admin" style="min-height:34px; padding:0.5rem 0.7rem;" data-action="confirm" data-id="${item.id}">OK</button>
-            <button type="button" class="btn-admin" style="min-height:34px; padding:0.5rem 0.7rem;" data-action="whatsapp" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
-            <button type="button" class="danger-btn" style="min-height:34px; padding:0.5rem 0.7rem;" data-action="delete" data-id="${item.id}">Excluir</button>
+          <div class="action-btns">
+            <button class="btn-action confirm" data-action="confirm" data-id="${item.id}">OK</button>
+            <button class="btn-action whatsapp" data-action="whatsapp" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
+            <button class="btn-action delete" data-action="delete" data-id="${item.id}">Excluir</button>
           </div>
         </td>
       `;
-
       tbody.appendChild(tr);
     });
   }
@@ -666,34 +593,26 @@
       });
 
     const clients = [...map.values()].slice(0, 8);
-
     list.innerHTML = "";
 
     if (clients.length === 0) {
-      list.innerHTML = `<li class="empty-message">Nenhum cliente registrado ainda.</li>`;
+      list.innerHTML = `<li style="color:var(--muted); font-size:0.88rem; padding:14px;">Nenhum cliente registrado ainda.</li>`;
       return;
     }
 
     clients.forEach(item => {
       const li = document.createElement("li");
-      li.style.padding = "14px";
-      li.style.borderRadius = "14px";
-      li.style.background = "rgba(255,255,255,0.04)";
-      li.style.border = "1px solid var(--border)";
-
+      li.className = "client-item";
       li.innerHTML = `
-        <div style="display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
-          <div>
-            <strong>${item.name}</strong>
-            <div class="muted-text" style="font-size:0.9rem; margin-top:0.25rem;">${item.phone || "WhatsApp não informado"}</div>
-          </div>
-          <div style="text-align:right;">
-            <strong>${formatDate(item.date)}</strong>
-            <div class="muted-text" style="font-size:0.9rem; margin-top:0.25rem;">${item.service}</div>
-          </div>
+        <div class="client-info">
+          <strong>${item.name}</strong>
+          <small>${item.phone || "WhatsApp não informado"}</small>
+        </div>
+        <div class="client-meta">
+          <strong>${formatDate(item.date)}</strong>
+          <small>${item.service?.split(" - ")[0] || item.service}</small>
         </div>
       `;
-
       list.appendChild(li);
     });
   }
@@ -708,41 +627,31 @@
     renderClients();
   }
 
-  function updateAppointmentStatus(id, status) {
-    const updated = buscarAgendamentos().map(item => {
-      if (item.id === id) return { ...item, status };
-      return item;
-    });
+  document.getElementById("appointmentsTable").addEventListener("click", e => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
 
-    salvarAgendamentos(updated);
-    updateDashboard();
-  }
-
-  document.getElementById("appointmentsTable").addEventListener("click", event => {
-    const button = event.target.closest("button");
-    if (!button) return;
-
-    const action = button.dataset.action;
+    const action = btn.dataset.action;
 
     if (action === "confirm") {
-      updateAppointmentStatus(button.dataset.id, "Confirmado");
+      const items = buscarAgendamentos().map(i => i.id === btn.dataset.id ? { ...i, status: "Confirmado" } : i);
+      salvarAgendamentos(items);
+      updateDashboard();
+      showNotification("Agendamento confirmado.", "success");
     }
 
     if (action === "delete") {
       if (confirm("Deseja excluir este agendamento?")) {
-        removerAgendamento(button.dataset.id);
+        removerAgendamento(btn.dataset.id);
         updateDashboard();
+        showNotification("Agendamento removido.", "info");
       }
     }
 
     if (action === "whatsapp") {
-      const phone = button.dataset.phone;
-      if (!phone) {
-        alert("Este cliente não tem WhatsApp cadastrado.");
-        return;
-      }
-
-      const text = `Olá, ${button.dataset.name}! Estamos entrando em contato sobre seu horário na Adriano Hair Style: ${formatDate(button.dataset.date)} às ${button.dataset.time}.`;
+      const phone = btn.dataset.phone;
+      if (!phone) { showNotification("Cliente sem WhatsApp cadastrado.", "error"); return; }
+      const text = `Olá, ${btn.dataset.name}! Sobre seu horário na Adriano Hair Style: ${formatDate(btn.dataset.date)} às ${btn.dataset.time}.`;
       window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(text)}`, "_blank");
     }
   });
@@ -773,8 +682,8 @@
     renderAppointmentsTable();
   });
 
-  document.getElementById("formCaixa").addEventListener("submit", event => {
-    event.preventDefault();
+  document.getElementById("formCaixa").addEventListener("submit", e => {
+    e.preventDefault();
 
     const cliente = document.getElementById("caixaCliente").value.trim();
     const telefone = document.getElementById("caixaTelefone").value.trim();
@@ -787,22 +696,13 @@
     const barbeiro = document.getElementById("caixaBarbeiro").value;
     const msg = document.getElementById("caixaMsg");
 
-    if (!descricao) {
-      msg.style.color = "#ff4d4f";
-      msg.textContent = "Preencha a descrição do lançamento.";
-      msg.style.display = "block";
-      return;
-    }
-
-    if (!valor || valor <= 0) {
-      msg.style.color = "#ff4d4f";
-      msg.textContent = "Informe um valor válido maior que zero.";
-      msg.style.display = "block";
+    if (!descricao || !valor || valor <= 0) {
+      msg.innerHTML = `<div class="info-msg error">Preencha todos os campos corretamente.</div>`;
       return;
     }
 
     const now = new Date();
-    const pad = value => String(value).padStart(2, "0");
+    const pad = v => String(v).padStart(2, "0");
     const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
     const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
     const isExpense = tipo === "Despesa";
@@ -810,102 +710,60 @@
     const feeAmount = isExpense ? 0 : Number((valor * feePercent).toFixed(2));
     const netValue = isExpense ? -valor : Number((valor - feeAmount).toFixed(2));
 
-    // Se for produto, usar o nome do produto como descrição
     let finalDescricao = descricao;
     if (categoria === "Produto" && produtoRaw && produtoRaw !== "Outro produto") {
-      const [produtoNome] = produtoRaw.split(" - R$ ");
-      finalDescricao = produtoNome;
+      finalDescricao = produtoRaw.split(" - R$ ")[0].split("|")[0];
     }
 
-    const novoLancamento = {
+    const resultado = adicionarAgendamento({
       name: cliente || (isExpense ? `Despesa: ${finalDescricao}` : finalDescricao),
-      client: cliente,
-      nome: cliente,
       phone: telefone,
-      telefone: telefone,
       service: finalDescricao,
-      servico: finalDescricao,
-      categoria: categoria,
+      categoria,
       paymentMethod: pagamento,
-      feePercent: feePercent,
-      feeAmount: feeAmount,
+      feeAmount,
       price: netValue,
-      valor: Number(valor),
       stylist: barbeiro,
-      profissional: barbeiro,
-      date: date,
-      data: date,
-      time: time,
-      horario: time,
+      date,
+      time,
       status: isExpense ? "Despesa" : "Confirmado",
       origem: "Caixa"
-    };
-
-    const resultado = adicionarAgendamento(novoLancamento);
+    });
 
     if (!resultado.sucesso) {
-      msg.style.color = "#ff4d4f";
-      msg.textContent = resultado.mensagem;
-      msg.style.display = "block";
+      msg.innerHTML = `<div class="info-msg error">${resultado.mensagem}</div>`;
       return;
     }
 
-    msg.style.color = "#8ec5ff";
-    msg.textContent = `✅ ${cliente || finalDescricao} registrado com sucesso!`;
-    msg.style.display = "block";
-    event.target.reset();
+    msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> ${cliente || finalDescricao} registrado com sucesso!</div>`;
+    e.target.reset();
     updateDashboard();
-
-    setTimeout(() => {
-      msg.style.display = "none";
-    }, 3000);
+    setTimeout(() => msg.innerHTML = "", 3000);
   });
 
-  document.getElementById("logoutLink").addEventListener("click", event => {
-    event.preventDefault();
+  document.getElementById("logoutBtn").addEventListener("click", () => {
     logoutAdmin();
     window.location.href = "login.html";
   });
 
-  updateDashboard();
-
-  // Controle de visibilidade do campo produto
   document.getElementById("caixaCategoria").addEventListener("change", function() {
-    const categoria = this.value;
-    const produtoGroup = document.getElementById("produtoGroup");
-    const produtoSelect = document.getElementById("caixaProduto");
-    const valorInput = document.getElementById("caixaValor");
-
-    if (categoria === "Produto") {
-      produtoGroup.style.display = "block";
-      produtoSelect.required = true;
-    } else {
-      produtoGroup.style.display = "none";
-      produtoSelect.required = false;
-      produtoSelect.value = "";
-    }
+    const show = this.value === "Produto";
+    document.getElementById("produtoGroup").style.display = show ? "flex" : "none";
+    document.getElementById("caixaProduto").required = show;
   });
 
-  // Preencher valor automaticamente quando produto for selecionado
   document.getElementById("caixaProduto").addEventListener("change", function() {
-    const produtoRaw = this.value;
-    const valorInput = document.getElementById("caixaValor");
-    const descricaoInput = document.getElementById("caixaDescricao");
-
-    if (produtoRaw && produtoRaw !== "Outro produto") {
-      const parts = produtoRaw.split("|");
-      if (parts.length === 2) {
-        const valor = parts[1];
-        valorInput.value = valor;
-        const produtoNome = parts[0].split(" - R$ ")[0];
-        descricaoInput.value = `Venda: ${produtoNome}`;
-      }
-    } else if (produtoRaw === "Outro produto") {
-      valorInput.value = "";
-      descricaoInput.value = "";
+    const parts = this.value.split("|");
+    if (parts.length === 2 && this.value !== "Outro produto") {
+      document.getElementById("caixaValor").value = parts[1];
+      document.getElementById("caixaDescricao").value = `Venda: ${parts[0].split(" - R$ ")[0]}`;
+    } else if (this.value === "Outro produto") {
+      document.getElementById("caixaValor").value = "";
+      document.getElementById("caixaDescricao").value = "";
     }
   });
-</script>
 
+  updateDashboard();
+</script>
 </body>
 </html>

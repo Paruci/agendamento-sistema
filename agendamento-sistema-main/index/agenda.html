@@ -1,30 +1,177 @@
-<div class="agenda-page">
-  <div class="agenda-header">
-    <h1>Agenda semanal</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda | Adriano Hair Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <div class="agenda-actions">
-      <button class="btn">Semana anterior</button>
-      <button class="btn">Próxima semana</button>
-      <button class="btn btn-outline">Hoje</button>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <i class="fa-solid fa-scissors"></i>
+      AHS Admin
     </div>
-  </div>
+    <nav class="sidebar-nav">
+      <a href="admin.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+      <a href="agenda.html" class="active"><i class="fa-solid fa-calendar-days"></i> Agenda</a>
+      <a href="admin.html#clientesArea"><i class="fa-solid fa-users"></i> Clientes</a>
+      <a href="admin.html#financeiroArea"><i class="fa-solid fa-wallet"></i> Financeiro</a>
+    </nav>
+    <div class="sidebar-logout">
+      <button id="logoutBtn" class="btn btn-ghost btn-full btn-sm">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair
+      </button>
+    </div>
+  </aside>
 
-  <div id="agendaGrid" class="agenda-grid"></div>
-
-  <div class="agenda-legend">
-    <div>
-      <div class="legend-box legend-pendente"></div>
-      Pendente
+  <main class="agenda-page">
+    <div class="agenda-top">
+      <div>
+        <span class="eyebrow">Visualização semanal</span>
+        <h1>Agenda</h1>
+      </div>
+      <div class="agenda-controls">
+        <button id="prevWeek" class="btn btn-ghost btn-sm">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span id="weekLabel" class="agenda-week-label"></span>
+        <button id="nextWeek" class="btn btn-ghost btn-sm">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button id="goToday" class="btn btn-sm">Hoje</button>
+      </div>
     </div>
 
-    <div>
-      <div class="legend-box legend-confirmado"></div>
-      Confirmado
+    <div class="agenda-grid-wrap">
+      <div id="agendaGrid" class="agenda-grid"></div>
     </div>
 
-    <div>
-      <div class="legend-box legend-manual"></div>
-      Manual
+    <div class="agenda-legend">
+      <div class="legend-item">
+        <div class="legend-dot pending"></div>
+        Pendente
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot confirmed"></div>
+        Confirmado
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot manual"></div>
+        Manual
+      </div>
     </div>
-  </div>
+  </main>
 </div>
+
+<script src="utils.js"></script>
+<script src="storage.js"></script>
+<script>
+  protegerAdmin();
+
+  const barbers = ["Adriano", "Arthur", "Igor", "Vinícius"];
+  const timeSlots = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30"];
+
+  function startOfWeek(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - (day === 0 ? 6 : day - 1);
+    return new Date(d.getFullYear(), d.getMonth(), diff, 0, 0, 0, 0);
+  }
+
+  let currentWeekStart = startOfWeek(new Date());
+
+  function getWeekDays(start) {
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  }
+
+  function toDateStr(date) {
+    const pad = v => String(v).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  }
+
+  function renderAgenda() {
+    const days = getWeekDays(currentWeekStart);
+    const end = new Date(currentWeekStart);
+    end.setDate(end.getDate() + 4);
+
+    document.getElementById("weekLabel").textContent =
+      `${currentWeekStart.toLocaleDateString("pt-BR")} – ${end.toLocaleDateString("pt-BR")}`;
+
+    const appointments = buscarAgendamentos();
+    const grid = document.getElementById("agendaGrid");
+    grid.innerHTML = "";
+
+    const headerRow = document.createElement("div");
+    headerRow.className = "header-row";
+    headerRow.innerHTML = `<div class="header-cell">Horário</div>`;
+    days.forEach(day => {
+      const names = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+      headerRow.innerHTML += `<div class="header-cell">${names[day.getDay()]} ${day.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}</div>`;
+    });
+    grid.appendChild(headerRow);
+
+    timeSlots.forEach(slot => {
+      const row = document.createElement("div");
+      row.className = "agenda-row";
+      row.innerHTML = `<div class="time-cell">${slot}</div>`;
+
+      days.forEach(day => {
+        const dateStr = toDateStr(day);
+        const cell = document.createElement("div");
+        cell.className = "slot-cell";
+
+        const matches = appointments.filter(a => a.date === dateStr && a.time === slot);
+        matches.forEach(appt => {
+          const statusClass = appt.status === "Confirmado" || appt.status === "Manual"
+            ? (appt.status === "Manual" ? "manual" : "confirmed")
+            : "pending";
+          const item = document.createElement("div");
+          item.className = `slot-item ${statusClass}`;
+          item.innerHTML = `<strong>${appt.name || appt.stylist}</strong><small>${appt.stylist} · ${appt.service?.split(" - ")[0] || appt.service}</small>`;
+          cell.appendChild(item);
+        });
+
+        row.appendChild(cell);
+      });
+
+      grid.appendChild(row);
+    });
+  }
+
+  document.getElementById("prevWeek").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    renderAgenda();
+  });
+
+  document.getElementById("nextWeek").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    renderAgenda();
+  });
+
+  document.getElementById("goToday").addEventListener("click", () => {
+    currentWeekStart = startOfWeek(new Date());
+    renderAgenda();
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    logoutAdmin();
+    window.location.href = "login.html";
+  });
+
+  renderAgenda();
+</script>
+</body>
+</html>

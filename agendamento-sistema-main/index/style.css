@@ -1166,163 +1166,106 @@ footer {
 
 }
 :root {
-  --blue: #c9a35b;
-  --blue-dark: #9a7434;
-  --blue-light: #e3c47b;
-  --blue-glow: rgba(201, 163, 91, 0.24);
-  --blue-subtle: rgba(201, 163, 91, 0.1);
-  --white: #fffaf0;
-  --off-white: #f4ead6;
-  --black: #080705;
-  --dark: #100d09;
-  --dark-2: #17120c;
-  --dark-3: #22190f;
-  --card: #14100b;
-  --card-2: #1b140d;
-  --border: rgba(201, 163, 91, 0.22);
-  --border-light: rgba(255, 250, 240, 0.08);
-  --muted: rgba(244, 234, 214, 0.62);
-  --text: #e8dcc5;
-  --font-display: 'Oswald', sans-serif;
-  --font-body: 'Manrope', sans-serif;
+  --blue: #2457ff;
+  --blue-dark: #102a8c;
+  --blue-light: #5f83ff;
+  --blue-glow: rgba(36, 87, 255, 0.28);
+  --blue-subtle: rgba(36, 87, 255, 0.11);
+  --white: #ffffff;
+  --off-white: #f4f7ff;
+  --black: #030407;
+  --dark: #070b14;
+  --dark-2: #0b1120;
+  --dark-3: #101a33;
+  --card: #0c1220;
+  --card-2: #111a2e;
+  --border: rgba(95, 131, 255, 0.22);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --muted: rgba(230, 236, 255, 0.62);
+  --text: #e8edff;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
   --radius: 14px;
-  --radius-lg: 22px;
-  --shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
-  --shadow-blue: 0 16px 42px rgba(201, 163, 91, 0.18);
-}
-
-body {
-  background: radial-gradient(circle at top left, rgba(201, 163, 91, 0.08), transparent 32%), var(--black);
+  --radius-lg: 24px;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.52);
+  --shadow-blue: 0 18px 45px rgba(36, 87, 255, 0.22);
 }
 
 h1,
 h2,
-h3 {
-  letter-spacing: 0.035em;
+h3,
+.logo,
+.eyebrow,
+.hero-tag,
+.btn,
+.service-price,
+.price,
+.sidebar-brand,
+table th,
+.metric-card h2 {
+  letter-spacing: 0.055em;
 }
 
-h1 {
-  font-size: clamp(2.9rem, 6.8vw, 5.4rem);
-  font-weight: 700;
+body {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(36, 87, 255, 0.16), transparent 32%),
+    radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.05), transparent 26%),
+    var(--black);
 }
 
-h2 {
-  font-size: clamp(1.9rem, 4vw, 3.1rem);
-  font-weight: 700;
-}
-
-h3 {
-  font-weight: 600;
-}
-
-.btn {
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--blue-light), var(--blue-dark));
-  color: #0c0804;
-  box-shadow: var(--shadow-blue);
-}
-
-.btn:hover {
-  background: linear-gradient(135deg, #f0d18a, var(--blue));
-  box-shadow: 0 14px 34px rgba(201, 163, 91, 0.28);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--blue-light);
-  border: 1px solid var(--border);
-  box-shadow: none;
-}
-
-.btn-outline:hover {
-  background: var(--blue-subtle);
-  color: var(--white);
-}
-
-.header {
-  background: rgba(8, 7, 5, 0.84);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(18px);
-}
-
-.logo {
-  color: var(--white);
-}
-
-.logo span,
-.logo strong,
-.brand span,
-.brand strong {
-  color: var(--blue-light);
+header {
+  background: rgba(3, 4, 7, 0.86);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .hero {
   background:
-    linear-gradient(135deg, rgba(8, 7, 5, 0.96), rgba(16, 13, 9, 0.9)),
-    radial-gradient(circle at 80% 20%, rgba(201, 163, 91, 0.18), transparent 34%);
+    linear-gradient(135deg, rgba(3, 4, 7, 0.96), rgba(7, 11, 20, 0.92)),
+    radial-gradient(circle at 82% 18%, rgba(36, 87, 255, 0.28), transparent 34%);
 }
 
 .hero::before {
-  background:
-    linear-gradient(rgba(201, 163, 91, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201, 163, 91, 0.04) 1px, transparent 1px);
-  background-size: 42px 42px;
+  opacity: 0.8;
 }
 
-.hero-badge,
-.badge,
-.status-badge {
-  background: rgba(201, 163, 91, 0.12);
-  color: var(--blue-light);
-  border: 1px solid var(--border);
-}
-
-.hero-card,
 .card,
+.hero-card,
 .service-card,
 .barber-card,
 .step-card,
 .summary-card,
-.form-card,
-.admin-card {
-  background: linear-gradient(180deg, rgba(27, 20, 13, 0.98), rgba(14, 11, 7, 0.98));
-  border: 1px solid var(--border);
+.booking-form-card,
+.login-wrap {
+  background: linear-gradient(180deg, rgba(17, 26, 46, 0.96), rgba(7, 11, 20, 0.98));
+  border: 1px solid var(--border-light);
   box-shadow: var(--shadow);
 }
 
-.service-card:hover,
-.barber-card:hover,
-.step-card:hover,
-.card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(227, 196, 123, 0.5);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.52);
-}
-
-.service-price,
-.price,
-.highlight,
-.text-blue {
-  color: var(--blue-light);
-}
-
-input,
-select,
-textarea {
-  background: rgba(8, 7, 5, 0.72);
-  border: 1px solid var(--border);
+.btn {
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--blue-light), var(--blue));
   color: var(--white);
-  border-radius: var(--radius);
+  box-shadow: var(--shadow-blue);
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--blue-light);
-  box-shadow: 0 0 0 4px rgba(201, 163, 91, 0.12);
+.btn:hover {
+  background: linear-gradient(135deg, #7a98ff, var(--blue));
+  box-shadow: 0 18px 52px rgba(36, 87, 255, 0.32);
 }
 
-.footer {
-  background: #050403;
-  border-top: 1px solid var(--border);
+.btn-outline,
+.btn-ghost {
+  border: 1px solid var(--border);
+}
+
+.service-icon,
+.location-item i {
+  background: rgba(36, 87, 255, 0.12);
+  border-color: var(--border);
+}
+
+.cta-section {
+  background:
+    linear-gradient(135deg, rgba(16, 42, 140, 0.5), rgba(7, 11, 20, 0.96)),
+    radial-gradient(circle at 50% 0%, rgba(95, 131, 255, 0.2), transparent 36%);
 }

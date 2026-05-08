@@ -145,22 +145,13 @@
       padding: 24px 24px 40px;
     }
 
-    .agenda-body::-webkit-scrollbar {
-      height: 7px;
-    }
-
-    .agenda-body::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.02);
-    }
-
-    .agenda-body::-webkit-scrollbar-thumb {
-      background: rgba(95,131,255,0.25);
-      border-radius: 999px;
-    }
+    .agenda-body::-webkit-scrollbar { height: 7px; }
+    .agenda-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+    .agenda-body::-webkit-scrollbar-thumb { background: rgba(95,131,255,0.25); border-radius: 999px; }
 
     .agenda-table {
       width: 100%;
-      min-width: 780px;
+      min-width: 900px;
       border-radius: 22px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.07);
@@ -169,39 +160,34 @@
 
     .agenda-header-row {
       display: grid;
-      grid-template-columns: 74px repeat(5, 1fr);
+      grid-template-columns: 64px repeat(7, 1fr);
       background: linear-gradient(135deg, rgba(36,87,255,0.18), rgba(7,11,20,0.98));
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .agenda-header-cell {
-      padding: 16px 12px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 2px;
       border-right: 1px solid rgba(255,255,255,0.06);
     }
 
-    .agenda-header-cell:first-child {
-      align-items: flex-start;
-    }
-
-    .agenda-header-cell:last-child {
-      border-right: none;
-    }
+    .agenda-header-cell:first-child { align-items: flex-start; padding-left: 14px; }
+    .agenda-header-cell:last-child  { border-right: none; }
 
     .day-name {
       font-family: var(--font-display);
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.45);
     }
 
     .day-num {
       font-family: var(--font-display);
-      font-size: 1.8rem;
+      font-size: 1.65rem;
       line-height: 1;
       color: white;
     }
@@ -212,68 +198,67 @@
     }
 
     .day-count {
-      font-size: 0.66rem;
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--blue-light);
-      opacity: 0.8;
+      opacity: 0.75;
+    }
+
+    .day-off {
+      opacity: 0.38;
+    }
+
+    .day-off .day-name,
+    .day-off .day-num {
+      color: rgba(255,255,255,0.3);
     }
 
     .time-header-cell {
-      padding: 16px 10px;
+      padding: 14px 10px;
       display: flex;
       align-items: center;
     }
 
     .time-header-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.3);
     }
 
     .agenda-time-row {
       display: grid;
-      grid-template-columns: 74px repeat(5, 1fr);
+      grid-template-columns: 64px repeat(7, 1fr);
       border-bottom: 1px solid rgba(255,255,255,0.04);
       transition: background 0.15s;
     }
 
-    .agenda-time-row:last-child {
-      border-bottom: none;
-    }
-
-    .agenda-time-row:hover {
-      background: rgba(255,255,255,0.012);
-    }
+    .agenda-time-row:last-child { border-bottom: none; }
+    .agenda-time-row:hover { background: rgba(255,255,255,0.01); }
 
     .agenda-time-cell {
-      padding: 8px 10px;
+      padding: 8px 10px 8px 6px;
       display: flex;
       align-items: flex-start;
       justify-content: flex-end;
       border-right: 1px solid rgba(255,255,255,0.05);
-      padding-top: 9px;
+      padding-top: 10px;
     }
 
     .time-label {
       font-family: var(--font-display);
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.28);
+      font-size: 1rem;
+      color: rgba(255,255,255,0.3);
       letter-spacing: 0.03em;
       line-height: 1;
       white-space: nowrap;
     }
 
-    .agenda-time-row:nth-child(even) .time-label {
-      color: rgba(255,255,255,0.14);
-      font-size: 0.75rem;
-    }
-
     .agenda-slot-cell {
-      min-height: 52px;
+      min-height: 68px;
       padding: 5px;
       border-right: 1px solid rgba(255,255,255,0.04);
       position: relative;
@@ -281,42 +266,46 @@
       transition: background 0.15s;
     }
 
-    .agenda-slot-cell:last-child {
-      border-right: none;
+    .agenda-slot-cell:last-child { border-right: none; }
+
+    .agenda-slot-cell.day-off-col {
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 6px,
+        rgba(255,255,255,0.012) 6px,
+        rgba(255,255,255,0.012) 12px
+      );
     }
 
-    .agenda-slot-cell:hover {
-      background: rgba(36,87,255,0.06);
-    }
-
-    .agenda-slot-cell:hover .slot-add-hint {
-      opacity: 1;
-    }
+    .agenda-slot-cell:hover { background: rgba(36,87,255,0.07); }
+    .agenda-slot-cell.day-off-col:hover { background: rgba(36,87,255,0.04); }
+    .agenda-slot-cell:hover .slot-add-hint { opacity: 1; }
 
     .slot-add-hint {
       position: absolute;
       inset: 5px;
       border-radius: 10px;
-      border: 1px dashed rgba(95,131,255,0.22);
+      border: 1px dashed rgba(95,131,255,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       transition: opacity 0.2s;
       pointer-events: none;
-      color: rgba(95,131,255,0.5);
-      font-size: 0.72rem;
+      color: rgba(95,131,255,0.45);
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      gap: 5px;
+      gap: 4px;
     }
 
     .slot-event {
       position: relative;
       border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 0.78rem;
+      padding: 7px 9px;
+      font-size: 0.76rem;
       line-height: 1.35;
       border-left: 3px solid;
       cursor: pointer;
@@ -330,49 +319,29 @@
       z-index: 2;
     }
 
-    .slot-event::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0.09;
-      pointer-events: none;
-    }
-
     .slot-event.pending {
       background: rgba(245,158,11,0.12);
       border-left-color: var(--warn);
-      box-shadow: 0 4px 14px rgba(245,158,11,0.12);
-    }
-
-    .slot-event.pending::before {
-      background: var(--warn);
+      box-shadow: 0 3px 12px rgba(245,158,11,0.1);
     }
 
     .slot-event.confirmed {
       background: rgba(34,197,94,0.12);
       border-left-color: var(--success);
-      box-shadow: 0 4px 14px rgba(34,197,94,0.12);
-    }
-
-    .slot-event.confirmed::before {
-      background: var(--success);
+      box-shadow: 0 3px 12px rgba(34,197,94,0.1);
     }
 
     .slot-event.manual {
-      background: rgba(36,87,255,0.15);
+      background: rgba(36,87,255,0.14);
       border-left-color: var(--blue-light);
-      box-shadow: 0 4px 14px rgba(36,87,255,0.15);
-    }
-
-    .slot-event.manual::before {
-      background: var(--blue-light);
+      box-shadow: 0 3px 12px rgba(36,87,255,0.12);
     }
 
     .slot-event-name {
       display: block;
       color: white;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -380,20 +349,30 @@
 
     .slot-event-meta {
       display: block;
-      color: rgba(255,255,255,0.5);
-      font-size: 0.7rem;
+      color: rgba(255,255,255,0.48);
+      font-size: 0.68rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .slot-event-duration {
+      display: inline-block;
+      margin-top: 3px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.06em;
     }
 
     .agenda-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 24px;
+      padding: 16px 24px;
       flex-wrap: wrap;
       gap: 14px;
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
 
     .agenda-legend {
@@ -419,9 +398,9 @@
       flex-shrink: 0;
     }
 
-    .legend-dot.pending  { background: var(--warn); }
+    .legend-dot.pending   { background: var(--warn); }
     .legend-dot.confirmed { background: var(--success); }
-    .legend-dot.manual   { background: var(--blue-light); }
+    .legend-dot.manual    { background: var(--blue-light); }
 
     .agenda-count-badge {
       font-size: 0.8rem;
@@ -458,7 +437,7 @@
 
     .modal {
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       background: linear-gradient(180deg, rgba(14,20,36,0.99), rgba(6,9,16,0.99));
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 26px;
@@ -466,6 +445,9 @@
       overflow: hidden;
       transform: translateY(22px) scale(0.97);
       transition: transform 0.26s cubic-bezier(0.34,1.56,0.64,1), opacity 0.22s ease;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .modal-overlay.open .modal {
@@ -473,26 +455,25 @@
     }
 
     .modal-header {
-      padding: 26px 28px 20px;
+      padding: 24px 26px 18px;
       border-bottom: 1px solid rgba(255,255,255,0.07);
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
+      flex-shrink: 0;
     }
 
-    .modal-header-info .eyebrow {
-      margin-bottom: 6px;
-    }
+    .modal-header-info .eyebrow { margin-bottom: 5px; }
 
     .modal-header-info h2 {
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       line-height: 0.95;
     }
 
-    .modal-header-info .modal-slot-meta {
-      margin-top: 8px;
-      font-size: 0.84rem;
+    .modal-slot-meta {
+      margin-top: 7px;
+      font-size: 0.82rem;
       color: var(--muted);
       display: flex;
       align-items: center;
@@ -500,18 +481,16 @@
       flex-wrap: wrap;
     }
 
-    .modal-slot-meta i {
-      color: var(--blue-light);
-    }
+    .modal-slot-meta i { color: var(--blue-light); }
 
     .modal-close {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
       color: rgba(255,255,255,0.7);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -525,20 +504,27 @@
       color: white;
     }
 
-    .modal-body {
-      padding: 24px 28px;
+    .modal-scroll {
+      overflow-y: auto;
+      flex: 1;
     }
+
+    .modal-scroll::-webkit-scrollbar { width: 5px; }
+    .modal-scroll::-webkit-scrollbar-track { background: transparent; }
+    .modal-scroll::-webkit-scrollbar-thumb { background: rgba(95,131,255,0.2); border-radius: 999px; }
+
+    .modal-body { padding: 22px 26px 4px; }
 
     .modal-existing-events {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .modal-event-card {
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 15px;
+      padding: 14px 16px;
       border: 1px solid;
       display: flex;
       align-items: center;
@@ -546,31 +532,32 @@
       gap: 12px;
     }
 
-    .modal-event-card.pending {
-      background: rgba(245,158,11,0.08);
-      border-color: rgba(245,158,11,0.22);
-    }
-
-    .modal-event-card.confirmed {
-      background: rgba(34,197,94,0.08);
-      border-color: rgba(34,197,94,0.22);
-    }
-
-    .modal-event-card.manual {
-      background: rgba(36,87,255,0.1);
-      border-color: rgba(95,131,255,0.22);
-    }
+    .modal-event-card.pending   { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.22); }
+    .modal-event-card.confirmed { background: rgba(34,197,94,0.08);  border-color: rgba(34,197,94,0.22); }
+    .modal-event-card.manual    { background: rgba(36,87,255,0.1);   border-color: rgba(95,131,255,0.22); }
 
     .modal-event-info strong {
       display: block;
       color: white;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       margin-bottom: 3px;
     }
 
     .modal-event-info small {
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
+    }
+
+    .modal-event-info .duration-tag {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(95,131,255,0.12);
+      color: var(--blue-light);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
     }
 
     .modal-event-actions {
@@ -583,55 +570,48 @@
     .modal-divider {
       height: 1px;
       background: rgba(255,255,255,0.07);
-      margin: 20px 0;
+      margin: 18px 0;
     }
 
     .modal-form-title {
       color: var(--blue-light);
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 7px;
     }
 
-    .modal-form-title i {
-      font-size: 0.85rem;
-    }
-
-    .modal-form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .modal-form { display: flex; flex-direction: column; gap: 13px; }
 
     .modal-form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 11px;
     }
 
     .modal-footer {
-      padding: 18px 28px 24px;
+      padding: 16px 26px 22px;
       border-top: 1px solid rgba(255,255,255,0.07);
       display: flex;
       justify-content: flex-end;
       gap: 10px;
+      flex-shrink: 0;
     }
 
     .modal-in-edit-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .modal-in-edit-header span {
       color: var(--blue-light);
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -647,40 +627,51 @@
       transition: var(--transition);
     }
 
-    .modal-cancel-edit:hover {
-      color: white;
-    }
+    .modal-cancel-edit:hover { color: white; }
 
     .empty-slot-msg {
       text-align: center;
-      padding: 16px 0 6px;
+      padding: 14px 0 4px;
       color: rgba(255,255,255,0.3);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
     }
 
-    @media (max-width: 700px) {
-      .agenda-topbar {
-        padding: 14px 16px;
-        gap: 12px;
-      }
-      .agenda-topbar-left {
-        gap: 12px;
-      }
-      .agenda-topbar-title h1 {
-        font-size: 2.2rem;
-      }
-      .barber-filter-wrap {
-        display: none;
-      }
-      .agenda-body {
-        padding: 12px 8px 32px;
-      }
-      .modal-form-row {
-        grid-template-columns: 1fr;
-      }
-      .modal-header-info h2 {
-        font-size: 2.2rem;
-      }
+    .duration-pills {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .duration-pill {
+      padding: 9px 15px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.55);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .duration-pill:hover { color: white; border-color: rgba(255,255,255,0.2); }
+
+    .duration-pill.selected {
+      background: linear-gradient(135deg, rgba(36,87,255,0.35), rgba(95,131,255,0.2));
+      border-color: rgba(95,131,255,0.4);
+      color: white;
+      box-shadow: 0 4px 14px rgba(36,87,255,0.22);
+    }
+
+    @media (max-width: 900px) {
+      .agenda-topbar { padding: 14px 16px; gap: 12px; }
+      .agenda-topbar-title h1 { font-size: 2.2rem; }
+      .barber-filter-wrap { display: none; }
+      .agenda-body { padding: 12px 8px 32px; }
+      .modal-form-row { grid-template-columns: 1fr; }
+      .modal-header-info h2 { font-size: 2rem; }
     }
   </style>
 </head>
@@ -740,6 +731,10 @@
         <div class="legend-item"><div class="legend-dot pending"></div> Pendente</div>
         <div class="legend-item"><div class="legend-dot confirmed"></div> Confirmado</div>
         <div class="legend-item"><div class="legend-dot manual"></div> Manual</div>
+        <div class="legend-item" style="margin-left:8px; opacity:0.5;">
+          <div style="width:18px;height:10px;background:repeating-linear-gradient(-45deg,transparent,transparent 3px,rgba(255,255,255,0.15) 3px,rgba(255,255,255,0.15) 6px);border-radius:2px;"></div>
+          Fora do expediente
+        </div>
       </div>
       <div class="agenda-count-badge">
         <strong id="totalCount">0</strong> agendamentos esta semana
@@ -759,10 +754,10 @@
       </div>
       <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
-    <div class="modal-body" id="modalBody"></div>
-
-    <div class="modal-footer" id="modalFooter"></div>
+    <div class="modal-scroll">
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
   </div>
 </div>
 
@@ -771,38 +766,45 @@
 <script>
   protegerAdmin();
 
-  const BARBERS   = ["Adriano", "Arthur", "Igor", "Vinícius"];
-  const SERVICES  = [
-    "Corte Simples - R$ 35",
-    "Corte + Barba - R$ 55",
-    "Barba - R$ 30",
-    "Sobrancelha - R$ 15",
-    "Pezinho - R$ 20",
-    "Corte Degradê - R$ 45",
-    "Hidratação - R$ 40"
+  const BARBERS = ["Adriano", "Arthur", "Igor", "Vinícius"];
+
+  const SERVICES = [
+    { label: "Corte Masculino",       value: "Corte Masculino - R$ 50",       price: 50  },
+    { label: "Corte + Sobrancelha",   value: "Corte + Sobrancelha - R$ 55",   price: 55  },
+    { label: "Combo Corte e Barba",   value: "Combo Corte e Barba - R$ 90",   price: 90  },
+    { label: "Acabamento",            value: "Acabamento - R$ 20",            price: 20  }
+  ];
+
+  const DURATIONS = [
+    { label: "30 min", value: 30  },
+    { label: "60 min", value: 60  },
+    { label: "90 min", value: 90  },
+    { label: "2h",     value: 120 }
   ];
 
   const TIME_SLOTS = [];
   for (let h = 9; h <= 20; h++) {
     TIME_SLOTS.push(`${String(h).padStart(2,"0")}:00`);
-    if (h < 20) TIME_SLOTS.push(`${String(h).padStart(2,"0")}:30`);
   }
+
+  const WORK_DAYS = [2, 3, 4, 5, 6];
 
   let currentWeekStart = startOfWeek(new Date());
   let activeBarber     = "todos";
   let modalContext     = null;
   let editingId        = null;
+  let selectedDuration = 60;
 
   function startOfWeek(date) {
-    const d   = new Date(date);
-    const day = d.getDay();
+    const d    = new Date(date);
+    const day  = d.getDay();
     const diff = d.getDate() - (day === 0 ? 6 : day - 1);
     return new Date(d.getFullYear(), d.getMonth(), diff, 0, 0, 0, 0);
   }
 
   function getWeekDays(start) {
     const days = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 7; i++) {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
       days.push(d);
@@ -815,8 +817,14 @@
     return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
   }
 
-  function todayStr() {
-    return toDateStr(new Date());
+  function todayStr() { return toDateStr(new Date()); }
+
+  function durationLabel(mins) {
+    if (!mins || mins === 60) return "60 min";
+    if (mins < 60) return `${mins} min`;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return m ? `${h}h${String(m).padStart(2,"0")}` : `${h}h`;
   }
 
   function buildBarberFilter() {
@@ -839,26 +847,24 @@
   }
 
   function renderAgenda() {
-    const days        = getWeekDays(currentWeekStart);
-    const end         = new Date(currentWeekStart);
-    end.setDate(end.getDate() + 4);
-    const today       = todayStr();
+    const days         = getWeekDays(currentWeekStart);
+    const today        = todayStr();
     const appointments = buscarAgendamentos();
-
-    const dayNames = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+    const dayNames     = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 
     const filtered = activeBarber === "todos"
       ? appointments
       : appointments.filter(a => a.stylist === activeBarber);
 
     const weekAppts = filtered.filter(a =>
-      a.date >= toDateStr(days[0]) && a.date <= toDateStr(days[4])
+      a.date >= toDateStr(days[0]) && a.date <= toDateStr(days[6])
     );
 
     document.getElementById("totalCount").textContent = weekAppts.length;
 
-    const endLabel = end.toLocaleDateString("pt-BR", { day:"2-digit", month:"short" });
-    const startLabel = currentWeekStart.toLocaleDateString("pt-BR", { day:"2-digit", month:"short" });
+    const endDay      = days[6];
+    const startLabel  = currentWeekStart.toLocaleDateString("pt-BR", { day:"2-digit", month:"short" });
+    const endLabel    = endDay.toLocaleDateString("pt-BR", { day:"2-digit", month:"short" });
     document.getElementById("weekLabel").textContent = `${startLabel} – ${endLabel}`;
 
     const table = document.getElementById("agendaTable");
@@ -873,12 +879,13 @@
     headerRow.appendChild(timeHead);
 
     days.forEach(day => {
-      const ds    = toDateStr(day);
-      const count = filtered.filter(a => a.date === ds).length;
+      const ds      = toDateStr(day);
+      const count   = filtered.filter(a => a.date === ds).length;
       const isToday = ds === today;
+      const isOff   = !WORK_DAYS.includes(day.getDay());
 
       const cell = document.createElement("div");
-      cell.className = "agenda-header-cell";
+      cell.className = "agenda-header-cell" + (isOff ? " day-off" : "");
       cell.innerHTML = `
         <span class="day-name">${dayNames[day.getDay()]}</span>
         <span class="day-num${isToday ? " today" : ""}">${String(day.getDate()).padStart(2,"0")}</span>
@@ -901,29 +908,28 @@
       days.forEach(day => {
         const ds      = toDateStr(day);
         const matches = filtered.filter(a => a.date === ds && a.time === slot);
+        const isOff   = !WORK_DAYS.includes(day.getDay());
 
         const cell = document.createElement("div");
-        cell.className = "agenda-slot-cell";
+        cell.className = "agenda-slot-cell" + (isOff ? " day-off-col" : "");
         cell.dataset.date = ds;
         cell.dataset.time = slot;
 
         if (matches.length === 0) {
-          cell.innerHTML = `
-            <div class="slot-add-hint">
-              <i class="fa-solid fa-plus"></i> Agendar
-            </div>
-          `;
+          cell.innerHTML = `<div class="slot-add-hint"><i class="fa-solid fa-plus"></i> Agendar</div>`;
         } else {
           matches.forEach(appt => {
             const sc = appt.status === "Confirmado" ? "confirmed"
                      : appt.status === "Manual"     ? "manual"
                      : "pending";
-            const ev = document.createElement("div");
+            const dur = appt.duration ? durationLabel(appt.duration) : "";
+            const ev  = document.createElement("div");
             ev.className = `slot-event ${sc}`;
             ev.dataset.id = appt.id;
             ev.innerHTML = `
               <span class="slot-event-name">${appt.name}</span>
               <span class="slot-event-meta">${appt.stylist} · ${(appt.service||"").split(" - ")[0]}</span>
+              ${dur ? `<span class="slot-event-duration"><i class="fa-regular fa-clock" style="margin-right:3px"></i>${dur}</span>` : ""}
             `;
             ev.addEventListener("click", e => {
               e.stopPropagation();
@@ -933,11 +939,7 @@
           });
 
           if (matches.length < BARBERS.length) {
-            cell.innerHTML += `
-              <div class="slot-add-hint">
-                <i class="fa-solid fa-plus"></i> Mais
-              </div>
-            `;
+            cell.innerHTML += `<div class="slot-add-hint"><i class="fa-solid fa-plus"></i> Mais</div>`;
           }
         }
 
@@ -951,14 +953,16 @@
 
   function openModal(dateStr, timeStr, focusId) {
     const dateObj   = new Date(dateStr + "T00:00:00");
-    const dayNames  = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+    const dayNames  = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
     const dayName   = dayNames[dateObj.getDay()];
     const dateLabel = dateObj.toLocaleDateString("pt-BR", { day:"2-digit", month:"long", year:"numeric" });
+    const isOff     = !WORK_DAYS.includes(dateObj.getDay());
 
-    modalContext = { dateStr, timeStr };
-    editingId    = focusId || null;
+    modalContext     = { dateStr, timeStr };
+    editingId        = focusId || null;
+    selectedDuration = 60;
 
-    document.getElementById("modalEyebrow").textContent = `${timeStr} — ${dayName}`;
+    document.getElementById("modalEyebrow").textContent = `${timeStr} — ${dayName}${isOff ? " · Fora do expediente" : ""}`;
     document.getElementById("modalTitle").textContent   = dateLabel.split(" de ").slice(0,2).join(" de ");
     document.getElementById("modalMeta").innerHTML      = `
       <i class="fa-regular fa-clock"></i> ${timeStr}
@@ -967,8 +971,7 @@
 
     buildModalBody();
 
-    const overlay = document.getElementById("slotModal");
-    overlay.classList.add("open");
+    document.getElementById("slotModal").classList.add("open");
     document.body.style.overflow = "hidden";
   }
 
@@ -976,18 +979,14 @@
     const { dateStr, timeStr } = modalContext;
     const all     = buscarAgendamentos();
     const matches = all.filter(a => a.date === dateStr && a.time === timeStr);
-
-    const body   = document.getElementById("modalBody");
-    const footer = document.getElementById("modalFooter");
+    const body    = document.getElementById("modalBody");
+    const footer  = document.getElementById("modalFooter");
     body.innerHTML   = "";
     footer.innerHTML = "";
 
     if (editingId) {
       const appt = all.find(a => a.id === editingId);
-      if (appt) {
-        renderEditForm(body, footer, appt);
-        return;
-      }
+      if (appt) { renderEditForm(body, footer, appt); return; }
     }
 
     if (matches.length > 0) {
@@ -995,25 +994,30 @@
       listDiv.className = "modal-existing-events";
 
       matches.forEach(appt => {
-        const sc = appt.status === "Confirmado" ? "confirmed"
-                 : appt.status === "Manual"     ? "manual"
-                 : "pending";
+        const sc  = appt.status === "Confirmado" ? "confirmed"
+                  : appt.status === "Manual"     ? "manual"
+                  : "pending";
+        const dur = appt.duration ? durationLabel(appt.duration) : "60 min";
 
         const card = document.createElement("div");
         card.className = `modal-event-card ${sc}`;
         card.innerHTML = `
           <div class="modal-event-info">
-            <strong>${appt.name}</strong>
-            <small>
-              ${appt.stylist} · ${(appt.service||"").split(" - ")[0]}
-              ${appt.phone ? ` · ${appt.phone}` : ""}
-            </small>
+            <strong>
+              ${appt.name}
+              <span class="duration-tag"><i class="fa-regular fa-clock"></i> ${dur}</span>
+            </strong>
+            <small>${appt.stylist} · ${(appt.service||"").split(" - ")[0]}${appt.phone ? ` · ${appt.phone}` : ""}</small>
           </div>
           <div class="modal-event-actions">
-            ${appt.status !== "Confirmado" ? `<button class="btn-action confirm btn-sm" data-id="${appt.id}" data-action="confirm"><i class="fa-solid fa-check"></i></button>` : ""}
-            <button class="btn-action btn-sm" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)"><i class="fa-solid fa-pen"></i></button>
-            ${appt.phone ? `<button class="btn-action whatsapp btn-sm" data-phone="${appt.phone}" data-name="${appt.name}" data-action="whatsapp"><i class="fa-brands fa-whatsapp"></i></button>` : ""}
-            <button class="btn-action delete btn-sm" data-id="${appt.id}" data-action="delete"><i class="fa-solid fa-trash"></i></button>
+            ${appt.status !== "Confirmado"
+              ? `<button class="btn-action confirm" data-id="${appt.id}" data-action="confirm" title="Confirmar"><i class="fa-solid fa-check"></i></button>`
+              : ""}
+            <button class="btn-action" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)" title="Editar"><i class="fa-solid fa-pen"></i></button>
+            ${appt.phone
+              ? `<button class="btn-action whatsapp" data-phone="${appt.phone}" data-name="${appt.name}" data-action="whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`
+              : ""}
+            <button class="btn-action delete" data-id="${appt.id}" data-action="delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
           </div>
         `;
         listDiv.appendChild(card);
@@ -1022,19 +1026,13 @@
       listDiv.addEventListener("click", e => {
         const btn = e.target.closest("[data-action]");
         if (!btn) return;
-        const action = btn.dataset.action;
-        const id     = btn.dataset.id;
-        if (action === "confirm") {
-          confirmAppt(id);
-        } else if (action === "edit") {
-          editingId = id;
-          buildModalBody();
-        } else if (action === "delete") {
-          deleteAppt(id);
-        } else if (action === "whatsapp") {
-          const phone = btn.dataset.phone.replace(/\D/g,"");
-          const name  = btn.dataset.name;
-          window.open(`https://wa.me/55${phone}?text=Ol%C3%A1%20${encodeURIComponent(name)}!%20Passando%20para%20confirmar%20seu%20hor%C3%A1rio%20na%20Adriano%20Hair%20Style.`, "_blank");
+        const { action, id, phone, name } = btn.dataset;
+        if      (action === "confirm")   confirmAppt(id);
+        else if (action === "edit")      { editingId = id; buildModalBody(); }
+        else if (action === "delete")    deleteAppt(id);
+        else if (action === "whatsapp") {
+          const p = phone.replace(/\D/g,"");
+          window.open(`https://wa.me/55${p}?text=Ol%C3%A1%20${encodeURIComponent(name)}!%20Passando%20para%20confirmar%20seu%20hor%C3%A1rio%20na%20Adriano%20Hair%20Style.`, "_blank");
         }
       });
 
@@ -1042,7 +1040,7 @@
     } else {
       const msg = document.createElement("p");
       msg.className = "empty-slot-msg";
-      msg.innerHTML = `<i class="fa-regular fa-calendar-xmark" style="margin-right:6px;color:var(--blue-light)"></i>Horário livre — preencha para agendar`;
+      msg.innerHTML = `<i class="fa-regular fa-calendar-xmark" style="margin-right:6px;color:var(--blue-light)"></i>Horário livre`;
       body.appendChild(msg);
     }
 
@@ -1052,10 +1050,28 @@
 
     const formTitle = document.createElement("div");
     formTitle.className = "modal-form-title";
-    formTitle.innerHTML = `<i class="fa-solid fa-plus"></i> Novo agendamento`;
+    formTitle.innerHTML = `<i class="fa-solid fa-calendar-plus"></i> Novo agendamento`;
     body.appendChild(formTitle);
 
     renderNewForm(body, footer);
+  }
+
+  function buildDurationPills(containerId, currentVal) {
+    const wrap = document.getElementById(containerId);
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    DURATIONS.forEach(d => {
+      const p = document.createElement("button");
+      p.type = "button";
+      p.className = "duration-pill" + (d.value === currentVal ? " selected" : "");
+      p.textContent = d.label;
+      p.dataset.val = d.value;
+      p.onclick = () => {
+        selectedDuration = d.value;
+        buildDurationPills(containerId, d.value);
+      };
+      wrap.appendChild(p);
+    });
   }
 
   function renderNewForm(body, footer) {
@@ -1063,7 +1079,6 @@
 
     const form = document.createElement("div");
     form.className = "modal-form";
-    form.id = "modalNewForm";
     form.innerHTML = `
       <div class="modal-form-row">
         <div class="form-group">
@@ -1085,12 +1100,18 @@
         <div class="form-group">
           <label>Serviço</label>
           <select id="mService">
-            ${SERVICES.map(s => `<option value="${s}">${s}</option>`).join("")}
+            ${SERVICES.map(s => `<option value="${s.value}">${s.label} — R$ ${s.price}</option>`).join("")}
           </select>
         </div>
       </div>
+      <div class="form-group">
+        <label>Duração <span style="opacity:0.55;font-weight:500;text-transform:none;font-size:0.72rem;">(padrão 60 min)</span></label>
+        <div class="duration-pills" id="newDurationPills"></div>
+      </div>
     `;
     body.appendChild(form);
+
+    buildDurationPills("newDurationPills", selectedDuration);
 
     footer.innerHTML = `
       <button class="btn btn-ghost btn-sm" id="modalCancelBtn">Cancelar</button>
@@ -1108,7 +1129,15 @@
 
       if (!name) { showNotification("Informe o nome do cliente.", "error"); return; }
 
-      const result = adicionarAgendamento({ name, phone, service, stylist, date: dateStr, time: timeStr, status: "Manual", origem: "Manual" });
+      const svcObj = SERVICES.find(s => s.value === service);
+      const result = adicionarAgendamento({
+        name, phone, service, stylist,
+        date: dateStr, time: timeStr,
+        status: "Manual",
+        origem: "Manual",
+        duration: selectedDuration,
+        price: svcObj ? svcObj.price : 0
+      });
 
       if (result.sucesso) {
         showNotification(result.mensagem, "success");
@@ -1121,6 +1150,8 @@
   }
 
   function renderEditForm(body, footer, appt) {
+    let editDuration = appt.duration || 60;
+
     const header = document.createElement("div");
     header.className = "modal-in-edit-header";
     header.innerHTML = `
@@ -1134,7 +1165,7 @@
     form.innerHTML = `
       <div class="modal-form-row">
         <div class="form-group">
-          <label>Nome do cliente</label>
+          <label>Nome</label>
           <input type="text" id="eName" value="${appt.name}">
         </div>
         <div class="form-group">
@@ -1152,24 +1183,30 @@
         <div class="form-group">
           <label>Serviço</label>
           <select id="eService">
-            ${SERVICES.map(s => `<option value="${s}" ${s === appt.service ? "selected" : ""}>${s}</option>`).join("")}
+            ${SERVICES.map(s => `<option value="${s.value}" ${s.value === appt.service ? "selected" : ""}>${s.label} — R$ ${s.price}</option>`).join("")}
           </select>
         </div>
       </div>
       <div class="form-group">
+        <label>Duração</label>
+        <div class="duration-pills" id="editDurationPills"></div>
+      </div>
+      <div class="form-group">
         <label>Status</label>
         <select id="eStatus">
-          <option value="Pendente" ${appt.status === "Pendente" ? "selected" : ""}>Pendente</option>
+          <option value="Pendente"   ${appt.status === "Pendente"   ? "selected" : ""}>Pendente</option>
           <option value="Confirmado" ${appt.status === "Confirmado" ? "selected" : ""}>Confirmado</option>
-          <option value="Manual" ${appt.status === "Manual" ? "selected" : ""}>Manual</option>
+          <option value="Manual"     ${appt.status === "Manual"     ? "selected" : ""}>Manual</option>
         </select>
       </div>
     `;
     body.appendChild(form);
 
+    buildDurationPills("editDurationPills", editDuration);
+
     footer.innerHTML = `
       <button class="btn btn-ghost btn-sm" id="editCancelBtn">Cancelar</button>
-      <button class="btn-action delete" id="editDeleteBtn" style="padding:0 16px;min-height:38px">
+      <button class="btn-action delete" id="editDeleteBtn" style="padding:0 16px;min-height:38px;border-radius:999px;">
         <i class="fa-solid fa-trash"></i> Excluir
       </button>
       <button class="btn btn-sm" id="editSaveBtn">
@@ -1177,22 +1214,24 @@
       </button>
     `;
 
-    document.getElementById("cancelEditBtn").onclick = () => { editingId = null; buildModalBody(); };
-    document.getElementById("editCancelBtn").onclick = closeModal;
-    document.getElementById("editDeleteBtn").onclick = () => deleteAppt(appt.id);
-    document.getElementById("editSaveBtn").onclick   = () => {
+    document.getElementById("cancelEditBtn").onclick  = () => { editingId = null; buildModalBody(); };
+    document.getElementById("editCancelBtn").onclick  = closeModal;
+    document.getElementById("editDeleteBtn").onclick  = () => deleteAppt(appt.id);
+    document.getElementById("editSaveBtn").onclick    = () => {
       const name    = document.getElementById("eName").value.trim();
       const phone   = document.getElementById("ePhone").value.trim();
       const stylist = document.getElementById("eBarber").value;
       const service = document.getElementById("eService").value;
       const status  = document.getElementById("eStatus").value;
+      const dur     = selectedDuration;
 
       if (!name) { showNotification("Informe o nome.", "error"); return; }
 
-      const all = buscarAgendamentos();
-      const idx = all.findIndex(a => a.id === appt.id);
+      const all  = buscarAgendamentos();
+      const idx  = all.findIndex(a => a.id === appt.id);
+      const svc  = SERVICES.find(s => s.value === service);
       if (idx !== -1) {
-        all[idx] = { ...all[idx], name: sanitizeString(name), phone: sanitizeString(phone), stylist, service, status };
+        all[idx] = { ...all[idx], name: sanitizeString(name), phone: sanitizeString(phone), stylist, service, status, duration: dur, price: svc ? svc.price : all[idx].price };
         salvarAgendamentos(all);
         showNotification("Agendamento atualizado.", "success");
         closeModal();
@@ -1207,7 +1246,7 @@
     if (idx !== -1) {
       all[idx].status = "Confirmado";
       salvarAgendamentos(all);
-      showNotification("Agendamento confirmado!", "success");
+      showNotification("Confirmado!", "success");
       buildModalBody();
       renderAgenda();
     }
@@ -1222,20 +1261,18 @@
   }
 
   function closeModal() {
-    const overlay = document.getElementById("slotModal");
-    overlay.classList.remove("open");
+    document.getElementById("slotModal").classList.remove("open");
     document.body.style.overflow = "";
-    modalContext = null;
-    editingId    = null;
+    modalContext     = null;
+    editingId        = null;
+    selectedDuration = 60;
   }
 
   document.getElementById("modalClose").onclick = closeModal;
   document.getElementById("slotModal").addEventListener("click", e => {
     if (e.target === document.getElementById("slotModal")) closeModal();
   });
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeModal();
-  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
   document.getElementById("prevWeek").addEventListener("click", () => {
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);

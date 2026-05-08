@@ -6,9 +6,683 @@
   <title>Agenda | Adriano Hair Style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .agenda-page {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+      background:
+        radial-gradient(circle at top right, rgba(36, 87, 255, 0.1), transparent 28%),
+        var(--black);
+    }
+
+    .agenda-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 18px 32px;
+      background: rgba(2, 3, 5, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .agenda-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .agenda-topbar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .agenda-topbar-title .eyebrow {
+      margin-bottom: 0;
+    }
+
+    .agenda-topbar-title h1 {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+
+    .agenda-week-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 5px 6px;
+    }
+
+    .week-nav-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      transition: var(--transition);
+    }
+
+    .week-nav-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    #weekLabel {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      padding: 0 10px;
+      white-space: nowrap;
+      min-width: 210px;
+      text-align: center;
+    }
+
+    .agenda-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .barber-filter-wrap {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .barber-pill {
+      padding: 8px 15px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.55);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .barber-pill:hover {
+      color: white;
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .barber-pill.active {
+      background: linear-gradient(135deg, var(--blue-light), var(--blue));
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 6px 18px rgba(36,87,255,0.3);
+    }
+
+    .agenda-body {
+      flex: 1;
+      overflow-x: auto;
+      padding: 24px 24px 40px;
+    }
+
+    .agenda-body::-webkit-scrollbar {
+      height: 7px;
+    }
+
+    .agenda-body::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .agenda-body::-webkit-scrollbar-thumb {
+      background: rgba(95,131,255,0.25);
+      border-radius: 999px;
+    }
+
+    .agenda-table {
+      width: 100%;
+      min-width: 780px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.018);
+    }
+
+    .agenda-header-row {
+      display: grid;
+      grid-template-columns: 74px repeat(5, 1fr);
+      background: linear-gradient(135deg, rgba(36,87,255,0.18), rgba(7,11,20,0.98));
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .agenda-header-cell {
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .agenda-header-cell:first-child {
+      align-items: flex-start;
+    }
+
+    .agenda-header-cell:last-child {
+      border-right: none;
+    }
+
+    .day-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .day-num {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      line-height: 1;
+      color: white;
+    }
+
+    .day-num.today {
+      color: var(--blue-light);
+      text-shadow: 0 0 20px rgba(95,131,255,0.6);
+    }
+
+    .day-count {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-light);
+      opacity: 0.8;
+    }
+
+    .time-header-cell {
+      padding: 16px 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .time-header-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .agenda-time-row {
+      display: grid;
+      grid-template-columns: 74px repeat(5, 1fr);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+    }
+
+    .agenda-time-row:last-child {
+      border-bottom: none;
+    }
+
+    .agenda-time-row:hover {
+      background: rgba(255,255,255,0.012);
+    }
+
+    .agenda-time-cell {
+      padding: 8px 10px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      padding-top: 9px;
+    }
+
+    .time-label {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.28);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .agenda-time-row:nth-child(even) .time-label {
+      color: rgba(255,255,255,0.14);
+      font-size: 0.75rem;
+    }
+
+    .agenda-slot-cell {
+      min-height: 52px;
+      padding: 5px;
+      border-right: 1px solid rgba(255,255,255,0.04);
+      position: relative;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .agenda-slot-cell:last-child {
+      border-right: none;
+    }
+
+    .agenda-slot-cell:hover {
+      background: rgba(36,87,255,0.06);
+    }
+
+    .agenda-slot-cell:hover .slot-add-hint {
+      opacity: 1;
+    }
+
+    .slot-add-hint {
+      position: absolute;
+      inset: 5px;
+      border-radius: 10px;
+      border: 1px dashed rgba(95,131,255,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      color: rgba(95,131,255,0.5);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      gap: 5px;
+    }
+
+    .slot-event {
+      position: relative;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      border-left: 3px solid;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      overflow: hidden;
+      margin-bottom: 3px;
+    }
+
+    .slot-event:hover {
+      transform: translateY(-1px) scale(1.01);
+      z-index: 2;
+    }
+
+    .slot-event::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.09;
+      pointer-events: none;
+    }
+
+    .slot-event.pending {
+      background: rgba(245,158,11,0.12);
+      border-left-color: var(--warn);
+      box-shadow: 0 4px 14px rgba(245,158,11,0.12);
+    }
+
+    .slot-event.pending::before {
+      background: var(--warn);
+    }
+
+    .slot-event.confirmed {
+      background: rgba(34,197,94,0.12);
+      border-left-color: var(--success);
+      box-shadow: 0 4px 14px rgba(34,197,94,0.12);
+    }
+
+    .slot-event.confirmed::before {
+      background: var(--success);
+    }
+
+    .slot-event.manual {
+      background: rgba(36,87,255,0.15);
+      border-left-color: var(--blue-light);
+      box-shadow: 0 4px 14px rgba(36,87,255,0.15);
+    }
+
+    .slot-event.manual::before {
+      background: var(--blue-light);
+    }
+
+    .slot-event-name {
+      display: block;
+      color: white;
+      font-weight: 700;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .slot-event-meta {
+      display: block;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.7rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .agenda-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .agenda-legend {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-dot.pending  { background: var(--warn); }
+    .legend-dot.confirmed { background: var(--success); }
+    .legend-dot.manual   { background: var(--blue-light); }
+
+    .agenda-count-badge {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+    }
+
+    .agenda-count-badge strong {
+      color: white;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(180deg, rgba(14,20,36,0.99), rgba(6,9,16,0.99));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 26px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+      overflow: hidden;
+      transform: translateY(22px) scale(0.97);
+      transition: transform 0.26s cubic-bezier(0.34,1.56,0.64,1), opacity 0.22s ease;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 26px 28px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal-header-info .eyebrow {
+      margin-bottom: 6px;
+    }
+
+    .modal-header-info h2 {
+      font-size: 2.8rem;
+      line-height: 0.95;
+    }
+
+    .modal-header-info .modal-slot-meta {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .modal-slot-meta i {
+      color: var(--blue-light);
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover {
+      background: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    .modal-body {
+      padding: 24px 28px;
+    }
+
+    .modal-existing-events {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .modal-event-card {
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal-event-card.pending {
+      background: rgba(245,158,11,0.08);
+      border-color: rgba(245,158,11,0.22);
+    }
+
+    .modal-event-card.confirmed {
+      background: rgba(34,197,94,0.08);
+      border-color: rgba(34,197,94,0.22);
+    }
+
+    .modal-event-card.manual {
+      background: rgba(36,87,255,0.1);
+      border-color: rgba(95,131,255,0.22);
+    }
+
+    .modal-event-info strong {
+      display: block;
+      color: white;
+      font-size: 0.92rem;
+      margin-bottom: 3px;
+    }
+
+    .modal-event-info small {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .modal-event-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin: 20px 0;
+    }
+
+    .modal-form-title {
+      color: var(--blue-light);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .modal-form-title i {
+      font-size: 0.85rem;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal-footer {
+      padding: 18px 28px 24px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .modal-in-edit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .modal-in-edit-header span {
+      color: var(--blue-light);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .modal-cancel-edit {
+      font-size: 0.78rem;
+      color: var(--muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-decoration: underline;
+      transition: var(--transition);
+    }
+
+    .modal-cancel-edit:hover {
+      color: white;
+    }
+
+    .empty-slot-msg {
+      text-align: center;
+      padding: 16px 0 6px;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 700px) {
+      .agenda-topbar {
+        padding: 14px 16px;
+        gap: 12px;
+      }
+      .agenda-topbar-left {
+        gap: 12px;
+      }
+      .agenda-topbar-title h1 {
+        font-size: 2.2rem;
+      }
+      .barber-filter-wrap {
+        display: none;
+      }
+      .agenda-body {
+        padding: 12px 8px 32px;
+      }
+      .modal-form-row {
+        grid-template-columns: 1fr;
+      }
+      .modal-header-info h2 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -32,42 +706,64 @@
   </aside>
 
   <main class="agenda-page">
-    <div class="agenda-top">
-      <div>
-        <span class="eyebrow">Visualização semanal</span>
-        <h1>Agenda</h1>
+
+    <div class="agenda-topbar">
+      <div class="agenda-topbar-left">
+        <div class="agenda-topbar-title">
+          <span class="eyebrow"><i class="fa-solid fa-calendar-days"></i> Semanal</span>
+          <h1>Agenda</h1>
+        </div>
+        <div class="agenda-week-nav">
+          <button id="prevWeek" class="week-nav-btn" title="Semana anterior">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <span id="weekLabel"></span>
+          <button id="nextWeek" class="week-nav-btn" title="Próxima semana">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+        <button id="goToday" class="btn btn-sm">
+          <i class="fa-solid fa-crosshairs"></i> Hoje
+        </button>
       </div>
-      <div class="agenda-controls">
-        <button id="prevWeek" class="btn btn-ghost btn-sm">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <span id="weekLabel" class="agenda-week-label"></span>
-        <button id="nextWeek" class="btn btn-ghost btn-sm">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
-        <button id="goToday" class="btn btn-sm">Hoje</button>
+      <div class="agenda-topbar-right">
+        <div class="barber-filter-wrap" id="barberFilter"></div>
       </div>
     </div>
 
-    <div class="agenda-grid-wrap">
-      <div id="agendaGrid" class="agenda-grid"></div>
+    <div class="agenda-body">
+      <div class="agenda-table" id="agendaTable"></div>
     </div>
 
-    <div class="agenda-legend">
-      <div class="legend-item">
-        <div class="legend-dot pending"></div>
-        Pendente
+    <div class="agenda-footer">
+      <div class="agenda-legend">
+        <div class="legend-item"><div class="legend-dot pending"></div> Pendente</div>
+        <div class="legend-item"><div class="legend-dot confirmed"></div> Confirmado</div>
+        <div class="legend-item"><div class="legend-dot manual"></div> Manual</div>
       </div>
-      <div class="legend-item">
-        <div class="legend-dot confirmed"></div>
-        Confirmado
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot manual"></div>
-        Manual
+      <div class="agenda-count-badge">
+        <strong id="totalCount">0</strong> agendamentos esta semana
       </div>
     </div>
+
   </main>
+</div>
+
+<div class="modal-overlay" id="slotModal">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <span class="eyebrow" id="modalEyebrow">Horário</span>
+        <h2 id="modalTitle"></h2>
+        <div class="modal-slot-meta" id="modalMeta"></div>
+      </div>
+      <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="modal-body" id="modalBody"></div>
+
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
 </div>
 
 <script src="utils.js"></script>
@@ -75,17 +771,34 @@
 <script>
   protegerAdmin();
 
-  const barbers = ["Adriano", "Arthur", "Igor", "Vinícius"];
-  const timeSlots = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30"];
+  const BARBERS   = ["Adriano", "Arthur", "Igor", "Vinícius"];
+  const SERVICES  = [
+    "Corte Simples - R$ 35",
+    "Corte + Barba - R$ 55",
+    "Barba - R$ 30",
+    "Sobrancelha - R$ 15",
+    "Pezinho - R$ 20",
+    "Corte Degradê - R$ 45",
+    "Hidratação - R$ 40"
+  ];
+
+  const TIME_SLOTS = [];
+  for (let h = 9; h <= 20; h++) {
+    TIME_SLOTS.push(`${String(h).padStart(2,"0")}:00`);
+    if (h < 20) TIME_SLOTS.push(`${String(h).padStart(2,"0")}:30`);
+  }
+
+  let currentWeekStart = startOfWeek(new Date());
+  let activeBarber     = "todos";
+  let modalContext     = null;
+  let editingId        = null;
 
   function startOfWeek(date) {
-    const d = new Date(date);
+    const d   = new Date(date);
     const day = d.getDay();
     const diff = d.getDate() - (day === 0 ? 6 : day - 1);
     return new Date(d.getFullYear(), d.getMonth(), diff, 0, 0, 0, 0);
   }
-
-  let currentWeekStart = startOfWeek(new Date());
 
   function getWeekDays(start) {
     const days = [];
@@ -99,57 +812,430 @@
 
   function toDateStr(date) {
     const pad = v => String(v).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+  }
+
+  function todayStr() {
+    return toDateStr(new Date());
+  }
+
+  function buildBarberFilter() {
+    const wrap = document.getElementById("barberFilter");
+    wrap.innerHTML = "";
+
+    const allPill = document.createElement("button");
+    allPill.className = "barber-pill" + (activeBarber === "todos" ? " active" : "");
+    allPill.textContent = "Todos";
+    allPill.onclick = () => { activeBarber = "todos"; buildBarberFilter(); renderAgenda(); };
+    wrap.appendChild(allPill);
+
+    BARBERS.forEach(b => {
+      const p = document.createElement("button");
+      p.className = "barber-pill" + (activeBarber === b ? " active" : "");
+      p.textContent = b;
+      p.onclick = () => { activeBarber = b; buildBarberFilter(); renderAgenda(); };
+      wrap.appendChild(p);
+    });
   }
 
   function renderAgenda() {
-    const days = getWeekDays(currentWeekStart);
-    const end = new Date(currentWeekStart);
+    const days        = getWeekDays(currentWeekStart);
+    const end         = new Date(currentWeekStart);
     end.setDate(end.getDate() + 4);
-
-    document.getElementById("weekLabel").textContent =
-      `${currentWeekStart.toLocaleDateString("pt-BR")} – ${end.toLocaleDateString("pt-BR")}`;
-
+    const today       = todayStr();
     const appointments = buscarAgendamentos();
-    const grid = document.getElementById("agendaGrid");
-    grid.innerHTML = "";
+
+    const dayNames = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+
+    const filtered = activeBarber === "todos"
+      ? appointments
+      : appointments.filter(a => a.stylist === activeBarber);
+
+    const weekAppts = filtered.filter(a =>
+      a.date >= toDateStr(days[0]) && a.date <= toDateStr(days[4])
+    );
+
+    document.getElementById("totalCount").textContent = weekAppts.length;
+
+    const endLabel = end.toLocaleDateString("pt-BR", { day:"2-digit", month:"short" });
+    const startLabel = currentWeekStart.toLocaleDateString("pt-BR", { day:"2-digit", month:"short" });
+    document.getElementById("weekLabel").textContent = `${startLabel} – ${endLabel}`;
+
+    const table = document.getElementById("agendaTable");
+    table.innerHTML = "";
 
     const headerRow = document.createElement("div");
-    headerRow.className = "header-row";
-    headerRow.innerHTML = `<div class="header-cell">Horário</div>`;
-    days.forEach(day => {
-      const names = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-      headerRow.innerHTML += `<div class="header-cell">${names[day.getDay()]} ${day.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}</div>`;
-    });
-    grid.appendChild(headerRow);
+    headerRow.className = "agenda-header-row";
 
-    timeSlots.forEach(slot => {
+    const timeHead = document.createElement("div");
+    timeHead.className = "agenda-header-cell time-header-cell";
+    timeHead.innerHTML = `<span class="time-header-label">HR</span>`;
+    headerRow.appendChild(timeHead);
+
+    days.forEach(day => {
+      const ds    = toDateStr(day);
+      const count = filtered.filter(a => a.date === ds).length;
+      const isToday = ds === today;
+
+      const cell = document.createElement("div");
+      cell.className = "agenda-header-cell";
+      cell.innerHTML = `
+        <span class="day-name">${dayNames[day.getDay()]}</span>
+        <span class="day-num${isToday ? " today" : ""}">${String(day.getDate()).padStart(2,"0")}</span>
+        ${count > 0 ? `<span class="day-count">${count} ag.</span>` : ""}
+      `;
+      headerRow.appendChild(cell);
+    });
+
+    table.appendChild(headerRow);
+
+    TIME_SLOTS.forEach(slot => {
       const row = document.createElement("div");
-      row.className = "agenda-row";
-      row.innerHTML = `<div class="time-cell">${slot}</div>`;
+      row.className = "agenda-time-row";
+
+      const timeCell = document.createElement("div");
+      timeCell.className = "agenda-time-cell";
+      timeCell.innerHTML = `<span class="time-label">${slot}</span>`;
+      row.appendChild(timeCell);
 
       days.forEach(day => {
-        const dateStr = toDateStr(day);
+        const ds      = toDateStr(day);
+        const matches = filtered.filter(a => a.date === ds && a.time === slot);
+
         const cell = document.createElement("div");
-        cell.className = "slot-cell";
+        cell.className = "agenda-slot-cell";
+        cell.dataset.date = ds;
+        cell.dataset.time = slot;
 
-        const matches = appointments.filter(a => a.date === dateStr && a.time === slot);
-        matches.forEach(appt => {
-          const statusClass = appt.status === "Confirmado" || appt.status === "Manual"
-            ? (appt.status === "Manual" ? "manual" : "confirmed")
-            : "pending";
-          const item = document.createElement("div");
-          item.className = `slot-item ${statusClass}`;
-          item.innerHTML = `<strong>${appt.name || appt.stylist}</strong><small>${appt.stylist} · ${appt.service?.split(" - ")[0] || appt.service}</small>`;
-          cell.appendChild(item);
-        });
+        if (matches.length === 0) {
+          cell.innerHTML = `
+            <div class="slot-add-hint">
+              <i class="fa-solid fa-plus"></i> Agendar
+            </div>
+          `;
+        } else {
+          matches.forEach(appt => {
+            const sc = appt.status === "Confirmado" ? "confirmed"
+                     : appt.status === "Manual"     ? "manual"
+                     : "pending";
+            const ev = document.createElement("div");
+            ev.className = `slot-event ${sc}`;
+            ev.dataset.id = appt.id;
+            ev.innerHTML = `
+              <span class="slot-event-name">${appt.name}</span>
+              <span class="slot-event-meta">${appt.stylist} · ${(appt.service||"").split(" - ")[0]}</span>
+            `;
+            ev.addEventListener("click", e => {
+              e.stopPropagation();
+              openModal(ds, slot, appt.id);
+            });
+            cell.appendChild(ev);
+          });
 
+          if (matches.length < BARBERS.length) {
+            cell.innerHTML += `
+              <div class="slot-add-hint">
+                <i class="fa-solid fa-plus"></i> Mais
+              </div>
+            `;
+          }
+        }
+
+        cell.addEventListener("click", () => openModal(ds, slot, null));
         row.appendChild(cell);
       });
 
-      grid.appendChild(row);
+      table.appendChild(row);
     });
   }
+
+  function openModal(dateStr, timeStr, focusId) {
+    const dateObj   = new Date(dateStr + "T00:00:00");
+    const dayNames  = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+    const dayName   = dayNames[dateObj.getDay()];
+    const dateLabel = dateObj.toLocaleDateString("pt-BR", { day:"2-digit", month:"long", year:"numeric" });
+
+    modalContext = { dateStr, timeStr };
+    editingId    = focusId || null;
+
+    document.getElementById("modalEyebrow").textContent = `${timeStr} — ${dayName}`;
+    document.getElementById("modalTitle").textContent   = dateLabel.split(" de ").slice(0,2).join(" de ");
+    document.getElementById("modalMeta").innerHTML      = `
+      <i class="fa-regular fa-clock"></i> ${timeStr}
+      <i class="fa-regular fa-calendar" style="margin-left:6px"></i> ${dateLabel}
+    `;
+
+    buildModalBody();
+
+    const overlay = document.getElementById("slotModal");
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function buildModalBody() {
+    const { dateStr, timeStr } = modalContext;
+    const all     = buscarAgendamentos();
+    const matches = all.filter(a => a.date === dateStr && a.time === timeStr);
+
+    const body   = document.getElementById("modalBody");
+    const footer = document.getElementById("modalFooter");
+    body.innerHTML   = "";
+    footer.innerHTML = "";
+
+    if (editingId) {
+      const appt = all.find(a => a.id === editingId);
+      if (appt) {
+        renderEditForm(body, footer, appt);
+        return;
+      }
+    }
+
+    if (matches.length > 0) {
+      const listDiv = document.createElement("div");
+      listDiv.className = "modal-existing-events";
+
+      matches.forEach(appt => {
+        const sc = appt.status === "Confirmado" ? "confirmed"
+                 : appt.status === "Manual"     ? "manual"
+                 : "pending";
+
+        const card = document.createElement("div");
+        card.className = `modal-event-card ${sc}`;
+        card.innerHTML = `
+          <div class="modal-event-info">
+            <strong>${appt.name}</strong>
+            <small>
+              ${appt.stylist} · ${(appt.service||"").split(" - ")[0]}
+              ${appt.phone ? ` · ${appt.phone}` : ""}
+            </small>
+          </div>
+          <div class="modal-event-actions">
+            ${appt.status !== "Confirmado" ? `<button class="btn-action confirm btn-sm" data-id="${appt.id}" data-action="confirm"><i class="fa-solid fa-check"></i></button>` : ""}
+            <button class="btn-action btn-sm" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)"><i class="fa-solid fa-pen"></i></button>
+            ${appt.phone ? `<button class="btn-action whatsapp btn-sm" data-phone="${appt.phone}" data-name="${appt.name}" data-action="whatsapp"><i class="fa-brands fa-whatsapp"></i></button>` : ""}
+            <button class="btn-action delete btn-sm" data-id="${appt.id}" data-action="delete"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        listDiv.appendChild(card);
+      });
+
+      listDiv.addEventListener("click", e => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const id     = btn.dataset.id;
+        if (action === "confirm") {
+          confirmAppt(id);
+        } else if (action === "edit") {
+          editingId = id;
+          buildModalBody();
+        } else if (action === "delete") {
+          deleteAppt(id);
+        } else if (action === "whatsapp") {
+          const phone = btn.dataset.phone.replace(/\D/g,"");
+          const name  = btn.dataset.name;
+          window.open(`https://wa.me/55${phone}?text=Ol%C3%A1%20${encodeURIComponent(name)}!%20Passando%20para%20confirmar%20seu%20hor%C3%A1rio%20na%20Adriano%20Hair%20Style.`, "_blank");
+        }
+      });
+
+      body.appendChild(listDiv);
+    } else {
+      const msg = document.createElement("p");
+      msg.className = "empty-slot-msg";
+      msg.innerHTML = `<i class="fa-regular fa-calendar-xmark" style="margin-right:6px;color:var(--blue-light)"></i>Horário livre — preencha para agendar`;
+      body.appendChild(msg);
+    }
+
+    const divider = document.createElement("div");
+    divider.className = "modal-divider";
+    body.appendChild(divider);
+
+    const formTitle = document.createElement("div");
+    formTitle.className = "modal-form-title";
+    formTitle.innerHTML = `<i class="fa-solid fa-plus"></i> Novo agendamento`;
+    body.appendChild(formTitle);
+
+    renderNewForm(body, footer);
+  }
+
+  function renderNewForm(body, footer) {
+    const { dateStr, timeStr } = modalContext;
+
+    const form = document.createElement("div");
+    form.className = "modal-form";
+    form.id = "modalNewForm";
+    form.innerHTML = `
+      <div class="modal-form-row">
+        <div class="form-group">
+          <label>Nome do cliente</label>
+          <input type="text" id="mName" placeholder="Ex: João Silva">
+        </div>
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="tel" id="mPhone" placeholder="Ex: 11987654321">
+        </div>
+      </div>
+      <div class="modal-form-row">
+        <div class="form-group">
+          <label>Barbeiro</label>
+          <select id="mBarber">
+            ${BARBERS.map(b => `<option value="${b}">${b}</option>`).join("")}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Serviço</label>
+          <select id="mService">
+            ${SERVICES.map(s => `<option value="${s}">${s}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+    `;
+    body.appendChild(form);
+
+    footer.innerHTML = `
+      <button class="btn btn-ghost btn-sm" id="modalCancelBtn">Cancelar</button>
+      <button class="btn btn-sm" id="modalSaveNewBtn">
+        <i class="fa-solid fa-calendar-plus"></i> Agendar
+      </button>
+    `;
+
+    document.getElementById("modalCancelBtn").onclick = closeModal;
+    document.getElementById("modalSaveNewBtn").onclick = () => {
+      const name    = document.getElementById("mName").value.trim();
+      const phone   = document.getElementById("mPhone").value.trim();
+      const stylist = document.getElementById("mBarber").value;
+      const service = document.getElementById("mService").value;
+
+      if (!name) { showNotification("Informe o nome do cliente.", "error"); return; }
+
+      const result = adicionarAgendamento({ name, phone, service, stylist, date: dateStr, time: timeStr, status: "Manual", origem: "Manual" });
+
+      if (result.sucesso) {
+        showNotification(result.mensagem, "success");
+        closeModal();
+        renderAgenda();
+      } else {
+        showNotification(result.mensagem, "error");
+      }
+    };
+  }
+
+  function renderEditForm(body, footer, appt) {
+    const header = document.createElement("div");
+    header.className = "modal-in-edit-header";
+    header.innerHTML = `
+      <span><i class="fa-solid fa-pen" style="margin-right:5px"></i>Editando: ${appt.name}</span>
+      <button class="modal-cancel-edit" id="cancelEditBtn">← Voltar</button>
+    `;
+    body.appendChild(header);
+
+    const form = document.createElement("div");
+    form.className = "modal-form";
+    form.innerHTML = `
+      <div class="modal-form-row">
+        <div class="form-group">
+          <label>Nome do cliente</label>
+          <input type="text" id="eName" value="${appt.name}">
+        </div>
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="tel" id="ePhone" value="${appt.phone || ""}">
+        </div>
+      </div>
+      <div class="modal-form-row">
+        <div class="form-group">
+          <label>Barbeiro</label>
+          <select id="eBarber">
+            ${BARBERS.map(b => `<option value="${b}" ${b === appt.stylist ? "selected" : ""}>${b}</option>`).join("")}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Serviço</label>
+          <select id="eService">
+            ${SERVICES.map(s => `<option value="${s}" ${s === appt.service ? "selected" : ""}>${s}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="eStatus">
+          <option value="Pendente" ${appt.status === "Pendente" ? "selected" : ""}>Pendente</option>
+          <option value="Confirmado" ${appt.status === "Confirmado" ? "selected" : ""}>Confirmado</option>
+          <option value="Manual" ${appt.status === "Manual" ? "selected" : ""}>Manual</option>
+        </select>
+      </div>
+    `;
+    body.appendChild(form);
+
+    footer.innerHTML = `
+      <button class="btn btn-ghost btn-sm" id="editCancelBtn">Cancelar</button>
+      <button class="btn-action delete" id="editDeleteBtn" style="padding:0 16px;min-height:38px">
+        <i class="fa-solid fa-trash"></i> Excluir
+      </button>
+      <button class="btn btn-sm" id="editSaveBtn">
+        <i class="fa-solid fa-check"></i> Salvar
+      </button>
+    `;
+
+    document.getElementById("cancelEditBtn").onclick = () => { editingId = null; buildModalBody(); };
+    document.getElementById("editCancelBtn").onclick = closeModal;
+    document.getElementById("editDeleteBtn").onclick = () => deleteAppt(appt.id);
+    document.getElementById("editSaveBtn").onclick   = () => {
+      const name    = document.getElementById("eName").value.trim();
+      const phone   = document.getElementById("ePhone").value.trim();
+      const stylist = document.getElementById("eBarber").value;
+      const service = document.getElementById("eService").value;
+      const status  = document.getElementById("eStatus").value;
+
+      if (!name) { showNotification("Informe o nome.", "error"); return; }
+
+      const all = buscarAgendamentos();
+      const idx = all.findIndex(a => a.id === appt.id);
+      if (idx !== -1) {
+        all[idx] = { ...all[idx], name: sanitizeString(name), phone: sanitizeString(phone), stylist, service, status };
+        salvarAgendamentos(all);
+        showNotification("Agendamento atualizado.", "success");
+        closeModal();
+        renderAgenda();
+      }
+    };
+  }
+
+  function confirmAppt(id) {
+    const all = buscarAgendamentos();
+    const idx = all.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      all[idx].status = "Confirmado";
+      salvarAgendamentos(all);
+      showNotification("Agendamento confirmado!", "success");
+      buildModalBody();
+      renderAgenda();
+    }
+  }
+
+  function deleteAppt(id) {
+    if (!confirm("Excluir este agendamento?")) return;
+    removerAgendamento(id);
+    showNotification("Agendamento removido.", "info");
+    closeModal();
+    renderAgenda();
+  }
+
+  function closeModal() {
+    const overlay = document.getElementById("slotModal");
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+    modalContext = null;
+    editingId    = null;
+  }
+
+  document.getElementById("modalClose").onclick = closeModal;
+  document.getElementById("slotModal").addEventListener("click", e => {
+    if (e.target === document.getElementById("slotModal")) closeModal();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+  });
 
   document.getElementById("prevWeek").addEventListener("click", () => {
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);
@@ -171,6 +1257,7 @@
     window.location.href = "login.html";
   });
 
+  buildBarberFilter();
   renderAgenda();
 </script>
 </body>

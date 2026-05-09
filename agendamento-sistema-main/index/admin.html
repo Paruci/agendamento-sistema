@@ -662,7 +662,6 @@
       const text = `Olá, ${btn.dataset.name}! Sobre seu horário na Adriano Hair Style: ${formatDate(btn.dataset.date)} às ${btn.dataset.time}.`;
       window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(text)}`, "_blank");
     }
-  });
 
   document.getElementById("prevWeekAdmin").addEventListener("click", () => {
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);

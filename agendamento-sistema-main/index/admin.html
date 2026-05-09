@@ -384,15 +384,28 @@
   }
 
   function calculateStats() {
+    const receitasValidas = ["Confirmado", "Manual"];
+    const despesasValidas = ["Despesa"];
     const today = getTodayString();
     const todayItems = scheduleData.filter(i => i.date === today);
     const weeklyItems = scheduleData.filter(isInCurrentWeek);
 
     const stats = {
-      todayRevenue: todayItems.filter(i => i.price >= 0).reduce((s, i) => s + i.price, 0),
-      weeklyRevenue: weeklyItems.filter(i => i.price >= 0).reduce((s, i) => s + i.price, 0),
-      weeklyExpenses: weeklyItems.filter(i => i.price < 0).reduce((s, i) => s + Math.abs(i.price), 0),
-      weeklyFees: weeklyItems.reduce((s, i) => s + (i.feeAmount || 0), 0),
+      todayRevenue: todayItems
+        .filter(i => receitasValidas.includes(i.status))
+        .reduce((s, i) => s + i.price, 0),
+
+      weeklyRevenue: weeklyItems
+        .filter(i => receitasValidas.includes(i.status))
+        .reduce((s, i) => s + i.price, 0),
+
+      weeklyExpenses: weeklyItems
+        .filter(i => despesasValidas.includes(i.status))
+        .reduce((s, i) => s + Math.abs(i.price), 0),
+
+      weeklyFees: weeklyItems
+        .filter(i => receitasValidas.includes(i.status))
+        .reduce((s, i) => s + (i.feeAmount || 0), 0),
       todayAppointments: todayItems.filter(i => i.status !== "Despesa").length,
       pending: scheduleData.filter(i => i.status === "Pendente").length,
       confirmed: scheduleData.filter(i => i.status === "Confirmado" || i.status === "Manual").length,
@@ -404,7 +417,9 @@
 
     stylists.forEach(stylist => {
       const items = weeklyItems.filter(i => i.stylist === stylist);
-      const gross = items.reduce((s, i) => s + i.price, 0);
+      const gross = items
+      .filter(i => receitasValidas.includes(i.status))
+      .reduce((s, i) => s + i.price, 0);
       const expense = items.filter(i => i.price < 0).reduce((s, i) => s + Math.abs(i.price), 0);
       const fee = items.reduce((s, i) => s + (i.feeAmount || 0), 0);
       const barberValue = gross * (barberShare[stylist] || 0);
@@ -580,8 +595,7 @@
         <td>
           <div class="action-btns">
             <button class="btn-action confirm" data-action="confirm" data-id="${item.id}">OK</button>
-            <button class="btn-action whatsapp" data-action="whatsapp" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
-            <button class="btn-action delete" data-action="delete" data-id="${item.id}">Excluir</button>
+            <button class="btn-action whatsapp" data-action="whatsapp" data-id="${item.id}" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>            <button class="btn-action delete" data-action="delete" data-id="${item.id}">Excluir</button>
           </div>
         </td>
       `;
@@ -657,11 +671,39 @@
     }
 
     if (action === "whatsapp") {
-      const phone = btn.dataset.phone;
-      if (!phone) { showNotification("Cliente sem WhatsApp cadastrado.", "error"); return; }
-      const text = `Olá, ${btn.dataset.name}! Sobre seu horário na Adriano Hair Style: ${formatDate(btn.dataset.date)} às ${btn.dataset.time}.`;
-      window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(text)}`, "_blank");
+    const phone = btn.dataset.phone;
+    const id = btn.dataset.id;
+
+    if (!phone) {
+      showNotification("Cliente sem WhatsApp cadastrado.", "error");
+      return;
     }
+
+    const items = buscarAgendamentos().map(i =>
+      i.id === id ? { ...i, status: "Confirmado" } : i
+    );
+
+    salvarAgendamentos(items);
+    updateDashboard();
+
+    const texto = `Olá, ${btn.dataset.name}!
+
+    Seu horário na Adriano Hair Style foi confirmado com sucesso. ✂️
+
+    📅 Data: ${formatDate(btn.dataset.date)}
+    ⏰ Horário: ${btn.dataset.time}
+
+    Qualquer dúvida, estamos à disposição.`;
+
+      window.open(
+        `https://wa.me/55${phone}?text=${encodeURIComponent(texto)}`,
+        "_blank"
+      );
+
+    showNotification("Agendamento confirmado e WhatsApp aberto.", "success");
+}
+
+});
 
   document.getElementById("prevWeekAdmin").addEventListener("click", () => {
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);

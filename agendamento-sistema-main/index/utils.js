@@ -16,8 +16,27 @@ function formatDate(dateString) {
   }
 }
 
+function onlyNumbers(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
 function validatePhone(phone) {
-  return /^\d{10,11}$/.test(phone.replace(/\D/g, ""));
+  const cleaned = onlyNumbers(phone);
+  return cleaned.length === 10 || cleaned.length === 11;
+}
+
+function formatPhone(phone) {
+  const cleaned = onlyNumbers(phone);
+
+  if (cleaned.length === 11) {
+    return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  }
+
+  if (cleaned.length === 10) {
+    return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+  }
+
+  return phone;
 }
 
 function sanitizeString(str) {

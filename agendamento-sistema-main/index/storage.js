@@ -31,17 +31,25 @@ function salvarAgendamentos(agendamentos) {
 function adicionarAgendamento(agendamento) {
   const agendamentos = buscarAgendamentos();
 
-  if (!agendamento.name || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
+  if (!agendamento.name || !agendamento.phone || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
     return { sucesso: false, mensagem: "Todos os campos são obrigatórios." };
   }
 
-  if (agendamento.phone && !validatePhone(agendamento.phone)) {
-    return { sucesso: false, mensagem: "Telefone inválido. Use formato brasileiro." };
+  if (!validatePhone(agendamento.phone)) {
+    return { sucesso: false, mensagem: "Telefone inválido. Use DDD + número." };
   }
 
   const hoje = new Date().toISOString().split("T")[0];
+
   if (agendamento.date < hoje) {
     return { sucesso: false, mensagem: "Não é possível agendar para datas passadas." };
+  }
+
+  const dataSelecionada = new Date(agendamento.date + "T00:00:00");
+  const diaSemana = dataSelecionada.getDay();
+
+  if (diaSemana === 0 || diaSemana === 1) {
+    return { sucesso: false, mensagem: "A barbearia atende de terça a sábado." };
   }
 
   const existe = agendamentos.some(item =>
@@ -57,7 +65,7 @@ function adicionarAgendamento(agendamento) {
   const novo = {
     id: gerarId(),
     name: sanitizeString(agendamento.name),
-    phone: sanitizeString(agendamento.phone || ""),
+    phone: sanitizeString(agendamento.phone),
     service: sanitizeString(agendamento.service),
     stylist: sanitizeString(agendamento.stylist),
     date: agendamento.date,
@@ -74,7 +82,11 @@ function adicionarAgendamento(agendamento) {
   agendamentos.push(novo);
   salvarAgendamentos(agendamentos);
 
-  return { sucesso: true, mensagem: "Agendamento salvo com sucesso." };
+  return {
+    sucesso: true,
+    mensagem: "Agendamento salvo com sucesso.",
+    agendamento: novo
+  };
 }
 
 function removerAgendamento(id) {

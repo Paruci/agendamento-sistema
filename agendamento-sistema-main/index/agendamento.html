@@ -236,6 +236,27 @@
   const hoje = new Date().toISOString().split("T")[0];
   document.getElementById("data").min = hoje;
 
+  const campoTelefone = document.getElementById("telefone");
+  const botaoSubmit = form.querySelector("button[type='submit']");
+
+  campoTelefone.addEventListener("input", function(e) {
+  let value = e.target.value.replace(/\D/g, "");
+
+  if (value.length > 11) {
+    value = value.slice(0, 11);
+  }
+
+  if (value.length > 10) {
+    value = value.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  } else if (value.length > 6) {
+    value = value.replace(/(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
+  } else if (value.length > 2) {
+    value = value.replace(/(\d{2})(\d+)/, "($1) $2");
+  }
+
+  e.target.value = value;
+});
+
   form.addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -245,6 +266,12 @@
     const barbeiro = document.getElementById("barbeiro").value;
     const data = document.getElementById("data").value;
     const horario = document.getElementById("horario").value;
+
+    botaoSubmit.disabled = true;
+    botaoSubmit.innerHTML = `
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    Processando...
+    `;
 
     const resultado = adicionarAgendamento({
       name: nome,
@@ -260,19 +287,83 @@
 
     if (!resultado.sucesso) {
       msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> ${resultado.mensagem}</div>`;
+      botaoSubmit.disabled = false;
+      botaoSubmit.innerHTML = `
+        <i class="fa-brands fa-whatsapp"></i>
+        Confirmar pelo WhatsApp
+        `;
       return;
     }
 
     msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> Agendamento salvo! Redirecionando para o WhatsApp...</div>`;
 
-    const texto = `Olá! Gostaria de confirmar meu agendamento na Adriano Hair Style.\n\n*Nome:* ${nome}\n*Serviço:* ${servico}\n*Barbeiro:* ${barbeiro}\n*Data:* ${formatDate(data)}\n*Horário:* ${horario}`;
+    const texto = `Olá! Gostaria de confirmar meu agendamento na Adriano Hair Style.
+
+    *Nome:* ${nome}
+    *WhatsApp:* ${formatPhone(telefone)}
+    *Serviço:* ${servico}
+    *Barbeiro:* ${barbeiro}
+    *Data:* ${formatDate(data)}
+    *Horário:* ${horario}
+
+    Fico no aguardo da confirmação.`;
 
     setTimeout(() => {
       window.open(`https://wa.me/5511950277744?text=${encodeURIComponent(texto)}`, "_blank");
+      botaoSubmit.disabled = false;
+
+      botaoSubmit.innerHTML = `
+        <i class="fa-brands fa-whatsapp"></i>
+        Confirmar pelo WhatsApp
+        `;
       form.reset();
       msg.innerHTML = "";
     }, 1600);
   });
+  const campoData = document.getElementById("data");
+const campoBarbeiro = document.getElementById("barbeiro");
+const campoHorario = document.getElementById("horario");
+
+function atualizarHorariosDisponiveis() {
+  const data = campoData.value;
+  const barbeiro = campoBarbeiro.value;
+
+  const options = campoHorario.querySelectorAll("option");
+
+  options.forEach(option => {
+    option.disabled = false;
+
+    if (option.value) {
+      option.textContent = option.value;
+    }
+  });
+
+  if (!data || !barbeiro) return;
+
+  const agendamentos = buscarAgendamentos();
+
+  const ocupados = agendamentos
+    .filter(item =>
+      item.date === data &&
+      item.stylist === barbeiro &&
+      item.status !== "Cancelado"
+    )
+    .map(item => item.time);
+
+  options.forEach(option => {
+    if (ocupados.includes(option.value)) {
+      option.disabled = true;
+      option.textContent = `${option.value} — ocupado`;
+    }
+  });
+
+  if (ocupados.includes(campoHorario.value)) {
+    campoHorario.value = "";
+  }
+}
+
+campoData.addEventListener("change", atualizarHorariosDisponiveis);
+campoBarbeiro.addEventListener("change", atualizarHorariosDisponiveis);
 </script>
 
 </body>

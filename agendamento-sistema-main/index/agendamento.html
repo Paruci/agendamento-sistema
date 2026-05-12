@@ -117,25 +117,15 @@
               <select id="horario" required>
                 <option value="">Selecione um horário</option>
                 <option value="09:00">09:00</option>
-                <option value="09:30">09:30</option>
                 <option value="10:00">10:00</option>
-                <option value="10:30">10:30</option>
                 <option value="11:00">11:00</option>
-                <option value="11:30">11:30</option>
-                <option value="12:00">12:00</option>
-                <option value="12:30">12:30</option>
                 <option value="13:00">13:00</option>
-                <option value="13:30">13:30</option>
                 <option value="14:00">14:00</option>
-                <option value="14:30">14:30</option>
                 <option value="15:00">15:00</option>
-                <option value="15:30">15:30</option>
                 <option value="16:00">16:00</option>
-                <option value="16:30">16:30</option>
                 <option value="17:00">17:00</option>
-                <option value="17:30">17:30</option>
                 <option value="18:00">18:00</option>
-                <option value="18:30">18:30</option>
+                <option value="19:00">19:00</option>
               </select>
             </div>
 
@@ -188,7 +178,7 @@
           <div class="summary-list">
             <div class="summary-item">
               <strong>Terça a sábado</strong>
-              <span>Das 09h às 19h</span>
+              <span>Das 09h às 19h (exceto 12h)</span>
             </div>
 
             <div class="summary-item">
@@ -267,6 +257,14 @@
     const data = document.getElementById("data").value;
     const horario = document.getElementById("horario").value;
 
+    if (data) {
+      const diaSelecionado = new Date(data + "T00:00:00").getDay();
+      if (diaSelecionado === 0 || diaSelecionado === 1) {
+        msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> A barbearia atende apenas de terça a sábado.</div>`;
+        return;
+      }
+    }
+
     botaoSubmit.disabled = true;
     botaoSubmit.innerHTML = `
     <i class="fa-solid fa-spinner fa-spin"></i>
@@ -324,6 +322,22 @@
 const campoBarbeiro = document.getElementById("barbeiro");
 const campoHorario = document.getElementById("horario");
 
+function validarDiaSemana() {
+  if (!campoData.value) return;
+
+  const dataSelecionada = new Date(campoData.value + "T00:00:00");
+  const diaSemana = dataSelecionada.getDay();
+
+  if (diaSemana === 0 || diaSemana === 1) {
+    msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> Selecione uma data de terça a sábado.</div>`;
+    campoData.value = "";
+    campoHorario.value = "";
+    return;
+  }
+
+  msg.innerHTML = "";
+}
+
 function atualizarHorariosDisponiveis() {
   const data = campoData.value;
   const barbeiro = campoBarbeiro.value;
@@ -362,7 +376,10 @@ function atualizarHorariosDisponiveis() {
   }
 }
 
-campoData.addEventListener("change", atualizarHorariosDisponiveis);
+campoData.addEventListener("change", function() {
+  validarDiaSemana();
+  atualizarHorariosDisponiveis();
+});
 campoBarbeiro.addEventListener("change", atualizarHorariosDisponiveis);
 </script>
 

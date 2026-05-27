@@ -4,26 +4,767 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Adriano Hair Style</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Chart.js — substitui os canvas manuais por gráficos de verdade -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ─── ADMIN LAYOUT ───────────────────────────────── */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .admin-sidebar {
+      width: 240px;
+      min-width: 240px;
+      background: var(--dark-2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .sidebar-brand {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      color: var(--white);
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-brand i {
+      color: var(--blue-light);
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      padding: 16px 12px;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all var(--transition);
+    }
+
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      background: var(--blue-subtle);
+      color: var(--white);
+    }
+
+    .sidebar-nav a.active {
+      color: var(--blue-light);
+    }
+
+    .sidebar-nav a i {
+      width: 16px;
+      text-align: center;
+    }
+
+    /* Badge de contagem na sidebar */
+    .sidebar-nav a .nav-badge {
+      margin-left: auto;
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      display: none;
+    }
+
+    .sidebar-nav a .nav-badge.visible {
+      display: inline-block;
+    }
+
+    .sidebar-logout {
+      padding: 16px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── MAIN CONTENT ────────────────────────────────── */
+    .admin-main {
+      flex: 1;
+      padding: 32px;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ─── TOP BAR ─────────────────────────────────────── */
+    .admin-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .admin-top h1 {
+      font-size: 3rem;
+      line-height: 1;
+      margin-top: 4px;
+    }
+
+    .admin-top p {
+      font-size: 0.875rem;
+      margin-top: 6px;
+      max-width: 480px;
+    }
+
+    .admin-top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* ─── MÉTRICAS CARDS ─────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* Card grande — ocupa 2 colunas */
+    .metric-card-lg {
+      grid-column: span 2;
+    }
+
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--transition);
+    }
+
+    .metric-card:hover {
+      border-color: var(--blue-light);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(36,87,255,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Card destaque (receita hoje) */
+    .metric-card.accent {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+      border-color: transparent;
+    }
+
+    .metric-card.accent h2,
+    .metric-card.accent small,
+    .metric-card.accent .metric-delta {
+      color: #fff;
+    }
+
+    .metric-card.accent::before {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+
+    .metric-card .metric-icon {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      font-size: 1.1rem;
+      color: var(--blue-light);
+      opacity: 0.5;
+    }
+
+    .metric-card.accent .metric-icon {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .metric-card small {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .metric-card h2 {
+      font-size: 2rem;
+      font-family: var(--font-display);
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .metric-delta {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .metric-delta.up { color: var(--success); }
+    .metric-delta.down { color: var(--danger); }
+
+    /* ─── SEÇÃO DE DOIS GRÁFICOS ──────────────────────── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .chart-card h4 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .chart-card p {
+      font-size: 0.78rem;
+      margin-bottom: 20px;
+    }
+
+    /* Gráfico de linha (receita semanal) — ocupa linha inteira */
+    .chart-full {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .chart-full h4 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .chart-full p {
+      font-size: 0.78rem;
+      margin-bottom: 20px;
+    }
+
+    /* ─── SEÇÃO BARBEIROS ─────────────────────────────── */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .section-head h3 {
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .section-head p {
+      font-size: 0.78rem;
+      margin-top: 3px;
+    }
+
+    .agenda-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .agenda-week-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* Revenue list */
+    .revenue-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .revenue-item {
+      display: grid;
+      grid-template-columns: 1fr repeat(3, auto);
+      align-items: center;
+      gap: 24px;
+      padding: 14px 16px;
+      background: var(--dark-3);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .revenue-item strong {
+      font-size: 0.9rem;
+      color: var(--white);
+    }
+
+    .revenue-item small {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .revenue-item .col {
+      text-align: right;
+    }
+
+    .revenue-item .col small {
+      display: block;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .revenue-item .col strong {
+      font-size: 0.88rem;
+    }
+
+    /* ─── TABELAS ─────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: var(--dark-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: rgba(36, 87, 255, 0.05);
+    }
+
+    tbody td {
+      padding: 11px 14px;
+      color: var(--text);
+    }
+
+    tbody td strong {
+      color: var(--white);
+    }
+
+    /* ─── BADGES ─────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-pending  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .badge-confirmed { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .badge-manual   { background: rgba(36,87,255,0.18); color: #7da4ff; }
+    .badge-expense  { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+    /* ─── ACTION BUTTONS NA TABELA ───────────────────── */
+    .action-btns {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-action {
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 9px;
+      transition: opacity var(--transition);
+    }
+
+    .btn-action:hover { opacity: 0.8; }
+
+    .btn-action.confirm  { background: rgba(34,197,94,0.2);  color: #22c55e; }
+    .btn-action.whatsapp { background: rgba(37,211,102,0.2); color: #25d366; }
+    .btn-action.delete   { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+    /* ─── FILTROS ─────────────────────────────────────── */
+    .admin-filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+      margin-bottom: 4px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 9px 12px;
+      font-size: 0.84rem;
+      transition: border-color var(--transition);
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue-light);
+    }
+
+    .form-group select option {
+      background: var(--dark-2);
+    }
+
+    /* ─── GRID 2 COLUNAS (clientes + caixa) ──────────── */
+    .admin-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* ─── LISTA DE CLIENTES ──────────────────────────── */
+    .clients-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .client-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      background: var(--dark-3);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .client-info strong {
+      font-size: 0.85rem;
+      color: var(--white);
+      display: block;
+    }
+
+    .client-info small {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .client-meta {
+      text-align: right;
+    }
+
+    .client-meta strong {
+      font-size: 0.78rem;
+      color: var(--blue-light);
+      display: block;
+    }
+
+    .client-meta small {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* ─── BOTÕES GERAIS ──────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition);
+      text-decoration: none;
+      background: var(--blue);
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+
+    .btn:hover { background: var(--blue-light); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { background: var(--blue-subtle); border-color: var(--blue-light); color: var(--white); transform: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--blue); color: var(--blue-light); }
+    .btn-outline:hover { background: var(--blue-subtle); }
+    .btn-sm { padding: 8px 16px; font-size: 0.76rem; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ─── TABS ─────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all var(--transition);
+    }
+
+    .tab-btn:hover { color: var(--white); }
+    .tab-btn.active { color: var(--blue-light); border-bottom-color: var(--blue-light); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ─── INFO MSG ─────────────────────────────────── */
+    .info-msg {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .info-msg.success { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+    .info-msg.error   { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+
+    /* ─── NOTIFICATIONS ────────────────────────────── */
+    .notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 340px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .notification.success { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .notification.error   { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .notification.info    { background: rgba(36,87,255,0.15);  color: #7da4ff; border: 1px solid rgba(36,87,255,0.3); }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0);    opacity: 1; }
+      to   { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* ─── EYEBROW ─────────────────────────────────── */
+    .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--blue-light);
+    }
+
+    /* ─── TICKET MÉDIO E RANKING ──────────────────── */
+    .ranking-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--dark-3);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .ranking-pos {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--blue-light);
+      width: 24px;
+      text-align: center;
+    }
+
+    .ranking-bar-wrap {
+      flex: 1;
+    }
+
+    .ranking-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .ranking-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .ranking-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+
+    /* ─── RESPONSIVO ──────────────────────────────── */
+    @media (max-width: 1100px) {
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .metric-card-lg { grid-column: span 1; }
+      .charts-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .admin-sidebar { display: none; }
+      .admin-main { padding: 16px; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .admin-2col { grid-template-columns: 1fr; }
+      .admin-filters { grid-template-columns: 1fr 1fr; }
+      .charts-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
 <div class="admin-layout">
+
+  <!-- ── SIDEBAR ──────────────────────────────────────── -->
   <aside class="admin-sidebar">
     <div class="sidebar-brand">
       <i class="fa-solid fa-scissors"></i>
       AHS Admin
     </div>
+
     <nav class="sidebar-nav">
-      <a href="admin.html" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-      <a href="agenda.html"><i class="fa-solid fa-calendar-days"></i> Agenda</a>
-      <a href="#clientesArea"><i class="fa-solid fa-users"></i> Clientes</a>
-      <a href="#financeiroArea"><i class="fa-solid fa-wallet"></i> Financeiro</a>
+      <a href="admin.html" class="active">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a href="agenda.html">
+        <i class="fa-solid fa-calendar-days"></i> Agenda
+      </a>
+      <a href="#clientesArea">
+        <i class="fa-solid fa-users"></i> Clientes
+      </a>
+      <a href="#financeiroArea">
+        <i class="fa-solid fa-wallet"></i> Financeiro
+      </a>
+      <a href="#caixaArea">
+        <i class="fa-solid fa-cash-register"></i> Caixa
+      </a>
     </nav>
+
     <div class="sidebar-logout">
       <button id="logoutBtn" class="btn btn-ghost btn-full btn-sm">
         <i class="fa-solid fa-right-from-bracket"></i> Sair
@@ -31,67 +772,125 @@
     </div>
   </aside>
 
+  <!-- ── MAIN ─────────────────────────────────────────── -->
   <main class="admin-main">
-    <div class="admin-top admin-hero-panel">
+
+    <!-- TOP BAR -->
+    <div class="admin-top">
       <div>
         <span class="eyebrow">Painel interno</span>
         <h1>Dashboard</h1>
-        <p>Controle a agenda, acompanhe faturamento, veja clientes recentes e registre entradas da barbearia.</p>
+        <p>Controle a agenda, acompanhe faturamento, veja clientes e registre entradas.</p>
       </div>
-    
       <div class="admin-top-actions">
         <a href="index.html" class="btn btn-ghost btn-sm">
-          <i class="fa-solid fa-arrow-left"></i>
-          Voltar ao site
+          <i class="fa-solid fa-arrow-left"></i> Site
         </a>
-    
         <a href="agenda.html" class="btn btn-sm">
-          <i class="fa-solid fa-calendar-days"></i>
-          Ver agenda
+          <i class="fa-solid fa-calendar-days"></i> Agenda
         </a>
       </div>
     </div>
 
-    <div class="metrics-grid metrics-premium">
-      <div class="card metric-card accent">
+    <!-- ── MÉTRICAS ──────────────────────────────────── -->
+    <div class="metrics-grid">
+
+      <!-- Card destaque: receita hoje -->
+      <div class="card metric-card accent metric-card-lg">
+        <i class="fa-solid fa-sack-dollar metric-icon"></i>
         <small>Receita hoje</small>
         <h2 id="faturamentoHoje">R$ 0,00</h2>
+        <span class="metric-delta" id="deltaHoje">— 0 atendimentos hoje</span>
       </div>
+
       <div class="card metric-card">
+        <i class="fa-solid fa-calendar-week metric-icon"></i>
         <small>Receita semanal</small>
         <h2 id="faturamentoSemana">R$ 0,00</h2>
+        <span class="metric-delta" id="deltaSemana">semana atual</span>
       </div>
+
       <div class="card metric-card">
-        <small>Despesas semana</small>
-        <h2 id="despesasSemana">R$ 0,00</h2>
-      </div>
-      <div class="card metric-card">
+        <i class="fa-solid fa-arrow-trend-up metric-icon"></i>
         <small>Lucro semanal</small>
         <h2 id="lucroSemana">R$ 0,00</h2>
+        <span class="metric-delta" id="deltaLucro">receita – despesas</span>
       </div>
+
       <div class="card metric-card">
-        <small>Taxas da maquininha</small>
+        <i class="fa-solid fa-arrow-trend-down metric-icon"></i>
+        <small>Despesas semana</small>
+        <h2 id="despesasSemana">R$ 0,00</h2>
+        <span class="metric-delta">lançamentos de despesa</span>
+      </div>
+
+      <div class="card metric-card">
+        <i class="fa-solid fa-percent metric-icon"></i>
+        <small>Taxas maquininha</small>
         <h2 id="taxasSemana">R$ 0,00</h2>
+        <span class="metric-delta">débito + crédito</span>
       </div>
+
       <div class="card metric-card">
-        <small>Agendamentos hoje</small>
-        <h2 id="agendamentosHoje">0</h2>
+        <i class="fa-solid fa-receipt metric-icon"></i>
+        <small>Ticket médio</small>
+        <h2 id="ticketMedio">R$ 0,00</h2>
+        <span class="metric-delta">por atendimento confirmado</span>
       </div>
+
       <div class="card metric-card">
+        <i class="fa-solid fa-clock metric-icon"></i>
         <small>Pendentes</small>
         <h2 id="totalPendentes">0</h2>
+        <span class="metric-delta">aguardando confirmação</span>
       </div>
+
       <div class="card metric-card">
+        <i class="fa-solid fa-check-circle metric-icon"></i>
         <small>Confirmados</small>
         <h2 id="totalConfirmados">0</h2>
+        <span class="metric-delta">total geral</span>
+      </div>
+
+    </div>
+
+    <!-- ── GRÁFICO DE LINHA: receita por dia da semana ── -->
+    <div class="chart-full">
+      <div class="section-head">
+        <div>
+          <h4>Receita por dia da semana</h4>
+          <p>Evolução da receita confirmada nos últimos 7 dias</p>
+        </div>
+        <div class="agenda-controls">
+          <button id="prevWeekLine" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
+          <span id="currentWeekLine" class="agenda-week-label"></span>
+          <button id="nextWeekLine" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+          <button id="goTodayLine" class="btn btn-sm">Hoje</button>
+        </div>
+      </div>
+      <canvas id="lineRevenueChart" height="100"></canvas>
+    </div>
+
+    <!-- ── GRÁFICOS: barras + pizza ───────────────────── -->
+    <div class="charts-row" id="financeiroArea">
+      <div class="chart-card">
+        <h4>Receita por barbeiro</h4>
+        <p>Comparativo da semana selecionada</p>
+        <canvas id="barberBarChart" height="220"></canvas>
+      </div>
+      <div class="chart-card">
+        <h4>Serviços mais realizados</h4>
+        <p>Top serviços no período</p>
+        <canvas id="servicesDonutChart" height="220"></canvas>
       </div>
     </div>
 
-    <div class="card" id="financeiroArea">
+    <!-- ── FATURAMENTO POR BARBEIRO ───────────────────── -->
+    <div class="section-card">
       <div class="section-head">
         <div>
           <h3>Faturamento por barbeiro</h3>
-          <p>Resumo da semana selecionada</p>
+          <p>Resumo da semana selecionada — bruto, repasse e barbearia</p>
         </div>
         <div class="agenda-controls">
           <button id="prevWeekAdmin" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
@@ -103,28 +902,23 @@
       <ul id="barberRevenue" class="revenue-list"></ul>
     </div>
 
-    <div class="card">
+    <!-- ── RANKING DE SERVIÇOS ────────────────────────── -->
+    <div class="section-card">
       <div class="section-head">
         <div>
-          <h3>Análise financeira</h3>
-          <p>Visão rápida de receita, despesa e taxas por barbeiro</p>
+          <h3>Ranking de serviços</h3>
+          <p>Serviços mais vendidos no geral</p>
         </div>
       </div>
-      <div class="charts-wrap">
-        <div class="chart-card">
-          <h4>Receita vs Despesa</h4>
-          <canvas id="financeOverviewChart" height="260"></canvas>
-        </div>
-        <div class="chart-card">
-          <h4>Taxas por barbeiro</h4>
-          <canvas id="barberExpenseChart" height="260"></canvas>
-        </div>
-      </div>
+      <ul id="rankingServicos" class="ranking-list"></ul>
+    </div>
 
-      <div class="section-head" style="margin-top: 28px;">
+    <!-- ── HISTÓRICO FINANCEIRO (tabela) ─────────────── -->
+    <div class="section-card">
+      <div class="section-head">
         <div>
-          <h3>Histórico de pagamentos</h3>
-          <p>Quanto já foi pago para cada barbeiro nesta semana</p>
+          <h3>Histórico financeiro por barbeiro</h3>
+          <p>Receita, despesas, taxas e líquido da semana</p>
         </div>
       </div>
       <div class="table-wrap">
@@ -144,7 +938,8 @@
       </div>
     </div>
 
-    <div class="card">
+    <!-- ── AGENDAMENTOS (tabela com filtros) ─────────── -->
+    <div class="section-card">
       <div class="section-head">
         <div>
           <h3>Agendamentos</h3>
@@ -179,7 +974,7 @@
           </select>
         </div>
         <div class="form-group" style="justify-content: flex-end;">
-          <button id="clearFilters" type="button" class="btn btn-ghost btn-sm">Limpar filtros</button>
+          <button id="clearFilters" type="button" class="btn btn-ghost btn-sm">Limpar</button>
         </div>
       </div>
 
@@ -203,8 +998,10 @@
       </div>
     </div>
 
+    <!-- ── CLIENTES + CAIXA ──────────────────────────── -->
     <div class="admin-2col">
-      <div class="card" id="clientesArea">
+
+      <div class="section-card" id="clientesArea">
         <div class="section-head">
           <div>
             <h3>Clientes recentes</h3>
@@ -214,30 +1011,37 @@
         <ul id="clientesRecentes" class="clients-list"></ul>
       </div>
 
-      <div class="card">
+      <div class="section-card" id="caixaArea">
         <div class="section-head">
           <div>
             <h3>Lançar entrada</h3>
-            <p>Registro rápido de atendimento pago</p>
+            <p>Registro rápido de atendimento ou despesa</p>
           </div>
         </div>
 
-        <form id="formCaixa" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Tabs receita / despesa -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="receita">
+            <i class="fa-solid fa-plus"></i> Receita
+          </button>
+          <button class="tab-btn" data-tab="despesa">
+            <i class="fa-solid fa-minus"></i> Despesa
+          </button>
+        </div>
+
+        <form id="formCaixa" style="display:flex;flex-direction:column;gap:12px;">
+          <input type="hidden" id="caixaTipo" value="Receita">
+
           <div class="form-group">
             <label for="caixaCliente">Nome do cliente</label>
             <input type="text" id="caixaCliente" placeholder="Ex: João Silva" required>
           </div>
+
           <div class="form-group">
-            <label for="caixaTelefone">WhatsApp</label>
+            <label for="caixaTelefone">WhatsApp <small style="font-size:0.68rem;text-transform:none;letter-spacing:0;">(opcional)</small></label>
             <input type="tel" id="caixaTelefone" placeholder="Ex: 11999999999">
           </div>
-          <div class="form-group">
-            <label for="caixaTipo">Tipo de lançamento</label>
-            <select id="caixaTipo" required>
-              <option value="Receita">Receita</option>
-              <option value="Despesa">Despesa</option>
-            </select>
-          </div>
+
           <div class="form-group">
             <label for="caixaPagamento">Meio de pagamento</label>
             <select id="caixaPagamento" required>
@@ -247,6 +1051,7 @@
               <option value="Crédito">Crédito (1,25%)</option>
             </select>
           </div>
+
           <div class="form-group">
             <label for="caixaCategoria">Categoria</label>
             <select id="caixaCategoria" required>
@@ -255,7 +1060,9 @@
               <option value="Outro">Outro</option>
             </select>
           </div>
-          <div class="form-group" id="produtoGroup" style="display: none;">
+
+          <!-- Produto — aparece só quando categoria = Produto -->
+          <div class="form-group" id="produtoGroup" style="display:none;">
             <label for="caixaProduto">Produto</label>
             <select id="caixaProduto">
               <option value="Coca-Cola - R$ 7|7">Coca-Cola — R$ 7</option>
@@ -274,14 +1081,17 @@
               <option value="Outro produto">Outro produto</option>
             </select>
           </div>
+
           <div class="form-group">
             <label for="caixaDescricao">Descrição</label>
             <input type="text" id="caixaDescricao" placeholder="Ex: Corte masculino / Venda de produto" required>
           </div>
+
           <div class="form-group">
             <label for="caixaValor">Valor (R$)</label>
             <input type="number" id="caixaValor" min="0" step="0.01" placeholder="Ex: 50" required>
           </div>
+
           <div class="form-group">
             <label for="caixaBarbeiro">Barbeiro</label>
             <select id="caixaBarbeiro" required>
@@ -291,24 +1101,31 @@
               <option value="Vinícius">Vinícius</option>
             </select>
           </div>
+
           <button type="submit" class="btn btn-full">
             <i class="fa-solid fa-plus"></i>
             Salvar lançamento
           </button>
+
           <div id="caixaMsg"></div>
         </form>
       </div>
+
     </div>
+
   </main>
 </div>
 
 <script src="utils.js"></script>
 <script src="storage.js"></script>
 <script>
+  // ─── PROTEÇÃO ─────────────────────────────────────────
   protegerAdmin();
 
+  // ─── CONSTANTES ───────────────────────────────────────
   const stylists = ["Adriano", "Arthur", "Igor", "Vinícius"];
 
+  // Mapa de preços por nome de serviço (normaliza variações)
   const servicePrices = {
     "Corte Masculino": 50,
     "Corte masculino - R$ 50": 50,
@@ -320,6 +1137,7 @@
     "Acabamento - R$ 20": 20
   };
 
+  // Percentual de comissão por barbeiro (1 = 100% = ele mesmo é dono)
   const barberShare = {
     "Adriano": 1,
     "Arthur": 0.56,
@@ -327,27 +1145,15 @@
     "Vinícius": 0.5
   };
 
+  // Referências para os objetos Chart.js — guardamos para destruir antes de recriar
+  let chartLine = null;
+  let chartBar  = null;
+  let chartDonut = null;
+
   let currentWeekStart = startOfWeek(new Date());
   let scheduleData = [];
 
-  function normalizeAppointment(item) {
-    return {
-      ...item,
-      name: item.name || item.client || item.nome || "Cliente",
-      phone: item.phone || item.telefone || "",
-      service: item.service || item.servico || "Serviço",
-      stylist: item.stylist || item.profissional || "Profissional",
-      date: item.date || item.data || "",
-      time: item.time || item.horario || "",
-      status: item.status || "Pendente",
-      price: Number(item.price || item.valor || servicePrices[item.service] || extractPrice(item.service) || 0)
-    };
-  }
-
-  function refreshData() {
-    scheduleData = buscarAgendamentos().map(normalizeAppointment);
-  }
-
+  // ─── HELPERS DE DATA ──────────────────────────────────
   function startOfWeek(date) {
     const d = new Date(date);
     const day = d.getDay();
@@ -383,86 +1189,139 @@
     return d >= currentWeekStart && d <= endOfWeek(currentWeekStart);
   }
 
+  // ─── NORMALIZA AGENDAMENTO (suporte a diferentes formatos) ─
+  function normalizeAppointment(item) {
+    return {
+      ...item,
+      name:    item.name    || item.client      || item.nome         || "Cliente",
+      phone:   item.phone   || item.telefone    || "",
+      service: item.service || item.servico     || "Serviço",
+      stylist: item.stylist || item.profissional || "Profissional",
+      date:    item.date    || item.data        || "",
+      time:    item.time    || item.horario     || "",
+      status:  item.status  || "Pendente",
+      price:   Number(item.price || item.valor || servicePrices[item.service] || extractPrice(item.service) || 0)
+    };
+  }
+
+  function refreshData() {
+    scheduleData = buscarAgendamentos().map(normalizeAppointment);
+  }
+
+  // ─── CÁLCULO DE ESTATÍSTICAS ──────────────────────────
   function calculateStats() {
     const receitasValidas = ["Confirmado", "Manual"];
-    const despesasValidas = ["Despesa"];
     const today = getTodayString();
-    const todayItems = scheduleData.filter(i => i.date === today);
+    const todayItems  = scheduleData.filter(i => i.date === today);
     const weeklyItems = scheduleData.filter(isInCurrentWeek);
+    const receitasWeek = weeklyItems.filter(i => receitasValidas.includes(i.status));
 
     const stats = {
-      todayRevenue: todayItems
-        .filter(i => receitasValidas.includes(i.status))
-        .reduce((s, i) => s + i.price, 0),
-
-      weeklyRevenue: weeklyItems
-        .filter(i => receitasValidas.includes(i.status))
-        .reduce((s, i) => s + i.price, 0),
-
-      weeklyExpenses: weeklyItems
-        .filter(i => despesasValidas.includes(i.status))
-        .reduce((s, i) => s + Math.abs(i.price), 0),
-
-      weeklyFees: weeklyItems
-        .filter(i => receitasValidas.includes(i.status))
-        .reduce((s, i) => s + (i.feeAmount || 0), 0),
+      todayRevenue:    todayItems.filter(i => receitasValidas.includes(i.status)).reduce((s,i) => s + i.price, 0),
+      weeklyRevenue:   receitasWeek.reduce((s,i) => s + i.price, 0),
+      weeklyExpenses:  weeklyItems.filter(i => i.status === "Despesa").reduce((s,i) => s + Math.abs(i.price), 0),
+      weeklyFees:      receitasWeek.reduce((s,i) => s + (i.feeAmount || 0), 0),
       todayAppointments: todayItems.filter(i => i.status !== "Despesa").length,
-      pending: scheduleData.filter(i => i.status === "Pendente").length,
-      confirmed: scheduleData.filter(i => i.status === "Confirmado" || i.status === "Manual").length,
+      pending:   scheduleData.filter(i => i.status === "Pendente").length,
+      confirmed: scheduleData.filter(i => receitasValidas.includes(i.status)).length,
       breakdown: {},
       feeByStylist: {}
     };
 
     stats.weeklyProfit = stats.weeklyRevenue - stats.weeklyExpenses;
+    stats.ticketMedio  = receitasWeek.length > 0 ? stats.weeklyRevenue / receitasWeek.length : 0;
 
     stylists.forEach(stylist => {
-      const items = weeklyItems.filter(i => i.stylist === stylist);
-      const gross = items
-      .filter(i => receitasValidas.includes(i.status))
-      .reduce((s, i) => s + i.price, 0);
-      const expense = items.filter(i => i.price < 0).reduce((s, i) => s + Math.abs(i.price), 0);
-      const fee = items.reduce((s, i) => s + (i.feeAmount || 0), 0);
+      const items   = weeklyItems.filter(i => i.stylist === stylist);
+      const gross   = items.filter(i => receitasValidas.includes(i.status)).reduce((s,i) => s + i.price, 0);
+      const expense = items.filter(i => i.status === "Despesa").reduce((s,i) => s + Math.abs(i.price), 0);
+      const fee     = items.reduce((s,i) => s + (i.feeAmount || 0), 0);
       const barberValue = gross * (barberShare[stylist] || 0);
-      const ownerValue = gross - barberValue;
-
-      stats.breakdown[stylist] = { appointments: items.length, gross, expense, fee, barberValue, ownerValue };
+      const ownerValue  = gross - barberValue;
+      stats.breakdown[stylist]    = { appointments: items.length, gross, expense, fee, barberValue, ownerValue };
       stats.feeByStylist[stylist] = fee;
     });
 
     return stats;
   }
 
-  function renderCards() {
-    const stats = calculateStats();
-    document.getElementById("faturamentoHoje").textContent = formatMoney(stats.todayRevenue);
-    document.getElementById("faturamentoSemana").textContent = formatMoney(stats.weeklyRevenue);
-    document.getElementById("despesasSemana").textContent = formatMoney(stats.weeklyExpenses);
-    document.getElementById("taxasSemana").textContent = formatMoney(stats.weeklyFees);
-    document.getElementById("lucroSemana").textContent = formatMoney(stats.weeklyProfit);
-    document.getElementById("agendamentosHoje").textContent = stats.todayAppointments;
-    document.getElementById("totalPendentes").textContent = stats.pending;
-    document.getElementById("totalConfirmados").textContent = stats.confirmed;
+  // ─── RECEITA POR DIA DA SEMANA (para gráfico de linha) ─
+  function getRevenueByDay() {
+    const receitasValidas = ["Confirmado", "Manual"];
+    const days   = [];
+    const labels = [];
+    const dayNames = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(currentWeekStart);
+      d.setDate(d.getDate() + i);
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+      const revenue = scheduleData
+        .filter(item => item.date === dateStr && receitasValidas.includes(item.status))
+        .reduce((s,i) => s + i.price, 0);
+      days.push(revenue);
+      labels.push(dayNames[i]);
+    }
+
+    return { labels, data: days };
   }
 
+  // ─── RANKING DE SERVIÇOS ──────────────────────────────
+  function getServiceRanking() {
+    const receitasValidas = ["Confirmado", "Manual"];
+    const map = {};
+    scheduleData
+      .filter(i => receitasValidas.includes(i.status))
+      .forEach(i => {
+        // pega só o nome, remove " - R$ XX"
+        const name = (i.service || "Serviço").split(" - R$")[0].trim();
+        map[name] = (map[name] || 0) + 1;
+      });
+    return Object.entries(map)
+      .sort((a,b) => b[1] - a[1])
+      .slice(0, 6);
+  }
+
+  // ─── RENDER: CARDS DE MÉTRICAS ────────────────────────
+  function renderCards() {
+    const stats = calculateStats();
+    document.getElementById("faturamentoHoje").textContent    = formatMoney(stats.todayRevenue);
+    document.getElementById("faturamentoSemana").textContent  = formatMoney(stats.weeklyRevenue);
+    document.getElementById("despesasSemana").textContent     = formatMoney(stats.weeklyExpenses);
+    document.getElementById("taxasSemana").textContent        = formatMoney(stats.weeklyFees);
+    document.getElementById("lucroSemana").textContent        = formatMoney(stats.weeklyProfit);
+    document.getElementById("totalPendentes").textContent     = stats.pending;
+    document.getElementById("totalConfirmados").textContent   = stats.confirmed;
+    document.getElementById("ticketMedio").textContent        = formatMoney(stats.ticketMedio);
+
+    // Delta cards
+    document.getElementById("deltaHoje").textContent = `— ${stats.todayAppointments} atendimento${stats.todayAppointments !== 1 ? "s" : ""} hoje`;
+    document.getElementById("deltaSemana").textContent = formatWeek(currentWeekStart);
+
+    const lucroEl = document.getElementById("deltaLucro");
+    lucroEl.textContent = stats.weeklyProfit >= 0 ? "positivo ↑" : "negativo ↓";
+    lucroEl.className   = "metric-delta " + (stats.weeklyProfit >= 0 ? "up" : "down");
+  }
+
+  // ─── RENDER: FATURAMENTO POR BARBEIRO (lista) ─────────
   function renderRevenue() {
     const stats = calculateStats();
-    const list = document.getElementById("barberRevenue");
+    const list  = document.getElementById("barberRevenue");
     list.innerHTML = "";
-
     document.getElementById("currentWeekAdmin").textContent = formatWeek(currentWeekStart);
+    document.getElementById("currentWeekLine").textContent  = formatWeek(currentWeekStart);
 
     stylists.forEach(stylist => {
       const item = stats.breakdown[stylist];
-      const pct = ((barberShare[stylist] || 0) * 100).toFixed(0);
-      const revenue = Math.max(item.gross, 0);
-      const li = document.createElement("li");
+      const pct  = ((barberShare[stylist] || 0) * 100).toFixed(0);
+      const li   = document.createElement("li");
       li.className = "revenue-item";
       li.innerHTML = `
         <div>
           <strong>${stylist}</strong>
           <small>${item.appointments} atend. · ${pct}% comissão</small>
         </div>
-        <div class="col"><small>Bruto</small><strong>${formatMoney(revenue)}</strong></div>
+        <div class="col"><small>Bruto</small><strong>${formatMoney(Math.max(item.gross,0))}</strong></div>
         <div class="col"><small>Barbeiro</small><strong>${formatMoney(item.barberValue)}</strong></div>
         <div class="col"><small>Barbearia</small><strong>${formatMoney(item.ownerValue)}</strong></div>
       `;
@@ -470,70 +1329,24 @@
     });
   }
 
+  // ─── RENDER: HISTÓRICO FINANCEIRO ─────────────────────
   function getLastExpenseDate(stylist) {
     const expenses = scheduleData
-      .filter(i => i.stylist === stylist && i.price < 0 && i.status === "Despesa")
-      .sort((a, b) => getDateTime(b) - getDateTime(a));
+      .filter(i => i.stylist === stylist && i.status === "Despesa")
+      .sort((a,b) => getDateTime(b) - getDateTime(a));
     return expenses.length ? formatDate(expenses[0].date) : "–";
-  }
-
-  function drawBarChart(canvasId, labels, values, colors) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    const width = canvas.clientWidth * dpr;
-    const height = 260 * dpr;
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "rgba(26,111,255,0.04)";
-    ctx.fillRect(0, 0, width, height);
-
-    const padding = 44 * dpr;
-    const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 1.8;
-    const maxValue = Math.max(...values, 1);
-    const barWidth = chartWidth / (values.length * 2.2);
-
-    values.forEach((value, i) => {
-      const barHeight = (value / maxValue) * chartHeight;
-      const x = padding + i * barWidth * 2.2 + barWidth * 0.1;
-      const y = height - padding - barHeight;
-
-      const grad = ctx.createLinearGradient(0, y, 0, height - padding);
-      grad.addColorStop(0, colors[i] || "#1a6fff");
-      grad.addColorStop(1, colors[i] ? colors[i] + "88" : "#1a6fff88");
-      ctx.fillStyle = grad;
-
-      ctx.beginPath();
-      ctx.roundRect(x, y, barWidth, barHeight, [4 * dpr, 4 * dpr, 0, 0]);
-      ctx.fill();
-
-      ctx.font = `${11 * dpr}px DM Sans, sans-serif`;
-      ctx.fillStyle = "rgba(180,200,240,0.7)";
-      ctx.textAlign = "center";
-      ctx.fillText(labels[i], x + barWidth / 2, height - padding + 16 * dpr);
-
-      if (value > 0) {
-        ctx.fillStyle = "rgba(255,255,255,0.85)";
-        ctx.fillText(formatMoney(value), x + barWidth / 2, y - 8 * dpr);
-      }
-    });
   }
 
   function renderExpenseHistory() {
     const stats = calculateStats();
     const tbody = document.getElementById("expenseHistoryTable");
     tbody.innerHTML = "";
-
     stylists.forEach(stylist => {
       const item = stats.breakdown[stylist];
-      const tr = document.createElement("tr");
+      const tr   = document.createElement("tr");
       tr.innerHTML = `
         <td><strong>${stylist}</strong></td>
-        <td>${formatMoney(Math.max(item.gross, 0))}</td>
+        <td>${formatMoney(Math.max(item.gross,0))}</td>
         <td>${formatMoney(item.expense)}</td>
         <td>${formatMoney(item.fee)}</td>
         <td>${formatMoney(item.gross - item.fee)}</td>
@@ -543,24 +1356,236 @@
     });
   }
 
-  function renderFinanceCharts() {
-    const stats = calculateStats();
-    setTimeout(() => {
-      drawBarChart("financeOverviewChart", ["Receita", "Despesa"], [stats.weeklyRevenue, stats.weeklyExpenses], ["#1a6fff", "#ef4444"]);
-      drawBarChart("barberExpenseChart", stylists, stylists.map(n => stats.feeByStylist[n] || 0), ["#1a6fff", "#3d87ff", "#60a5fa", "#93c5fd"]);
-    }, 50);
+  // ─── RENDER: RANKING DE SERVIÇOS ──────────────────────
+  function renderRanking() {
+    const ranking = getServiceRanking();
+    const list    = document.getElementById("rankingServicos");
+    list.innerHTML = "";
+
+    if (ranking.length === 0) {
+      list.innerHTML = `<li style="color:var(--muted);font-size:0.85rem;padding:14px;">Nenhum serviço confirmado ainda.</li>`;
+      return;
+    }
+
+    const maxVal = ranking[0][1];
+    ranking.forEach(([name, count], i) => {
+      const pct = Math.round((count / maxVal) * 100);
+      const li  = document.createElement("li");
+      li.className = "ranking-item";
+      li.innerHTML = `
+        <span class="ranking-pos">${i+1}</span>
+        <div class="ranking-bar-wrap">
+          <div class="ranking-label">
+            <span>${name}</span>
+            <span>${count}x</span>
+          </div>
+          <div class="ranking-bar">
+            <div class="ranking-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+      `;
+      list.appendChild(li);
+    });
   }
 
+  // ─── CHART.JS: PALETA E CONFIG BASE ───────────────────
+  // Cores consistentes com o design
+  const CHART_COLORS = {
+    blue:      "#2457ff",
+    blueLight: "#5f83ff",
+    blue2:     "#3d70ff",
+    blue3:     "#7da4ff",
+    red:       "#ef4444",
+    green:     "#22c55e",
+    amber:     "#f59e0b",
+    grid:      "rgba(95,131,255,0.1)",
+    muted:     "rgba(232,237,255,0.45)"
+  };
+
+  // Plugin global: desabilita defaults desnecessários
+  Chart.defaults.color = CHART_COLORS.muted;
+  Chart.defaults.borderColor = CHART_COLORS.grid;
+  Chart.defaults.font.family = "'Montserrat', sans-serif";
+  Chart.defaults.font.size   = 11;
+
+  // ─── GRÁFICO DE LINHA: receita por dia ────────────────
+  function renderLineChart() {
+    const { labels, data } = getRevenueByDay();
+    const ctx = document.getElementById("lineRevenueChart").getContext("2d");
+
+    // Destrói o chart anterior antes de recriar (evita memory leak)
+    if (chartLine) { chartLine.destroy(); chartLine = null; }
+
+    // Gradiente de preenchimento
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, "rgba(36,87,255,0.4)");
+    gradient.addColorStop(1, "rgba(36,87,255,0.0)");
+
+    chartLine = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Receita (R$)",
+          data,
+          borderColor: CHART_COLORS.blueLight,
+          backgroundColor: gradient,
+          borderWidth: 2.5,
+          pointBackgroundColor: CHART_COLORS.blue,
+          pointBorderColor:     "#fff",
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${formatMoney(ctx.raw)}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: CHART_COLORS.grid },
+            ticks: { color: CHART_COLORS.muted }
+          },
+          y: {
+            grid: { color: CHART_COLORS.grid },
+            ticks: {
+              color: CHART_COLORS.muted,
+              callback: v => "R$ " + v.toLocaleString("pt-BR")
+            },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // ─── GRÁFICO DE BARRAS: receita por barbeiro ──────────
+  function renderBarChart() {
+    const stats  = calculateStats();
+    const values = stylists.map(s => Math.max(stats.breakdown[s].gross, 0));
+    const ctx    = document.getElementById("barberBarChart").getContext("2d");
+
+    if (chartBar) { chartBar.destroy(); chartBar = null; }
+
+    chartBar = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: stylists,
+        datasets: [{
+          label: "Receita bruta",
+          data: values,
+          backgroundColor: [
+            CHART_COLORS.blue,
+            CHART_COLORS.blue2,
+            CHART_COLORS.blueLight,
+            CHART_COLORS.blue3
+          ],
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${formatMoney(ctx.raw)}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: CHART_COLORS.muted }
+          },
+          y: {
+            grid: { color: CHART_COLORS.grid },
+            ticks: {
+              color: CHART_COLORS.muted,
+              callback: v => "R$ " + v.toLocaleString("pt-BR")
+            },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // ─── GRÁFICO DONUT: serviços mais realizados ──────────
+  function renderDonutChart() {
+    const ranking = getServiceRanking();
+    const ctx     = document.getElementById("servicesDonutChart").getContext("2d");
+
+    if (chartDonut) { chartDonut.destroy(); chartDonut = null; }
+
+    if (ranking.length === 0) return;
+
+    const donutColors = [
+      CHART_COLORS.blue,
+      CHART_COLORS.blueLight,
+      CHART_COLORS.blue2,
+      CHART_COLORS.blue3,
+      CHART_COLORS.amber,
+      CHART_COLORS.green
+    ];
+
+    chartDonut = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: ranking.map(r => r[0]),
+        datasets: [{
+          data: ranking.map(r => r[1]),
+          backgroundColor: donutColors,
+          borderColor: "var(--card)",
+          borderWidth: 3,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: "65%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              color: CHART_COLORS.muted,
+              boxWidth: 10,
+              padding: 12,
+              font: { size: 11 }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.label}: ${ctx.raw}x`
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // ─── RENDER: TABELA DE AGENDAMENTOS ───────────────────
   function getFilteredAppointments() {
-    const date = document.getElementById("filterDate").value;
+    const date   = document.getElementById("filterDate").value;
     const barber = document.getElementById("filterBarber").value;
     const status = document.getElementById("filterStatus").value;
 
     return [...scheduleData]
-      .filter(i => !date || i.date === date)
+      .filter(i => !date   || i.date    === date)
       .filter(i => !barber || i.stylist === barber)
-      .filter(i => !status || i.status === status)
-      .sort((a, b) => getDateTime(a) - getDateTime(b));
+      .filter(i => !status || i.status  === status)
+      .sort((a,b) => getDateTime(a) - getDateTime(b));
   }
 
   function renderAppointmentsTable() {
@@ -569,33 +1594,34 @@
     tbody.innerHTML = "";
 
     if (items.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--muted); padding:24px;">Nenhum agendamento encontrado.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px;">Nenhum agendamento encontrado.</td></tr>`;
       return;
     }
 
+    const statusMap = {
+      "Pendente":   "badge-pending",
+      "Confirmado": "badge-confirmed",
+      "Manual":     "badge-manual",
+      "Despesa":    "badge-expense"
+    };
+
     items.forEach(item => {
       const phoneDigits = item.phone.replace(/\D/g, "");
-      const statusMap = {
-        "Pendente": "badge-pending",
-        "Confirmado": "badge-confirmed",
-        "Manual": "badge-manual",
-        "Despesa": "badge-expense"
-      };
-      const badgeClass = statusMap[item.status] || "badge-pending";
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td><strong>${item.name}</strong></td>
         <td>${item.phone || "–"}</td>
-        <td>${item.service}</td>
+        <td>${(item.service || "").split(" - R$")[0]}</td>
         <td>${item.stylist}</td>
         <td>${formatDate(item.date)}</td>
         <td>${item.time || "--:--"}</td>
-        <td><span class="badge ${badgeClass}">${item.status}</span></td>
+        <td><span class="badge ${statusMap[item.status] || "badge-pending"}">${item.status}</span></td>
         <td>${formatMoney(item.price)}</td>
         <td>
           <div class="action-btns">
-            <button class="btn-action confirm" data-action="confirm" data-id="${item.id}">OK</button>
-            <button class="btn-action whatsapp" data-action="whatsapp" data-id="${item.id}" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>            <button class="btn-action delete" data-action="delete" data-id="${item.id}">Excluir</button>
+            <button class="btn-action confirm"  data-action="confirm"   data-id="${item.id}">OK</button>
+            <button class="btn-action whatsapp" data-action="whatsapp"  data-id="${item.id}" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
+            <button class="btn-action delete"   data-action="delete"    data-id="${item.id}">Excluir</button>
           </div>
         </td>
       `;
@@ -603,12 +1629,13 @@
     });
   }
 
+  // ─── RENDER: CLIENTES RECENTES ────────────────────────
   function renderClients() {
     const list = document.getElementById("clientesRecentes");
-    const map = new Map();
+    const map  = new Map();
 
     [...scheduleData]
-      .sort((a, b) => getDateTime(b) - getDateTime(a))
+      .sort((a,b) => getDateTime(b) - getDateTime(a))
       .forEach(item => {
         const key = `${item.name}-${item.phone}`;
         if (!map.has(key)) map.set(key, item);
@@ -618,7 +1645,7 @@
     list.innerHTML = "";
 
     if (clients.length === 0) {
-      list.innerHTML = `<li style="color:var(--muted); font-size:0.88rem; padding:14px;">Nenhum cliente registrado ainda.</li>`;
+      list.innerHTML = `<li style="color:var(--muted);font-size:0.88rem;padding:14px;">Nenhum cliente registrado ainda.</li>`;
       return;
     }
 
@@ -632,31 +1659,45 @@
         </div>
         <div class="client-meta">
           <strong>${formatDate(item.date)}</strong>
-          <small>${item.service?.split(" - ")[0] || item.service}</small>
+          <small>${(item.service || "").split(" - R$")[0]}</small>
         </div>
       `;
       list.appendChild(li);
     });
   }
 
+  // ─── UPDATE GERAL ─────────────────────────────────────
   function updateDashboard() {
     refreshData();
     renderCards();
     renderRevenue();
-    renderFinanceCharts();
     renderExpenseHistory();
+    renderRanking();
+    renderLineChart();
+    renderBarChart();
+    renderDonutChart();
     renderAppointmentsTable();
     renderClients();
+
+    // Atualiza badge de pendentes na sidebar
+    const pendenteBadge = document.querySelector(".sidebar-nav .nav-badge");
+    if (pendenteBadge) {
+      const n = scheduleData.filter(i => i.status === "Pendente").length;
+      pendenteBadge.textContent = n;
+      pendenteBadge.classList.toggle("visible", n > 0);
+    }
   }
 
+  // ─── EVENTOS: TABELA DE AGENDAMENTOS ─────────────────
   document.getElementById("appointmentsTable").addEventListener("click", e => {
     const btn = e.target.closest("button");
     if (!btn) return;
-
     const action = btn.dataset.action;
 
     if (action === "confirm") {
-      const items = buscarAgendamentos().map(i => i.id === btn.dataset.id ? { ...i, status: "Confirmado" } : i);
+      const items = buscarAgendamentos().map(i =>
+        i.id === btn.dataset.id ? { ...i, status: "Confirmado" } : i
+      );
       salvarAgendamentos(items);
       updateDashboard();
       showNotification("Agendamento confirmado.", "success");
@@ -671,137 +1712,83 @@
     }
 
     if (action === "whatsapp") {
-    const phone = btn.dataset.phone;
-    const id = btn.dataset.id;
-
-    if (!phone) {
-      showNotification("Cliente sem WhatsApp cadastrado.", "error");
-      return;
-    }
-
-    const items = buscarAgendamentos().map(i =>
-      i.id === id ? { ...i, status: "Confirmado" } : i
-    );
-
-    salvarAgendamentos(items);
-    updateDashboard();
-
-    const texto = `Olá, ${btn.dataset.name}!
-
-    Seu horário na Adriano Hair Style foi confirmado com sucesso. ✂️
-
-    📅 Data: ${formatDate(btn.dataset.date)}
-    ⏰ Horário: ${btn.dataset.time}
-
-    Qualquer dúvida, estamos à disposição.`;
-
-      window.open(
-        `https://wa.me/55${phone}?text=${encodeURIComponent(texto)}`,
-        "_blank"
+      const phone = btn.dataset.phone;
+      if (!phone) {
+        showNotification("Cliente sem WhatsApp cadastrado.", "error");
+        return;
+      }
+      const items = buscarAgendamentos().map(i =>
+        i.id === btn.dataset.id ? { ...i, status: "Confirmado" } : i
       );
+      salvarAgendamentos(items);
+      updateDashboard();
 
-    showNotification("Agendamento confirmado e WhatsApp aberto.", "success");
-}
+      const texto = `Olá, ${btn.dataset.name}!\n\nSeu horário na Adriano Hair Style foi confirmado com sucesso. ✂️\n\n📅 Data: ${formatDate(btn.dataset.date)}\n⏰ Horário: ${btn.dataset.time}\n\nQualquer dúvida, estamos à disposição.`;
+      window.open(`https://wa.me/55${phone}?text=${encodeURIComponent(texto)}`, "_blank");
+      showNotification("Confirmado e WhatsApp aberto.", "success");
+    }
+  });
 
-});
-
+  // ─── EVENTOS: NAVEGAÇÃO DE SEMANA ────────────────────
   document.getElementById("prevWeekAdmin").addEventListener("click", () => {
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);
     updateDashboard();
   });
-
   document.getElementById("nextWeekAdmin").addEventListener("click", () => {
     currentWeekStart.setDate(currentWeekStart.getDate() + 7);
     updateDashboard();
   });
-
   document.getElementById("goTodayAdmin").addEventListener("click", () => {
     currentWeekStart = startOfWeek(new Date());
     updateDashboard();
   });
-
-  ["filterDate", "filterBarber", "filterStatus"].forEach(id => {
-    document.getElementById(id).addEventListener("change", renderAppointmentsTable);
+  document.getElementById("prevWeekLine").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    updateDashboard();
+  });
+  document.getElementById("nextWeekLine").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    updateDashboard();
+  });
+  document.getElementById("goTodayLine").addEventListener("click", () => {
+    currentWeekStart = startOfWeek(new Date());
+    updateDashboard();
   });
 
+  // ─── EVENTOS: FILTROS ────────────────────────────────
+  ["filterDate","filterBarber","filterStatus"].forEach(id => {
+    document.getElementById(id).addEventListener("change", renderAppointmentsTable);
+  });
   document.getElementById("clearFilters").addEventListener("click", () => {
-    document.getElementById("filterDate").value = "";
+    document.getElementById("filterDate").value   = "";
     document.getElementById("filterBarber").value = "";
     document.getElementById("filterStatus").value = "";
     renderAppointmentsTable();
   });
 
-  document.getElementById("formCaixa").addEventListener("submit", e => {
-    e.preventDefault();
+  // ─── EVENTOS: TABS (receita/despesa) ─────────────────
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("caixaTipo").value = btn.dataset.tab === "despesa" ? "Despesa" : "Receita";
 
-    const cliente = document.getElementById("caixaCliente").value.trim();
-    const telefone = document.getElementById("caixaTelefone").value.trim();
-    const tipo = document.getElementById("caixaTipo").value;
-    const pagamento = document.getElementById("caixaPagamento").value;
-    const categoria = document.getElementById("caixaCategoria").value;
-    const produtoRaw = document.getElementById("caixaProduto").value;
-    const descricao = document.getElementById("caixaDescricao").value.trim();
-    const valor = Number(document.getElementById("caixaValor").value);
-    const barbeiro = document.getElementById("caixaBarbeiro").value;
-    const msg = document.getElementById("caixaMsg");
-
-    if (!descricao || !valor || valor <= 0) {
-      msg.innerHTML = `<div class="info-msg error">Preencha todos os campos corretamente.</div>`;
-      return;
-    }
-
-    const now = new Date();
-    const pad = v => String(v).padStart(2, "0");
-    const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    const isExpense = tipo === "Despesa";
-    const feePercent = pagamento === "Débito" ? 0.00415 : pagamento === "Crédito" ? 0.0125 : 0;
-    const feeAmount = isExpense ? 0 : Number((valor * feePercent).toFixed(2));
-    const netValue = isExpense ? -valor : Number((valor - feeAmount).toFixed(2));
-
-    let finalDescricao = descricao;
-    if (categoria === "Produto" && produtoRaw && produtoRaw !== "Outro produto") {
-      finalDescricao = produtoRaw.split(" - R$ ")[0].split("|")[0];
-    }
-
-    const resultado = adicionarAgendamento({
-      name: cliente || (isExpense ? `Despesa: ${finalDescricao}` : finalDescricao),
-      phone: telefone,
-      service: finalDescricao,
-      categoria,
-      paymentMethod: pagamento,
-      feeAmount,
-      price: netValue,
-      stylist: barbeiro,
-      date,
-      time,
-      status: isExpense ? "Despesa" : "Confirmado",
-      origem: "Caixa"
+      // Esconde campo de pagamento se for despesa (despesas não têm taxa de maquininha)
+      document.getElementById("caixaPagamento").closest(".form-group").style.display =
+        btn.dataset.tab === "despesa" ? "none" : "flex";
     });
-
-    if (!resultado.sucesso) {
-      msg.innerHTML = `<div class="info-msg error">${resultado.mensagem}</div>`;
-      return;
-    }
-
-    msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> ${cliente || finalDescricao} registrado com sucesso!</div>`;
-    e.target.reset();
-    updateDashboard();
-    setTimeout(() => msg.innerHTML = "", 3000);
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    logoutAdmin();
-    window.location.href = "login.html";
-  });
-
-  document.getElementById("caixaCategoria").addEventListener("change", function() {
+  // ─── EVENTOS: FORMULÁRIO DE CAIXA ────────────────────
+  // Mostra seletor de produto quando categoria = Produto
+  document.getElementById("caixaCategoria").addEventListener("change", function () {
     const show = this.value === "Produto";
     document.getElementById("produtoGroup").style.display = show ? "flex" : "none";
     document.getElementById("caixaProduto").required = show;
   });
 
-  document.getElementById("caixaProduto").addEventListener("change", function() {
+  // Preenche valor/descrição ao selecionar produto
+  document.getElementById("caixaProduto").addEventListener("change", function () {
     const parts = this.value.split("|");
     if (parts.length === 2 && this.value !== "Outro produto") {
       document.getElementById("caixaValor").value = parts[1];
@@ -812,6 +1799,96 @@
     }
   });
 
+  document.getElementById("formCaixa").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const cliente    = document.getElementById("caixaCliente").value.trim();
+    const telefone   = document.getElementById("caixaTelefone").value.trim();
+    const tipo       = document.getElementById("caixaTipo").value;
+    const pagamento  = tipo === "Despesa" ? "Dinheiro" : document.getElementById("caixaPagamento").value;
+    const categoria  = document.getElementById("caixaCategoria").value;
+    const produtoRaw = document.getElementById("caixaProduto").value;
+    const descricao  = document.getElementById("caixaDescricao").value.trim();
+    const valor      = Number(document.getElementById("caixaValor").value);
+    const barbeiro   = document.getElementById("caixaBarbeiro").value;
+    const msg        = document.getElementById("caixaMsg");
+
+    if (!descricao || !valor || valor <= 0) {
+      msg.innerHTML = `<div class="info-msg error">Preencha todos os campos corretamente.</div>`;
+      return;
+    }
+
+    const now  = new Date();
+    const pad  = v => String(v).padStart(2, "0");
+    const date = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+    const isExpense = tipo === "Despesa";
+    const feePercent = pagamento === "Débito" ? 0.00415 : pagamento === "Crédito" ? 0.0125 : 0;
+    const feeAmount  = isExpense ? 0 : Number((valor * feePercent).toFixed(2));
+    const netValue   = isExpense ? -valor : Number((valor - feeAmount).toFixed(2));
+
+    let finalDescricao = descricao;
+    if (categoria === "Produto" && produtoRaw && produtoRaw !== "Outro produto") {
+      finalDescricao = produtoRaw.split(" - R$ ")[0].split("|")[0];
+    }
+
+    const resultado = adicionarAgendamento({
+      name:          cliente || (isExpense ? `Despesa: ${finalDescricao}` : finalDescricao),
+      phone:         telefone || "00000000000", // caixa manual: telefone é opcional
+      service:       finalDescricao,
+      categoria,
+      paymentMethod: pagamento,
+      feeAmount,
+      price:         netValue,
+      stylist:       barbeiro,
+      date, time,
+      status:        isExpense ? "Despesa" : "Manual",
+      origem:        "Caixa"
+    });
+
+    // Lançamento de caixa não precisa de validação de telefone — bypass se necessário
+    if (!resultado.sucesso) {
+      // Se o erro for só telefone inválido (caixa pode não ter o número), salva mesmo assim
+      if (resultado.mensagem && resultado.mensagem.includes("Telefone")) {
+        // Tenta de novo sem telefone
+        const r2 = adicionarAgendamento({
+          name:          cliente || finalDescricao,
+          phone:         "00000000000",
+          service:       finalDescricao,
+          categoria,
+          paymentMethod: pagamento,
+          feeAmount,
+          price:         netValue,
+          stylist:       barbeiro,
+          date, time,
+          status:        isExpense ? "Despesa" : "Manual",
+          origem:        "Caixa"
+        });
+        if (!r2.sucesso) {
+          msg.innerHTML = `<div class="info-msg error">${r2.mensagem}</div>`;
+          return;
+        }
+      } else {
+        msg.innerHTML = `<div class="info-msg error">${resultado.mensagem}</div>`;
+        return;
+      }
+    }
+
+    msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> ${cliente || finalDescricao} registrado!</div>`;
+    e.target.reset();
+    document.getElementById("produtoGroup").style.display = "none";
+    updateDashboard();
+    setTimeout(() => msg.innerHTML = "", 3000);
+  });
+
+  // ─── EVENTO: LOGOUT ──────────────────────────────────
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    logoutAdmin();
+    window.location.href = "login.html";
+  });
+
+  // ─── INIT ─────────────────────────────────────────────
   updateDashboard();
 </script>
 </body>

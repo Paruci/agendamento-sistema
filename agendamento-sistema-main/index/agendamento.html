@@ -240,7 +240,7 @@
     const servico  = document.getElementById("servico").value;
     const barbeiro = campoBarbeiro.value;
     const data     = campoData.value;
-    const horario  = campoHorario.value;
+    const horarios = getHorariosDisponiveis(data, barbeiro, servico);
 
     btnAgendar.disabled  = true;
     btnAgendar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;

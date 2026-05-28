@@ -85,6 +85,7 @@ function adicionarAgendamento(agendamento) {
   return {
     sucesso: true,
     mensagem: "Agendamento salvo com sucesso.",
+    duration: getDuracaoServico(dados.service, dados.stylist),
     agendamento: novo
   };
 }

@@ -435,6 +435,7 @@
     .badge-confirmed { background: rgba(34,197,94,0.15); color: #22c55e; }
     .badge-manual   { background: rgba(36,87,255,0.18); color: #7da4ff; }
     .badge-expense  { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .badge-finalized { background: rgba(36,87,255,0.22); color: #8fb0ff; }
 
     /* ─── ACTION BUTTONS NA TABELA ───────────────────── */
     .action-btns {
@@ -798,23 +799,23 @@
       <!-- Card destaque: receita hoje -->
       <div class="card metric-card accent metric-card-lg">
         <i class="fa-solid fa-sack-dollar metric-icon"></i>
-        <small>Receita hoje</small>
+        <small>Receita real hoje</small>
         <h2 id="faturamentoHoje">R$ 0,00</h2>
-        <span class="metric-delta" id="deltaHoje">— 0 atendimentos hoje</span>
+        <span class="metric-delta" id="deltaHoje">somente finalizados</span>
       </div>
 
       <div class="card metric-card">
         <i class="fa-solid fa-calendar-week metric-icon"></i>
-        <small>Receita semanal</small>
+        <small>Receita real semana</small>
         <h2 id="faturamentoSemana">R$ 0,00</h2>
-        <span class="metric-delta" id="deltaSemana">semana atual</span>
+        <span class="metric-delta" id="deltaSemana">somente finalizados</span>
       </div>
 
       <div class="card metric-card">
         <i class="fa-solid fa-arrow-trend-up metric-icon"></i>
-        <small>Lucro semanal</small>
-        <h2 id="lucroSemana">R$ 0,00</h2>
-        <span class="metric-delta" id="deltaLucro">receita – despesas</span>
+        <small>Receita esperada semana</small>
+        <h2 id="receitaEsperadaSemana">R$ 0,00</h2>
+        <span class="metric-delta" id="deltaEsperada">pendentes + confirmados + manuais</span>
       </div>
 
       <div class="card metric-card">
@@ -833,9 +834,9 @@
 
       <div class="card metric-card">
         <i class="fa-solid fa-receipt metric-icon"></i>
-        <small>Ticket médio</small>
+        <small>Ticket médio real</small>
         <h2 id="ticketMedio">R$ 0,00</h2>
-        <span class="metric-delta">por atendimento confirmado</span>
+        <span class="metric-delta">por atendimento finalizado</span>
       </div>
 
       <div class="card metric-card">
@@ -847,9 +848,9 @@
 
       <div class="card metric-card">
         <i class="fa-solid fa-check-circle metric-icon"></i>
-        <small>Confirmados</small>
-        <h2 id="totalConfirmados">0</h2>
-        <span class="metric-delta">total geral</span>
+        <small>Finalizados</small>
+        <h2 id="totalFinalizados">0</h2>
+        <span class="metric-delta">entradas reais</span>
       </div>
 
     </div>
@@ -859,7 +860,7 @@
       <div class="section-head">
         <div>
           <h4>Receita por dia da semana</h4>
-          <p>Evolução da receita confirmada nos últimos 7 dias</p>
+          <p>Evolução da receita real: apenas atendimentos finalizados</p>
         </div>
         <div class="agenda-controls">
           <button id="prevWeekLine" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
@@ -875,12 +876,12 @@
     <div class="charts-row" id="financeiroArea">
       <div class="chart-card">
         <h4>Receita por barbeiro</h4>
-        <p>Comparativo da semana selecionada</p>
+        <p>Receita real por barbeiro na semana selecionada</p>
         <canvas id="barberBarChart" height="220"></canvas>
       </div>
       <div class="chart-card">
         <h4>Serviços mais realizados</h4>
-        <p>Top serviços no período</p>
+        <p>Somente serviços finalizados no período</p>
         <canvas id="servicesDonutChart" height="220"></canvas>
       </div>
     </div>
@@ -890,7 +891,7 @@
       <div class="section-head">
         <div>
           <h3>Faturamento por barbeiro</h3>
-          <p>Resumo da semana selecionada — bruto, repasse e barbearia</p>
+          <p>Resumo da semana selecionada — somente atendimentos finalizados</p>
         </div>
         <div class="agenda-controls">
           <button id="prevWeekAdmin" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
@@ -907,7 +908,7 @@
       <div class="section-head">
         <div>
           <h3>Ranking de serviços</h3>
-          <p>Serviços mais vendidos no geral</p>
+          <p>Serviços mais vendidos após fechamento</p>
         </div>
       </div>
       <ul id="rankingServicos" class="ranking-list"></ul>
@@ -970,6 +971,7 @@
             <option value="Pendente">Pendente</option>
             <option value="Confirmado">Confirmado</option>
             <option value="Manual">Manual</option>
+            <option value="Finalizado">Finalizado</option>
             <option value="Despesa">Despesa</option>
           </select>
         </div>
@@ -1210,35 +1212,42 @@
 
   // ─── CÁLCULO DE ESTATÍSTICAS ──────────────────────────
   function calculateStats() {
-    const receitasValidas = ["Confirmado", "Manual"];
+    const statusReal = ["Finalizado"];
+    const statusEsperado = ["Pendente", "Confirmado", "Manual"];
     const today = getTodayString();
-    const todayItems  = scheduleData.filter(i => i.date === today);
+    const todayItems = scheduleData.filter(i => i.date === today);
     const weeklyItems = scheduleData.filter(isInCurrentWeek);
-    const receitasWeek = weeklyItems.filter(i => receitasValidas.includes(i.status));
+    const reaisWeek = weeklyItems.filter(i => statusReal.includes(i.status));
+    const esperadosWeek = weeklyItems.filter(i => statusEsperado.includes(i.status));
 
     const stats = {
-      todayRevenue:    todayItems.filter(i => receitasValidas.includes(i.status)).reduce((s,i) => s + i.price, 0),
-      weeklyRevenue:   receitasWeek.reduce((s,i) => s + i.price, 0),
-      weeklyExpenses:  weeklyItems.filter(i => i.status === "Despesa").reduce((s,i) => s + Math.abs(i.price), 0),
-      weeklyFees:      receitasWeek.reduce((s,i) => s + (i.feeAmount || 0), 0),
-      todayAppointments: todayItems.filter(i => i.status !== "Despesa").length,
-      pending:   scheduleData.filter(i => i.status === "Pendente").length,
-      confirmed: scheduleData.filter(i => receitasValidas.includes(i.status)).length,
+      todayRevenue: todayItems.filter(i => statusReal.includes(i.status)).reduce((s, i) => s + i.price, 0),
+      weeklyRevenue: reaisWeek.reduce((s, i) => s + i.price, 0),
+      weeklyExpected: esperadosWeek.reduce((s, i) => s + i.price, 0),
+      weeklyExpenses: weeklyItems.filter(i => i.status === "Despesa").reduce((s, i) => s + Math.abs(i.price), 0),
+      weeklyFees: reaisWeek.reduce((s, i) => s + (i.feeAmount || 0), 0),
+      todayAppointments: todayItems.filter(i => i.status === "Finalizado").length,
+      pending: scheduleData.filter(i => i.status === "Pendente").length,
+      finalized: scheduleData.filter(i => i.status === "Finalizado").length,
+      expectedCount: scheduleData.filter(i => statusEsperado.includes(i.status)).length,
       breakdown: {},
       feeByStylist: {}
     };
 
-    stats.weeklyProfit = stats.weeklyRevenue - stats.weeklyExpenses;
-    stats.ticketMedio  = receitasWeek.length > 0 ? stats.weeklyRevenue / receitasWeek.length : 0;
+    stats.weeklyProfit = stats.weeklyRevenue - stats.weeklyExpenses - stats.weeklyFees;
+    stats.ticketMedio = reaisWeek.length > 0 ? stats.weeklyRevenue / reaisWeek.length : 0;
 
     stylists.forEach(stylist => {
-      const items   = weeklyItems.filter(i => i.stylist === stylist);
-      const gross   = items.filter(i => receitasValidas.includes(i.status)).reduce((s,i) => s + i.price, 0);
-      const expense = items.filter(i => i.status === "Despesa").reduce((s,i) => s + Math.abs(i.price), 0);
-      const fee     = items.reduce((s,i) => s + (i.feeAmount || 0), 0);
+      const items = weeklyItems.filter(i => i.stylist === stylist);
+      const realItems = items.filter(i => statusReal.includes(i.status));
+      const expectedItems = items.filter(i => statusEsperado.includes(i.status));
+      const gross = realItems.reduce((s, i) => s + i.price, 0);
+      const expected = expectedItems.reduce((s, i) => s + i.price, 0);
+      const expense = items.filter(i => i.status === "Despesa").reduce((s, i) => s + Math.abs(i.price), 0);
+      const fee = realItems.reduce((s, i) => s + (i.feeAmount || 0), 0);
       const barberValue = gross * (barberShare[stylist] || 0);
-      const ownerValue  = gross - barberValue;
-      stats.breakdown[stylist]    = { appointments: items.length, gross, expense, fee, barberValue, ownerValue };
+      const ownerValue = gross - barberValue - fee;
+      stats.breakdown[stylist] = { appointments: realItems.length, expectedAppointments: expectedItems.length, gross, expected, expense, fee, barberValue, ownerValue };
       stats.feeByStylist[stylist] = fee;
     });
 
@@ -1247,8 +1256,7 @@
 
   // ─── RECEITA POR DIA DA SEMANA (para gráfico de linha) ─
   function getRevenueByDay() {
-    const receitasValidas = ["Confirmado", "Manual"];
-    const days   = [];
+    const days = [];
     const labels = [];
     const dayNames = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 
@@ -1257,8 +1265,8 @@
       d.setDate(d.getDate() + i);
       const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
       const revenue = scheduleData
-        .filter(item => item.date === dateStr && receitasValidas.includes(item.status))
-        .reduce((s,i) => s + i.price, 0);
+        .filter(item => item.date === dateStr && item.status === "Finalizado")
+        .reduce((s, i) => s + i.price, 0);
       days.push(revenue);
       labels.push(dayNames[i]);
     }
@@ -1268,39 +1276,33 @@
 
   // ─── RANKING DE SERVIÇOS ──────────────────────────────
   function getServiceRanking() {
-    const receitasValidas = ["Confirmado", "Manual"];
     const map = {};
     scheduleData
-      .filter(i => receitasValidas.includes(i.status))
+      .filter(i => i.status === "Finalizado")
       .forEach(i => {
-        // pega só o nome, remove " - R$ XX"
         const name = (i.service || "Serviço").split(" - R$")[0].trim();
         map[name] = (map[name] || 0) + 1;
       });
     return Object.entries(map)
-      .sort((a,b) => b[1] - a[1])
+      .sort((a, b) => b[1] - a[1])
       .slice(0, 6);
   }
 
   // ─── RENDER: CARDS DE MÉTRICAS ────────────────────────
   function renderCards() {
     const stats = calculateStats();
-    document.getElementById("faturamentoHoje").textContent    = formatMoney(stats.todayRevenue);
-    document.getElementById("faturamentoSemana").textContent  = formatMoney(stats.weeklyRevenue);
-    document.getElementById("despesasSemana").textContent     = formatMoney(stats.weeklyExpenses);
-    document.getElementById("taxasSemana").textContent        = formatMoney(stats.weeklyFees);
-    document.getElementById("lucroSemana").textContent        = formatMoney(stats.weeklyProfit);
-    document.getElementById("totalPendentes").textContent     = stats.pending;
-    document.getElementById("totalConfirmados").textContent   = stats.confirmed;
-    document.getElementById("ticketMedio").textContent        = formatMoney(stats.ticketMedio);
+    document.getElementById("faturamentoHoje").textContent = formatMoney(stats.todayRevenue);
+    document.getElementById("faturamentoSemana").textContent = formatMoney(stats.weeklyRevenue);
+    document.getElementById("receitaEsperadaSemana").textContent = formatMoney(stats.weeklyExpected);
+    document.getElementById("despesasSemana").textContent = formatMoney(stats.weeklyExpenses);
+    document.getElementById("taxasSemana").textContent = formatMoney(stats.weeklyFees);
+    document.getElementById("totalPendentes").textContent = stats.pending;
+    document.getElementById("totalFinalizados").textContent = stats.finalized;
+    document.getElementById("ticketMedio").textContent = formatMoney(stats.ticketMedio);
 
-    // Delta cards
-    document.getElementById("deltaHoje").textContent = `— ${stats.todayAppointments} atendimento${stats.todayAppointments !== 1 ? "s" : ""} hoje`;
+    document.getElementById("deltaHoje").textContent = `— ${stats.todayAppointments} finalizado${stats.todayAppointments !== 1 ? "s" : ""} hoje`;
     document.getElementById("deltaSemana").textContent = formatWeek(currentWeekStart);
-
-    const lucroEl = document.getElementById("deltaLucro");
-    lucroEl.textContent = stats.weeklyProfit >= 0 ? "positivo ↑" : "negativo ↓";
-    lucroEl.className   = "metric-delta " + (stats.weeklyProfit >= 0 ? "up" : "down");
+    document.getElementById("deltaEsperada").textContent = `${stats.expectedCount} atendimento${stats.expectedCount !== 1 ? "s" : ""} ainda não fechado${stats.expectedCount !== 1 ? "s" : ""}`;
   }
 
   // ─── RENDER: FATURAMENTO POR BARBEIRO (lista) ─────────
@@ -1319,7 +1321,7 @@
       li.innerHTML = `
         <div>
           <strong>${stylist}</strong>
-          <small>${item.appointments} atend. · ${pct}% comissão</small>
+          <small>${item.appointments} finalizados · ${item.expectedAppointments} esperados · ${pct}% comissão</small>
         </div>
         <div class="col"><small>Bruto</small><strong>${formatMoney(Math.max(item.gross,0))}</strong></div>
         <div class="col"><small>Barbeiro</small><strong>${formatMoney(item.barberValue)}</strong></div>
@@ -1363,7 +1365,7 @@
     list.innerHTML = "";
 
     if (ranking.length === 0) {
-      list.innerHTML = `<li style="color:var(--muted);font-size:0.85rem;padding:14px;">Nenhum serviço confirmado ainda.</li>`;
+      list.innerHTML = `<li style="color:var(--muted);font-size:0.85rem;padding:14px;">Nenhum serviço finalizado ainda.</li>`;
       return;
     }
 
@@ -1602,6 +1604,7 @@
       "Pendente":   "badge-pending",
       "Confirmado": "badge-confirmed",
       "Manual":     "badge-manual",
+      "Finalizado": "badge-finalized",
       "Despesa":    "badge-expense"
     };
 
@@ -1619,9 +1622,10 @@
         <td>${formatMoney(item.price)}</td>
         <td>
           <div class="action-btns">
-            <button class="btn-action confirm"  data-action="confirm"   data-id="${item.id}">OK</button>
-            <button class="btn-action whatsapp" data-action="whatsapp"  data-id="${item.id}" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
-            <button class="btn-action delete"   data-action="delete"    data-id="${item.id}">Excluir</button>
+            ${item.status === "Pendente" ? `<button class="btn-action confirm" data-action="confirm" data-id="${item.id}">OK</button>` : ""}
+            ${item.status !== "Finalizado" && item.status !== "Despesa" ? `<button class="btn-action confirm" data-action="finish" data-id="${item.id}">Fechar</button>` : ""}
+            <button class="btn-action whatsapp" data-action="whatsapp" data-id="${item.id}" data-phone="${phoneDigits}" data-name="${item.name}" data-date="${item.date}" data-time="${item.time}">Zap</button>
+            <button class="btn-action delete" data-action="delete" data-id="${item.id}">Excluir</button>
           </div>
         </td>
       `;
@@ -1701,6 +1705,18 @@
       salvarAgendamentos(items);
       updateDashboard();
       showNotification("Agendamento confirmado.", "success");
+    }
+
+    if (action === "finish") {
+      const metodo = prompt("Forma de pagamento: Pix, Dinheiro, Débito ou Crédito", "Pix");
+      if (!metodo) return;
+      const resultado = fecharAtendimento(btn.dataset.id, metodo);
+      if (resultado.sucesso) {
+        updateDashboard();
+        showNotification("Atendimento fechado e receita lançada.", "success");
+      } else {
+        showNotification(resultado.mensagem, "error");
+      }
     }
 
     if (action === "delete") {
@@ -1843,7 +1859,7 @@
       price:         netValue,
       stylist:       barbeiro,
       date, time,
-      status:        isExpense ? "Despesa" : "Manual",
+      status:        isExpense ? "Despesa" : "Finalizado",
       origem:        "Caixa"
     });
 
@@ -1862,7 +1878,7 @@
           price:         netValue,
           stylist:       barbeiro,
           date, time,
-          status:        isExpense ? "Despesa" : "Manual",
+          status:        isExpense ? "Despesa" : "Finalizado",
           origem:        "Caixa"
         });
         if (!r2.sucesso) {

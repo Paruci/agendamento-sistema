@@ -70,6 +70,7 @@ function adicionarAgendamento(agendamento) {
     stylist: sanitizeString(agendamento.stylist),
     date: agendamento.date,
     time: agendamento.time,
+    duration: getDuracaoServico(agendamento.service, agendamento.stylist),
     status: agendamento.status || "Pendente",
     price: agendamento.price || extractPrice(agendamento.service),
     categoria: agendamento.categoria || "Serviço",
@@ -85,7 +86,6 @@ function adicionarAgendamento(agendamento) {
   return {
     sucesso: true,
     mensagem: "Agendamento salvo com sucesso.",
-    duration: getDuracaoServico(dados.service, dados.stylist),
     agendamento: novo
   };
 }

@@ -202,34 +202,35 @@
 
   // ─── ATUALIZA SELECT DE HORÁRIOS ─────────────────────────
   function atualizarHorarios() {
-    const data     = campoData.value;
-    const barbeiro = campoBarbeiro.value;
+  const data = campoData.value;
+  const barbeiro = campoBarbeiro.value;
+  const servico = document.getElementById("servico").value;
 
-    // Valida dia da semana
-    if (data && !isDiaUtil(data)) {
-      msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> Selecione uma data de terça a sábado.</div>`;
-      campoData.value = "";
-      campoHorario.innerHTML = `<option value="">Selecione data e barbeiro primeiro</option>`;
-      return;
-    }
-
-    msg.innerHTML = "";
-
-    if (!data || !barbeiro) {
-      campoHorario.innerHTML = `<option value="">Selecione data e barbeiro primeiro</option>`;
-      return;
-    }
-
-    const livres = getHorariosDisponiveis(data, barbeiro);
-
-    campoHorario.innerHTML = livres.length
-      ? `<option value="">Escolha um horário</option>` +
-        livres.map(h => `<option value="${h}">${h}</option>`).join("")
-      : `<option value="" disabled>Sem horários disponíveis</option>`;
+  if (data && !isDiaUtil(data)) {
+    msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> Selecione uma data de terça a sábado.</div>`;
+    campoData.value = "";
+    campoHorario.innerHTML = `<option value="">Selecione serviço, data e barbeiro primeiro</option>`;
+    return;
   }
+
+  msg.innerHTML = "";
+
+  if (!data || !barbeiro || !servico) {
+    campoHorario.innerHTML = `<option value="">Selecione serviço, data e barbeiro primeiro</option>`;
+    return;
+  }
+
+  const livres = getHorariosDisponiveis(data, barbeiro, servico);
+
+  campoHorario.innerHTML = livres.length
+    ? `<option value="">Escolha um horário</option>` +
+      livres.map(h => `<option value="${h}">${h}</option>`).join("")
+    : `<option value="" disabled>Sem horários disponíveis</option>`;
+}
 
   campoData.addEventListener("change", atualizarHorarios);
   campoBarbeiro.addEventListener("change", atualizarHorarios);
+  document.getElementById("servico").addEventListener("change", atualizarHorarios);
 
   // ─── SUBMIT ───────────────────────────────────────────────
   form.addEventListener("submit", function(e) {
@@ -240,7 +241,7 @@
     const servico  = document.getElementById("servico").value;
     const barbeiro = campoBarbeiro.value;
     const data     = campoData.value;
-    const horarios = getHorariosDisponiveis(data, barbeiro, servico);
+    const horario = campoHorario.value;
 
     btnAgendar.disabled  = true;
     btnAgendar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;

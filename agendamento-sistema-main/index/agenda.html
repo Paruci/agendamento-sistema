@@ -730,7 +730,7 @@
       <div class="agenda-legend">
         <div class="legend-item"><div class="legend-dot pending"></div> Pendente</div>
         <div class="legend-item"><div class="legend-dot confirmed"></div> Confirmado</div>
-        <div class="legend-item"><div class="legend-dot manual"></div> Manual</div>
+        <div class="legend-item"><div class="legend-dot manual"></div> Manual/Finalizado</div>
         <div class="legend-item" style="margin-left:8px; opacity:0.5;">
           <div style="width:18px;height:10px;background:repeating-linear-gradient(-45deg,transparent,transparent 3px,rgba(255,255,255,0.15) 3px,rgba(255,255,255,0.15) 6px);border-radius:2px;"></div>
           Fora do expediente
@@ -919,7 +919,8 @@
           cell.innerHTML = `<div class="slot-add-hint"><i class="fa-solid fa-plus"></i> Agendar</div>`;
         } else {
           matches.forEach(appt => {
-            const sc = appt.status === "Confirmado" ? "confirmed"
+            const sc = appt.status === "Finalizado" ? "manual"
+                     : appt.status === "Confirmado" ? "confirmed"
                      : appt.status === "Manual"     ? "manual"
                      : "pending";
             const dur = appt.duration ? durationLabel(appt.duration) : "";
@@ -994,7 +995,8 @@
       listDiv.className = "modal-existing-events";
 
       matches.forEach(appt => {
-        const sc  = appt.status === "Confirmado" ? "confirmed"
+        const sc  = appt.status === "Finalizado" ? "manual"
+                  : appt.status === "Confirmado" ? "confirmed"
                   : appt.status === "Manual"     ? "manual"
                   : "pending";
         const dur = appt.duration ? durationLabel(appt.duration) : "60 min";
@@ -1010,8 +1012,11 @@
             <small>${appt.stylist} · ${(appt.service||"").split(" - ")[0]}${appt.phone ? ` · ${appt.phone}` : ""}</small>
           </div>
           <div class="modal-event-actions">
-            ${appt.status !== "Confirmado"
+            ${appt.status !== "Confirmado" && appt.status !== "Finalizado"
               ? `<button class="btn-action confirm" data-id="${appt.id}" data-action="confirm" title="Confirmar"><i class="fa-solid fa-check"></i></button>`
+              : ""}
+            ${appt.status !== "Finalizado"
+              ? `<button class="btn-action" data-id="${appt.id}" data-action="finish" style="color:var(--success);border-color:rgba(34,197,94,0.28)" title="Fechar atendimento"><i class="fa-solid fa-cash-register"></i></button>`
               : ""}
             <button class="btn-action" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)" title="Editar"><i class="fa-solid fa-pen"></i></button>
             ${appt.phone
@@ -1028,6 +1033,7 @@
         if (!btn) return;
         const { action, id, phone, name } = btn.dataset;
         if      (action === "confirm")   confirmAppt(id);
+        else if (action === "finish")    renderFinishForm(id);
         else if (action === "edit")      { editingId = id; buildModalBody(); }
         else if (action === "delete")    deleteAppt(id);
         else if (action === "whatsapp") {
@@ -1197,6 +1203,7 @@
           <option value="Pendente"   ${appt.status === "Pendente"   ? "selected" : ""}>Pendente</option>
           <option value="Confirmado" ${appt.status === "Confirmado" ? "selected" : ""}>Confirmado</option>
           <option value="Manual"     ${appt.status === "Manual"     ? "selected" : ""}>Manual</option>
+          <option value="Finalizado" ${appt.status === "Finalizado" ? "selected" : ""}>Finalizado</option>
         </select>
       </div>
     `;
@@ -1236,6 +1243,78 @@
         showNotification("Agendamento atualizado.", "success");
         closeModal();
         renderAgenda();
+      }
+    };
+  }
+
+
+  function renderFinishForm(id) {
+    const all = buscarAgendamentos();
+    const appt = all.find(a => a.id === id);
+
+    if (!appt) {
+      showNotification("Agendamento não encontrado.", "error");
+      return;
+    }
+
+    const body = document.getElementById("modalBody");
+    const footer = document.getElementById("modalFooter");
+    const serviceName = (appt.service || "").split(" - ")[0];
+    const price = Number(appt.price || extractPrice(appt.service));
+
+    body.innerHTML = `
+      <div class="modal-in-edit-header">
+        <span><i class="fa-solid fa-cash-register" style="margin-right:5px"></i>Fechar atendimento</span>
+        <button class="modal-cancel-edit" id="cancelFinishBtn">← Voltar</button>
+      </div>
+
+      <div class="modal-event-card confirmed">
+        <div class="modal-event-info">
+          <strong>${appt.name}</strong>
+          <small>${appt.stylist} · ${serviceName} · ${formatMoney(price)}</small>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-form">
+        <div class="form-group">
+          <label>Forma de pagamento</label>
+          <select id="finishPayment">
+            <option value="">Selecione</option>
+            <option value="Pix">Pix</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Débito">Débito</option>
+            <option value="Crédito">Crédito</option>
+          </select>
+        </div>
+
+        <p class="empty-slot-msg" style="text-align:left;">
+          Pix e dinheiro entram sem taxa. Débito calcula 2% e crédito calcula 4%.
+        </p>
+      </div>
+    `;
+
+    footer.innerHTML = `
+      <button class="btn btn-ghost btn-sm" id="finishCancelBtn">Cancelar</button>
+      <button class="btn btn-sm" id="finishSaveBtn">
+        <i class="fa-solid fa-check"></i> Finalizar atendimento
+      </button>
+    `;
+
+    document.getElementById("cancelFinishBtn").onclick = buildModalBody;
+    document.getElementById("finishCancelBtn").onclick = closeModal;
+
+    document.getElementById("finishSaveBtn").onclick = () => {
+      const metodo = document.getElementById("finishPayment").value;
+      const result = fecharAtendimento(id, metodo);
+
+      if (result.sucesso) {
+        showNotification(result.mensagem, "success");
+        closeModal();
+        renderAgenda();
+      } else {
+        showNotification(result.mensagem, "error");
       }
     };
   }

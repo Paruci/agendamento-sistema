@@ -31,12 +31,18 @@ function salvarAgendamentos(agendamentos) {
 function adicionarAgendamento(agendamento) {
   const agendamentos = buscarAgendamentos();
 
-  if (!agendamento.name || !agendamento.phone || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
-    return { sucesso: false, mensagem: "Todos os campos são obrigatórios." };
+  if (!agendamento.name || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
+    return { sucesso: false, mensagem: "Preencha nome, serviço, barbeiro, data e horário." };
   }
 
-  if (!validatePhone(agendamento.phone)) {
-    return { sucesso: false, mensagem: "Telefone inválido. Use DDD + número." };
+  if (agendamento.origem !== "Manual") {
+    if (!agendamento.phone) {
+      return { sucesso: false, mensagem: "Telefone obrigatório para agendamento online." };
+    }
+
+    if (!validatePhone(agendamento.phone)) {
+      return { sucesso: false, mensagem: "Telefone inválido. Use DDD + número." };
+    }
   }
 
   const hoje = new Date().toISOString().split("T")[0];
@@ -52,30 +58,46 @@ function adicionarAgendamento(agendamento) {
     return { sucesso: false, mensagem: "A barbearia atende de terça a sábado." };
   }
 
-  const existe = agendamentos.some(item =>
-    item.date === agendamento.date &&
-    item.time === agendamento.time &&
-    item.stylist === agendamento.stylist
-  );
+  const duration = Number(agendamento.duration || getDuracaoServico(agendamento.service, agendamento.stylist));
 
-  if (existe) {
-    return { sucesso: false, mensagem: "Este horário já está ocupado para este barbeiro." };
+  const conflito = agendamentos.some(item => {
+    if (
+      item.date !== agendamento.date ||
+      item.stylist !== agendamento.stylist ||
+      item.status === "Cancelado" ||
+      item.status === "Despesa"
+    ) {
+      return false;
+    }
+
+    const novoInicio = timeToMinutes(agendamento.time);
+    const novoFim = novoInicio + duration;
+
+    const existenteInicio = timeToMinutes(item.time);
+    const existenteDuracao = Number(item.duration || getDuracaoServico(item.service, item.stylist));
+    const existenteFim = existenteInicio + existenteDuracao;
+
+    return novoInicio < existenteFim && novoFim > existenteInicio;
+  });
+
+  if (conflito) {
+    return { sucesso: false, mensagem: "Este horário conflita com outro atendimento deste barbeiro." };
   }
 
   const novo = {
     id: gerarId(),
     name: sanitizeString(agendamento.name),
-    phone: sanitizeString(agendamento.phone),
+    phone: sanitizeString(agendamento.phone || ""),
     service: sanitizeString(agendamento.service),
     stylist: sanitizeString(agendamento.stylist),
     date: agendamento.date,
     time: agendamento.time,
-    duration: getDuracaoServico(agendamento.service, agendamento.stylist),
+    duration,
     status: agendamento.status || "Pendente",
-    price: agendamento.price || extractPrice(agendamento.service),
+    price: Number(agendamento.price || extractPrice(agendamento.service)),
     categoria: agendamento.categoria || "Serviço",
     paymentMethod: agendamento.paymentMethod || "",
-    feeAmount: agendamento.feeAmount || 0,
+    feeAmount: Number(agendamento.feeAmount || 0),
     origem: agendamento.origem || "Online",
     createdAt: new Date().toISOString()
   };
@@ -90,6 +112,52 @@ function adicionarAgendamento(agendamento) {
   };
 }
 
+function fecharAtendimento(id, metodoPagamento) {
+  const agendamentos = buscarAgendamentos();
+  const index = agendamentos.findIndex(item => item.id === id);
+
+  if (index === -1) {
+    return { sucesso: false, mensagem: "Agendamento não encontrado." };
+  }
+
+  const agendamento = agendamentos[index];
+
+  if (agendamento.status === "Finalizado") {
+    return { sucesso: false, mensagem: "Este atendimento já foi finalizado." };
+  }
+
+  if (!metodoPagamento) {
+    return { sucesso: false, mensagem: "Selecione a forma de pagamento." };
+  }
+
+  const preco = Number(agendamento.price || extractPrice(agendamento.service));
+  let taxa = 0;
+
+  if (metodoPagamento === "Crédito") {
+    taxa = preco * 0.04;
+  }
+
+  if (metodoPagamento === "Débito") {
+    taxa = preco * 0.02;
+  }
+
+  agendamentos[index] = {
+    ...agendamento,
+    status: "Finalizado",
+    paymentMethod: metodoPagamento,
+    feeAmount: taxa,
+    closedAt: new Date().toISOString()
+  };
+
+  salvarAgendamentos(agendamentos);
+
+  return {
+    sucesso: true,
+    mensagem: "Atendimento finalizado com sucesso.",
+    agendamento: agendamentos[index]
+  };
+}
+
 function removerAgendamento(id) {
   salvarAgendamentos(buscarAgendamentos().filter(item => item.id !== id));
 }
@@ -99,6 +167,7 @@ function loginAdmin(email, senha) {
     localStorage.setItem(LOGIN_KEY, "sim");
     return true;
   }
+
   return false;
 }
 

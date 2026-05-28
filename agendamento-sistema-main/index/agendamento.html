@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento | Adriano Hair Style</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +18,6 @@
       <i class="fa-solid fa-scissors"></i>
       Adriano Hair Style
     </a>
-
     <nav class="nav-links">
       <a href="index.html">Início</a>
       <a href="index.html#servicos">Serviços</a>
@@ -40,18 +36,11 @@
         <i class="fa-solid fa-arrow-left"></i>
         Voltar ao site
       </a>
-
       <span class="eyebrow">Agendamento online</span>
-
       <h1>Reserve seu horário</h1>
-
-      <p>
-        Escolha o serviço, o barbeiro, a data e o melhor horário.
-        Depois, sua solicitação será enviada para confirmação pelo WhatsApp.
-      </p>
-
+      <p>Escolha o serviço, o barbeiro e o melhor horário. Sua solicitação vai para confirmação pelo WhatsApp.</p>
       <div class="booking-hero-pills">
-        <span><i class="fa-solid fa-clock"></i> Terça a sábado</span>
+        <span><i class="fa-solid fa-clock"></i> Terça a sábado — 09h às 19h</span>
         <span><i class="fa-solid fa-location-dot"></i> Jundiaí - SP</span>
         <span><i class="fa-brands fa-whatsapp"></i> Confirmação rápida</span>
       </div>
@@ -62,35 +51,33 @@
     <div class="container booking-layout">
 
       <div class="card booking-form-card">
-
         <div class="booking-form-head">
           <span class="eyebrow">Dados do atendimento</span>
           <h2>Monte seu agendamento</h2>
-          <p>Preencha os dados abaixo para reservar seu horário na Adriano Hair Style.</p>
+          <p>Preencha os campos abaixo para reservar seu horário na Adriano Hair Style.</p>
         </div>
 
         <form id="formAgendamento" class="booking-form">
 
           <div class="form-grid">
-
             <div class="form-group">
               <label for="nome">Nome completo</label>
-              <input type="text" id="nome" placeholder="Digite seu nome" required>
+              <input type="text" id="nome" placeholder="Digite seu nome" required autocomplete="name">
             </div>
 
             <div class="form-group">
               <label for="telefone">WhatsApp</label>
-              <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+              <input type="tel" id="telefone" placeholder="(11) 99999-9999" required autocomplete="tel" maxlength="15">
             </div>
 
             <div class="form-group">
               <label for="servico">Serviço</label>
               <select id="servico" required>
                 <option value="">Selecione um serviço</option>
-                <option value="Corte masculino - R$ 50">Corte masculino — R$ 50,00</option>
-                <option value="Corte + sobrancelha - R$ 55">Corte + sobrancelha — R$ 55,00</option>
-                <option value="Corte + barba - R$ 90">Corte + barba — R$ 90,00</option>
-                <option value="Acabamento - R$ 20">Acabamento — R$ 20,00</option>
+                <option value="Corte masculino - R$ 50">Corte masculino — R$ 50</option>
+                <option value="Corte + sobrancelha - R$ 55">Corte + sobrancelha — R$ 55</option>
+                <option value="Corte + barba - R$ 90">Corte + barba — R$ 90</option>
+                <option value="Acabamento - R$ 20">Acabamento — R$ 20</option>
                 <option value="Pigmentação">Pigmentação — Consultar</option>
                 <option value="Química e cor">Química e cor — Consultar</option>
               </select>
@@ -115,25 +102,14 @@
             <div class="form-group">
               <label for="horario">Horário</label>
               <select id="horario" required>
-                <option value="">Selecione um horário</option>
-                <option value="09:00">09:00</option>
-                <option value="10:00">10:00</option>
-                <option value="11:00">11:00</option>
-                <option value="13:00">13:00</option>
-                <option value="14:00">14:00</option>
-                <option value="15:00">15:00</option>
-                <option value="16:00">16:00</option>
-                <option value="17:00">17:00</option>
-                <option value="18:00">18:00</option>
-                <option value="19:00">19:00</option>
+                <option value="">Selecione data e barbeiro primeiro</option>
               </select>
             </div>
-
           </div>
 
           <div id="msgAgendamento"></div>
 
-          <button type="submit" class="btn btn-full">
+          <button type="submit" id="btnAgendar" class="btn btn-full">
             <i class="fa-brands fa-whatsapp"></i>
             Confirmar pelo WhatsApp
           </button>
@@ -146,46 +122,37 @@
       </div>
 
       <aside class="summary-stack">
-
         <div class="card summary-card booking-premium-card">
           <span>Resumo</span>
           <h3>Como funciona</h3>
-
           <div class="summary-list">
-
             <div class="summary-item">
               <strong>1. Escolha seu serviço</strong>
               <span>Corte, barba, acabamento, pigmentação ou química.</span>
             </div>
-
             <div class="summary-item">
               <strong>2. Selecione o barbeiro</strong>
               <span>Agende com o profissional de sua preferência.</span>
             </div>
-
             <div class="summary-item">
               <strong>3. Confirme no WhatsApp</strong>
-              <span>A conversa abre automaticamente após enviar o formulário.</span>
+              <span>A conversa abre automaticamente após enviar.</span>
             </div>
-
           </div>
         </div>
 
         <div class="card summary-card">
           <span>Funcionamento</span>
           <h3>Horários</h3>
-
           <div class="summary-list">
             <div class="summary-item">
               <strong>Terça a sábado</strong>
               <span>Das 09h às 19h (exceto 12h)</span>
             </div>
-
             <div class="summary-item">
               <strong>Endereço</strong>
-              <span>Rua Tiradentes, 1470 — Horto Florestal, Jundiaí - SP</span>
+              <span>Rua Tiradentes, 1470 — Jardim Florestal, Jundiaí SP</span>
             </div>
-
             <div class="summary-item">
               <strong>WhatsApp</strong>
               <span>(11) 95027-7744</span>
@@ -196,11 +163,8 @@
         <div class="card summary-card">
           <span>Dica</span>
           <h3>Chegue no horário</h3>
-          <p>
-            Para manter a agenda organizada, tente chegar alguns minutos antes do horário marcado.
-          </p>
+          <p>Para manter a agenda organizada, tente chegar alguns minutos antes do horário marcado.</p>
         </div>
-
       </aside>
 
     </div>
@@ -209,178 +173,104 @@
 </main>
 
 <footer>
-  <p>© 2026 Adriano Hair Style — Todos os direitos reservados</p>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <span>© 2026 Adriano Hair Style — Jundiaí SP</span>
+    <a href="index.html">Voltar ao site</a>
+  </div>
 </footer>
 
-<a href="https://wa.me/5511950277744" target="_blank" class="whatsapp-float">
+<a href="https://wa.me/5511950277744" target="_blank" rel="noopener" class="whatsapp-float" aria-label="WhatsApp">
   <i class="fa-brands fa-whatsapp"></i>
 </a>
 
 <script src="utils.js"></script>
 <script src="storage.js"></script>
-
 <script>
-  const form = document.getElementById("formAgendamento");
-  const msg = document.getElementById("msgAgendamento");
-
-  const hoje = new Date().toISOString().split("T")[0];
-  document.getElementById("data").min = hoje;
-
+  const form      = document.getElementById("formAgendamento");
+  const msg       = document.getElementById("msgAgendamento");
+  const btnAgendar = document.getElementById("btnAgendar");
+  const campoData     = document.getElementById("data");
+  const campoBarbeiro = document.getElementById("barbeiro");
+  const campoHorario  = document.getElementById("horario");
   const campoTelefone = document.getElementById("telefone");
-  const botaoSubmit = form.querySelector("button[type='submit']");
 
-  campoTelefone.addEventListener("input", function(e) {
-  let value = e.target.value.replace(/\D/g, "");
+  // Data mínima = hoje
+  campoData.min = getTodayISO();
 
-  if (value.length > 11) {
-    value = value.slice(0, 11);
-  }
+  // Máscara de telefone (função de utils.js)
+  campoTelefone.addEventListener("input", maskPhone);
 
-  if (value.length > 10) {
-    value = value.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-  } else if (value.length > 6) {
-    value = value.replace(/(\d{2})(\d{4})(\d+)/, "($1) $2-$3");
-  } else if (value.length > 2) {
-    value = value.replace(/(\d{2})(\d+)/, "($1) $2");
-  }
+  // ─── ATUALIZA SELECT DE HORÁRIOS ─────────────────────────
+  function atualizarHorarios() {
+    const data     = campoData.value;
+    const barbeiro = campoBarbeiro.value;
 
-  e.target.value = value;
-});
-
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const nome = document.getElementById("nome").value.trim();
-    const telefone = document.getElementById("telefone").value.trim();
-    const servico = document.getElementById("servico").value;
-    const barbeiro = document.getElementById("barbeiro").value;
-    const data = document.getElementById("data").value;
-    const horario = document.getElementById("horario").value;
-
-    if (data) {
-      const diaSelecionado = new Date(data + "T00:00:00").getDay();
-      if (diaSelecionado === 0 || diaSelecionado === 1) {
-        msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> A barbearia atende apenas de terça a sábado.</div>`;
-        return;
-      }
-    }
-
-    botaoSubmit.disabled = true;
-    botaoSubmit.innerHTML = `
-    <i class="fa-solid fa-spinner fa-spin"></i>
-    Processando...
-    `;
-
-    const resultado = adicionarAgendamento({
-      name: nome,
-      phone: telefone,
-      service: servico,
-      stylist: barbeiro,
-      date: data,
-      time: horario,
-      status: "Pendente"
-    });
-
-    msg.innerHTML = "";
-
-    if (!resultado.sucesso) {
-      msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> ${resultado.mensagem}</div>`;
-      botaoSubmit.disabled = false;
-      botaoSubmit.innerHTML = `
-        <i class="fa-brands fa-whatsapp"></i>
-        Confirmar pelo WhatsApp
-        `;
+    // Valida dia da semana
+    if (data && !isDiaUtil(data)) {
+      msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> Selecione uma data de terça a sábado.</div>`;
+      campoData.value = "";
+      campoHorario.innerHTML = `<option value="">Selecione data e barbeiro primeiro</option>`;
       return;
     }
 
-    msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> Agendamento salvo! Redirecionando para o WhatsApp...</div>`;
+    msg.innerHTML = "";
 
-    const texto = `Olá! Gostaria de confirmar meu agendamento na Adriano Hair Style.
+    if (!data || !barbeiro) {
+      campoHorario.innerHTML = `<option value="">Selecione data e barbeiro primeiro</option>`;
+      return;
+    }
 
-    *Nome:* ${nome}
-    *WhatsApp:* ${formatPhone(telefone)}
-    *Serviço:* ${servico}
-    *Barbeiro:* ${barbeiro}
-    *Data:* ${formatDate(data)}
-    *Horário:* ${horario}
+    const livres = getHorariosDisponiveis(data, barbeiro);
 
-    Fico no aguardo da confirmação.`;
+    campoHorario.innerHTML = livres.length
+      ? `<option value="">Escolha um horário</option>` +
+        livres.map(h => `<option value="${h}">${h}</option>`).join("")
+      : `<option value="" disabled>Sem horários disponíveis</option>`;
+  }
+
+  campoData.addEventListener("change", atualizarHorarios);
+  campoBarbeiro.addEventListener("change", atualizarHorarios);
+
+  // ─── SUBMIT ───────────────────────────────────────────────
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nome     = document.getElementById("nome").value.trim();
+    const telefone = campoTelefone.value.trim();
+    const servico  = document.getElementById("servico").value;
+    const barbeiro = campoBarbeiro.value;
+    const data     = campoData.value;
+    const horario  = campoHorario.value;
+
+    btnAgendar.disabled  = true;
+    btnAgendar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;
+
+    // adicionarAgendamento faz todas as validações (utils + storage)
+    const resultado = adicionarAgendamento({
+      name: nome, phone: telefone, service: servico,
+      stylist: barbeiro, date: data, time: horario, status: "Pendente"
+    });
+
+    if (!resultado.sucesso) {
+      msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> ${resultado.mensagem}</div>`;
+      btnAgendar.disabled  = false;
+      btnAgendar.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Confirmar pelo WhatsApp`;
+      return;
+    }
+
+    msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> Agendamento salvo! Abrindo WhatsApp...</div>`;
+
+    const texto = `Olá! Gostaria de confirmar meu agendamento na Adriano Hair Style.\n\n*Nome:* ${nome}\n*WhatsApp:* ${formatPhone(telefone)}\n*Serviço:* ${servico}\n*Barbeiro:* ${barbeiro}\n*Data:* ${formatDate(data)}\n*Horário:* ${horario}\n\nFico no aguardo da confirmação.`;
 
     setTimeout(() => {
       window.open(`https://wa.me/5511950277744?text=${encodeURIComponent(texto)}`, "_blank");
-      botaoSubmit.disabled = false;
-
-      botaoSubmit.innerHTML = `
-        <i class="fa-brands fa-whatsapp"></i>
-        Confirmar pelo WhatsApp
-        `;
+      btnAgendar.disabled  = false;
+      btnAgendar.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Confirmar pelo WhatsApp`;
       form.reset();
+      campoHorario.innerHTML = `<option value="">Selecione data e barbeiro primeiro</option>`;
       msg.innerHTML = "";
     }, 1600);
   });
-  const campoData = document.getElementById("data");
-const campoBarbeiro = document.getElementById("barbeiro");
-const campoHorario = document.getElementById("horario");
-
-function validarDiaSemana() {
-  if (!campoData.value) return;
-
-  const dataSelecionada = new Date(campoData.value + "T00:00:00");
-  const diaSemana = dataSelecionada.getDay();
-
-  if (diaSemana === 0 || diaSemana === 1) {
-    msg.innerHTML = `<div class="info-msg error"><i class="fa-solid fa-times-circle"></i> Selecione uma data de terça a sábado.</div>`;
-    campoData.value = "";
-    campoHorario.value = "";
-    return;
-  }
-
-  msg.innerHTML = "";
-}
-
-function atualizarHorariosDisponiveis() {
-  const data = campoData.value;
-  const barbeiro = campoBarbeiro.value;
-
-  const options = campoHorario.querySelectorAll("option");
-
-  options.forEach(option => {
-    option.disabled = false;
-
-    if (option.value) {
-      option.textContent = option.value;
-    }
-  });
-
-  if (!data || !barbeiro) return;
-
-  const agendamentos = buscarAgendamentos();
-
-  const ocupados = agendamentos
-    .filter(item =>
-      item.date === data &&
-      item.stylist === barbeiro &&
-      item.status !== "Cancelado"
-    )
-    .map(item => item.time);
-
-  options.forEach(option => {
-    if (ocupados.includes(option.value)) {
-      option.disabled = true;
-      option.textContent = `${option.value} — ocupado`;
-    }
-  });
-
-  if (ocupados.includes(campoHorario.value)) {
-    campoHorario.value = "";
-  }
-}
-
-campoData.addEventListener("change", function() {
-  validarDiaSemana();
-  atualizarHorariosDisponiveis();
-});
-campoBarbeiro.addEventListener("change", atualizarHorariosDisponiveis);
 </script>
 
 </body>

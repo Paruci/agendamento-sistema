@@ -1,5 +1,8 @@
 function formatMoney(value) {
-  return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  return Number(value || 0).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
 }
 
 function extractPrice(service) {
@@ -9,11 +12,7 @@ function extractPrice(service) {
 
 function formatDate(dateString) {
   if (!dateString) return "--/--/----";
-  try {
-    return new Date(dateString + "T00:00:00").toLocaleDateString("pt-BR");
-  } catch (e) {
-    return "--/--/----";
-  }
+  return new Date(dateString + "T00:00:00").toLocaleDateString("pt-BR");
 }
 
 function onlyNumbers(value) {
@@ -39,15 +38,87 @@ function formatPhone(phone) {
   return phone;
 }
 
+function maskPhone(e) {
+  e.target.value = formatPhone(e.target.value);
+}
+
 function sanitizeString(str) {
-  return str.replace(/[<>]/g, "").trim();
+  return String(str || "").replace(/[<>]/g, "").trim();
+}
+
+function getTodayISO() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoje.getDate()).padStart(2, "0");
+
+  return `${ano}-${mes}-${dia}`;
+}
+
+function isDiaUtil(dateString) {
+  const data = new Date(dateString + "T00:00:00");
+  const diaSemana = data.getDay();
+
+  return diaSemana >= 2 && diaSemana <= 6;
+}
+
+function getHorariosBase() {
+  return [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00"
+  ];
+}
+
+function getHorariosDisponiveis(data, barbeiro) {
+  const horarios = getHorariosBase();
+
+  if (!data || !barbeiro) {
+    return [];
+  }
+
+  const agendamentos = typeof buscarAgendamentos === "function"
+    ? buscarAgendamentos()
+    : [];
+
+  const ocupados = agendamentos
+    .filter(item =>
+      item.date === data &&
+      item.stylist === barbeiro &&
+      item.status !== "Cancelado" &&
+      item.status !== "Despesa"
+    )
+    .map(item => item.time);
+
+  return horarios.filter(horario => !ocupados.includes(horario));
 }
 
 function showNotification(message, type = "info") {
   const el = document.createElement("div");
   el.className = `notification ${type}`;
 
-  const icons = { success: "fa-check-circle", error: "fa-times-circle", info: "fa-info-circle" };
+  const icons = {
+    success: "fa-check-circle",
+    error: "fa-times-circle",
+    info: "fa-info-circle"
+  };
+
   el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
   document.body.appendChild(el);
 

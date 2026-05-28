@@ -6,8 +6,8 @@ function formatMoney(value) {
 }
 
 function extractPrice(service) {
-  const match = String(service).match(/R\$\s*([\d.,]+)/);
-  return match ? Number(match[1].replace(/\./g, "").replace(/,/g, ".")) : 0;
+  const match = String(service || "").match(/R\$\s*([\d.,]+)/);
+  return match ? Number(match[1].replace(/\./g, "").replace(",", ".")) : 0;
 }
 
 function formatDate(dateString) {
@@ -38,80 +38,144 @@ function formatPhone(phone) {
   return phone;
 }
 
-function maskPhone(e) {
-  e.target.value = formatPhone(e.target.value);
+function maskPhone(event) {
+  event.target.value = formatPhone(event.target.value);
 }
 
-function sanitizeString(str) {
-  return String(str || "").replace(/[<>]/g, "").trim();
+function sanitizeString(value) {
+  return String(value || "").replace(/[<>]/g, "").trim();
 }
 
 function getTodayISO() {
-  const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-  const dia = String(hoje.getDate()).padStart(2, "0");
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
 
-  return `${ano}-${mes}-${dia}`;
+  return `${year}-${month}-${day}`;
 }
 
 function isDiaUtil(dateString) {
-  const data = new Date(dateString + "T00:00:00");
-  const diaSemana = data.getDay();
+  const date = new Date(dateString + "T00:00:00");
+  const day = date.getDay();
 
-  return diaSemana >= 2 && diaSemana <= 6;
+  return day >= 2 && day <= 6;
 }
 
-function getHorariosBase() {
-  return [
-    "09:00",
-    "09:30",
-    "10:00",
-    "10:30",
-    "11:00",
-    "11:30",
-    "13:00",
-    "13:30",
-    "14:00",
-    "14:30",
-    "15:00",
-    "15:30",
-    "16:00",
-    "16:30",
-    "17:00",
-    "17:30",
-    "18:00",
-    "18:30",
-    "19:00"
-  ];
+function timeToMinutes(time) {
+  const [hours, minutes] = String(time || "00:00").split(":").map(Number);
+  return hours * 60 + minutes;
 }
 
-function getHorariosDisponiveis(data, barbeiro) {
-  const horarios = getHorariosBase();
+function minutesToTime(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
-  if (!data || !barbeiro) {
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function getDuracaoServico(service, stylist) {
+  const text = String(service || "").toLowerCase();
+  const barber = String(stylist || "").toLowerCase();
+
+  if (text.includes("corte") && text.includes("barba")) {
+    return 90;
+  }
+
+  if (text.includes("acabamento")) {
+    return 30;
+  }
+
+  if (text.includes("corte")) {
+    if (barber.includes("arthur")) {
+      return 30;
+    }
+
+    return 60;
+  }
+
+  return 60;
+}
+
+function getIntervaloAgenda(service, stylist) {
+  const text = String(service || "").toLowerCase();
+  const barber = String(stylist || "").toLowerCase();
+
+  if (barber.includes("arthur")) {
+    return 30;
+  }
+
+  if (text.includes("acabamento")) {
+    return 30;
+  }
+
+  return 60;
+}
+
+function getHorariosBase(service, stylist) {
+  const start = timeToMinutes("09:00");
+  const end = timeToMinutes("19:00");
+  const interval = getIntervaloAgenda(service, stylist);
+  const times = [];
+
+  for (let current = start; current < end; current += interval) {
+    times.push(minutesToTime(current));
+  }
+
+  return times;
+}
+
+function horariosConflitam(startA, durationA, startB, durationB) {
+  const endA = startA + durationA;
+  const endB = startB + durationB;
+
+  return startA < endB && endA > startB;
+}
+
+function getHorariosDisponiveis(date, stylist, service) {
+  if (!date || !stylist || !service) {
     return [];
   }
 
-  const agendamentos = typeof buscarAgendamentos === "function"
+  const baseTimes = getHorariosBase(service, stylist);
+  const newDuration = getDuracaoServico(service, stylist);
+
+  const appointments = typeof buscarAgendamentos === "function"
     ? buscarAgendamentos()
     : [];
 
-  const ocupados = agendamentos
-    .filter(item =>
-      item.date === data &&
-      item.stylist === barbeiro &&
-      item.status !== "Cancelado" &&
-      item.status !== "Despesa"
-    )
-    .map(item => item.time);
+  const appointmentsOnDay = appointments.filter(item =>
+    item.date === date &&
+    item.stylist === stylist &&
+    item.status !== "Cancelado" &&
+    item.status !== "Despesa"
+  );
 
-  return horarios.filter(horario => !ocupados.includes(horario));
+  return baseTimes.filter(time => {
+    const newStart = timeToMinutes(time);
+    const newEnd = newStart + newDuration;
+
+    if (newEnd > timeToMinutes("19:00")) {
+      return false;
+    }
+
+    return !appointmentsOnDay.some(item => {
+      const existingStart = timeToMinutes(item.time);
+      const existingDuration = item.duration || getDuracaoServico(item.service, item.stylist);
+
+      return horariosConflitam(
+        newStart,
+        newDuration,
+        existingStart,
+        existingDuration
+      );
+    });
+  });
 }
 
 function showNotification(message, type = "info") {
-  const el = document.createElement("div");
-  el.className = `notification ${type}`;
+  const notification = document.createElement("div");
+  notification.className = `notification ${type}`;
 
   const icons = {
     success: "fa-check-circle",
@@ -119,11 +183,18 @@ function showNotification(message, type = "info") {
     info: "fa-info-circle"
   };
 
-  el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
-  document.body.appendChild(el);
+  notification.innerHTML = `
+    <i class="fa-solid ${icons[type] || icons.info}"></i>
+    <span>${message}</span>
+  `;
+
+  document.body.appendChild(notification);
 
   setTimeout(() => {
-    el.style.animation = "slideOut 0.3s ease forwards";
-    setTimeout(() => el.remove(), 300);
+    notification.style.animation = "slideOut 0.3s ease forwards";
+
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
   }, 3000);
 }

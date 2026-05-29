@@ -2004,3 +2004,301 @@ table td:last-child { min-width: 200px; }
     width: 100%;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   ADIÇÕES — v2 (admin redesign + melhorias gerais)
+   Adicione ao final do style.css existente
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─── VARIÁVEL EXTRA ──────────────────────────────────────── */
+:root {
+  --gold: #d4a843;
+  --gold-subtle: rgba(212, 168, 67, 0.12);
+}
+
+/* ─── SCROLLBAR GLOBAL ────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--dark-2); }
+::-webkit-scrollbar-thumb { background: rgba(95,131,255,0.3); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(95,131,255,0.5); }
+
+/* ─── SELECTION ───────────────────────────────────────────── */
+::selection { background: rgba(36,87,255,0.35); color: #fff; }
+
+/* ─── SMOOTH TRANSITIONS NO BODY ─────────────────────────── */
+body { transition: background 0.3s ease; }
+
+/* ─── NAV: destaque no link ativo ─────────────────────────── */
+.nav-links a.nav-active {
+  color: var(--white);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ─── HERO: animação de entrada ───────────────────────────── */
+.hero-content > * {
+  animation: fadeUp 0.7s ease both;
+}
+.hero-content > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-content > *:nth-child(2) { animation-delay: 0.15s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.25s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.35s; }
+.hero-content > *:nth-child(5) { animation-delay: 0.45s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── CARDS: sombra suave no hover ───────────────────────── */
+.card {
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+/* ─── SERVIÇOS: badge "destaque" ─────────────────────────── */
+.service-featured::after {
+  content: 'Mais pedido';
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.service-card { position: relative; overflow: hidden; }
+
+/* ─── BARBER CARD: badge de especialidade ────────────────── */
+.barber-card {
+  position: relative;
+}
+
+/* ─── BOTÃO: focus ring acessível ────────────────────────── */
+.btn:focus-visible,
+.btn-action:focus-visible {
+  outline: 2px solid var(--blue-light);
+  outline-offset: 3px;
+}
+
+/* ─── INPUTS: placeholder mais visível ───────────────────── */
+input::placeholder,
+textarea::placeholder { color: rgba(255,255,255,0.25); }
+
+/* ─── ADMIN: chart canvas responsivo ─────────────────────── */
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* ─── ADMIN: novo layout de sidebar (override) ────────────── */
+/* O admin.html v2 usa flexbox na sidebar em vez de grid no layout,
+   então garantimos que o CSS original não sobreponha */
+.admin-layout {
+  display: flex !important;
+  grid-template-columns: unset !important;
+}
+
+/* ─── ADMIN: seção de gráficos ───────────────────────────── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.chart-full {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.chart-full h4,
+.chart-card h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.chart-full p,
+.chart-card p {
+  font-size: 0.78rem;
+  margin-bottom: 20px;
+}
+
+/* ─── ADMIN: metric card destaque maior ──────────────────── */
+.metric-card-lg {
+  grid-column: span 2;
+}
+
+/* ─── ADMIN: delta de tendência ──────────────────────────── */
+.metric-delta {
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.metric-delta.up   { color: var(--success); }
+.metric-delta.down { color: var(--danger);  }
+
+/* ─── ADMIN: ranking de serviços ─────────────────────────── */
+.ranking-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  transition: background var(--transition);
+}
+.ranking-item:hover { background: rgba(36,87,255,0.06); }
+
+.ranking-pos {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--blue-light);
+  width: 26px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ranking-bar-wrap { flex: 1; min-width: 0; }
+
+.ranking-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.ranking-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.ranking-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  border-radius: 99px;
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── ADMIN: tabs receita/despesa ────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 10px 16px;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tab-btn:hover       { color: var(--white); }
+.tab-btn.active      { color: var(--blue-light); border-bottom-color: var(--blue-light); }
+
+/* ─── ADMIN: nav badge (pendentes) ───────────────────────── */
+.nav-badge {
+  display: none;
+  margin-left: auto;
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.04em;
+}
+.nav-badge.visible { display: inline-block; }
+
+/* ─── ADMIN: section-card (substitui .card no admin v2) ─── */
+.section-card {
+  background: linear-gradient(180deg, rgba(18,28,48,0.96), rgba(7,11,20,0.98));
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+/* ─── ADMIN: metric-card icon ────────────────────────────── */
+.metric-icon {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 1rem;
+  color: var(--blue-light);
+  opacity: 0.4;
+}
+.metric-card.accent .metric-icon { color: rgba(255,255,255,0.5); }
+
+/* ─── FOOTER: link discreto ──────────────────────────────── */
+footer a { color: var(--blue-light); transition: opacity var(--transition); }
+footer a:hover { opacity: 0.7; }
+
+/* ─── WHATSAPP FLOAT: pulso ──────────────────────────────── */
+.whatsapp-float::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #25d366;
+  animation: pulse 2.5s ease infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ─── BOOKING: slots disponíveis piscam levemente ────────── */
+.slot-available {
+  animation: subtleGlow 3s ease infinite alternate;
+}
+
+@keyframes subtleGlow {
+  from { border-color: rgba(36,87,255,0.1); }
+  to   { border-color: rgba(95,131,255,0.3); }
+}
+
+/* ─── RESPONSIVO: charts em coluna no mobile ─────────────── */
+@media (max-width: 900px) {
+  .charts-row { grid-template-columns: 1fr; }
+  .metric-card-lg { grid-column: span 1; }
+}
+
+@media (max-width: 600px) {
+  .chart-full,
+  .chart-card { padding: 16px; }
+
+  .ranking-label { font-size: 0.74rem; }
+}

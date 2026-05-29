@@ -761,39 +761,11 @@
   </div>
 </div>
 
+<script src="config.js"></script>
 <script src="utils.js"></script>
 <script src="storage.js"></script>
 <script>
   protegerAdmin();
-
-  const BARBERS = ["Adriano", "Arthur", "Igor", "Vinícius"];
-
-  const SERVICES = [
-    { label: "Corte Masculino",       value: "Corte Masculino - R$ 50",       price: 50  },
-    { label: "Corte + Sobrancelha",   value: "Corte + Sobrancelha - R$ 55",   price: 55  },
-    { label: "Combo Corte e Barba",   value: "Combo Corte e Barba - R$ 90",   price: 90  },
-    { label: "Acabamento",            value: "Acabamento - R$ 20",            price: 20  }
-  ];
-
-  const DURATIONS = [
-    { label: "30 min", value: 30  },
-    { label: "60 min", value: 60  },
-    { label: "90 min", value: 90  },
-    { label: "2h",     value: 120 }
-  ];
-
-  const TIME_SLOTS = [];
-  for (let h = 9; h <= 20; h++) {
-    TIME_SLOTS.push(`${String(h).padStart(2,"0")}:00`);
-  }
-
-  const WORK_DAYS = [2, 3, 4, 5, 6];
-
-  let currentWeekStart = startOfWeek(new Date());
-  let activeBarber     = "todos";
-  let modalContext     = null;
-  let editingId        = null;
-  let selectedDuration = 60;
 
   function startOfWeek(date) {
     const d    = new Date(date);

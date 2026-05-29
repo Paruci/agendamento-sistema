@@ -1118,6 +1118,7 @@
   </main>
 </div>
 
+<script src="config.js"></script>
 <script src="utils.js"></script>
 <script src="storage.js"></script>
 <script>
@@ -1125,7 +1126,7 @@
   protegerAdmin();
 
   // ─── CONSTANTES ───────────────────────────────────────
-  const stylists = ["Adriano", "Arthur", "Igor", "Vinícius"];
+  const stylists = BARBERS;
 
   // Mapa de preços por nome de serviço (normaliza variações)
   const servicePrices = {
@@ -1140,12 +1141,7 @@
   };
 
   // Percentual de comissão por barbeiro (1 = 100% = ele mesmo é dono)
-  const barberShare = {
-    "Adriano": 1,
-    "Arthur": 0.56,
-    "Igor": 0.5,
-    "Vinícius": 0.5
-  };
+  const barberShare = BARBER_SHARE;
 
   // Referências para os objetos Chart.js — guardamos para destruir antes de recriar
   let chartLine = null;

@@ -823,6 +823,42 @@ let selectedDuration = 60;
     return m ? `${h}h${String(m).padStart(2,"0")}` : `${h}h`;
   }
 
+  function getAppointmentBlockingSlot(appointments, date, time, barberFilter) {
+    const currentStart = timeToMinutes(time);
+
+    return appointments.find(item => {
+      if (
+        item.date !== date ||
+        item.status === "Cancelado" ||
+        item.status === "Despesa"
+      ) {
+        return false;
+      }
+
+      if (barberFilter !== "todos" && item.stylist !== barberFilter) {
+        return false;
+      }
+
+      if (item.time === time) {
+        return false;
+      }
+
+      const start = timeToMinutes(item.time);
+      const duration = Number(item.duration || getDuracaoServico(item.service, item.stylist));
+      const end = start + duration;
+
+      return currentStart > start && currentStart < end;
+    });
+  }
+
+  function aplicarDuracaoAutomatica(barberId, serviceId, pillsId) {
+    const barber = document.getElementById(barberId).value;
+    const service = document.getElementById(serviceId).value;
+
+    selectedDuration = getDuracaoServico(service, barber);
+    buildDurationPills(pillsId, selectedDuration);
+  } 
+
   function buildBarberFilter() {
     const wrap = document.getElementById("barberFilter");
     wrap.innerHTML = "";
@@ -905,13 +941,21 @@ let selectedDuration = 60;
         const ds      = toDateStr(day);
         const matches = filtered.filter(a => a.date === ds && a.time === slot);
         const isOff   = !WORK_DAYS.includes(day.getDay());
+        const blockingAppt = getAppointmentBlockingSlot(filtered, ds, slot, activeBarber);
 
         const cell = document.createElement("div");
         cell.className = "agenda-slot-cell" + (isOff ? " day-off-col" : "");
         cell.dataset.date = ds;
         cell.dataset.time = slot;
 
-        if (matches.length === 0) {
+        if (matches.length === 0 && blockingAppt) {
+          cell.innerHTML = `
+            <div class="slot-event manual" style="opacity:0.45; pointer-events:none;">
+              <span class="slot-event-name">Ocupado</span>
+              <span class="slot-event-meta">${blockingAppt.stylist} · continua de ${blockingAppt.time}</span>
+            </div>
+          `;
+        } else if (matches.length === 0) {
           cell.innerHTML = `<div class="slot-add-hint"><i class="fa-solid fa-plus"></i> Agendar</div>`;
         } else {
           matches.forEach(appt => {
@@ -1118,6 +1162,16 @@ let selectedDuration = 60;
 
     buildDurationPills("newDurationPills", selectedDuration);
 
+    aplicarDuracaoAutomatica("mBarber", "mService", "newDurationPills");
+
+    document.getElementById("mBarber").addEventListener("change", () => {
+      aplicarDuracaoAutomatica("mBarber", "mService", "newDurationPills");
+    });
+
+    document.getElementById("mService").addEventListener("change", () => {
+      aplicarDuracaoAutomatica("mBarber", "mService", "newDurationPills");
+    });
+
     footer.innerHTML = `
       <button class="btn btn-ghost btn-sm" id="modalCancelBtn">Cancelar</button>
       <button class="btn btn-sm" id="modalSaveNewBtn">
@@ -1210,6 +1264,14 @@ let selectedDuration = 60;
 
     selectedDuration = editDuration;
     buildDurationPills("editDurationPills", editDuration);
+
+    document.getElementById("eBarber").addEventListener("change", () => {
+      aplicarDuracaoAutomatica("eBarber", "eService", "editDurationPills");
+    });
+
+    document.getElementById("eService").addEventListener("change", () => {
+      aplicarDuracaoAutomatica("eBarber", "eService", "editDurationPills");
+    });
 
     footer.innerHTML = `
       <button class="btn btn-ghost btn-sm" id="editCancelBtn">Cancelar</button>

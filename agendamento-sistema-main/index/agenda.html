@@ -1311,95 +1311,161 @@ let selectedDuration = 60;
 
 
   function renderFinishForm(id) {
-    const all = buscarAgendamentos();
-    const appt = all.find(a => a.id === id);
+  const all = buscarAgendamentos();
+  const appt = all.find(a => a.id === id);
 
-    if (!appt) {
-      showNotification("Agendamento não encontrado.", "error");
-      return;
+  if (!appt) {
+    showNotification("Agendamento não encontrado.", "error");
+    return;
+  }
+
+  const body = document.getElementById("modalBody");
+  const footer = document.getElementById("modalFooter");
+
+  const serviceName = (appt.service || "").split(" - ")[0];
+  const price = Number(appt.price || extractPrice(appt.service));
+
+  let pagamentosTemp = [];
+
+  function calcularTotalPago() {
+    return pagamentosTemp.reduce((total, item) => total + Number(item.valor || 0), 0);
+  }
+
+  function renderPagamentos() {
+    const totalPago = calcularTotalPago();
+    const restante = price - totalPago;
+
+    const lista = document.getElementById("paymentsList");
+    const restanteEl = document.getElementById("remainingValue");
+
+    lista.innerHTML = pagamentosTemp.length === 0
+      ? `<p class="empty-slot-msg">Nenhum pagamento adicionado.</p>`
+      : pagamentosTemp.map((item, index) => `
+          <div class="modal-event-card manual">
+            <div class="modal-event-info">
+              <strong>${item.metodo}</strong>
+              <small>${formatMoney(item.valor)}</small>
+            </div>
+            <button class="btn-action delete" data-index="${index}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `).join("");
+
+    if (restante > 0) {
+      restanteEl.innerHTML = `Valor restante: <strong>${formatMoney(restante)}</strong>`;
+      restanteEl.style.color = "var(--warn)";
+    } else if (restante < 0) {
+      restanteEl.innerHTML = `Troco: <strong>${formatMoney(Math.abs(restante))}</strong>`;
+      restanteEl.style.color = "var(--blue-light)";
+    } else {
+      restanteEl.innerHTML = `Valor restante: <strong>${formatMoney(0)}</strong>`;
+      restanteEl.style.color = "var(--success)";
     }
 
-    const body = document.getElementById("modalBody");
-    const footer = document.getElementById("modalFooter");
-    const serviceName = (appt.service || "").split(" - ")[0];
-    const price = Number(appt.price || extractPrice(appt.service));
+    document.querySelectorAll("#paymentsList .delete").forEach(btn => {
+      btn.onclick = () => {
+        pagamentosTemp.splice(Number(btn.dataset.index), 1);
+        renderPagamentos();
+      };
+    });
+  }
 
-    body.innerHTML = `
-      <div class="modal-in-edit-header">
-        <span><i class="fa-solid fa-cash-register" style="margin-right:5px"></i>Fechar atendimento</span>
-        <button class="modal-cancel-edit" id="cancelFinishBtn">← Voltar</button>
+  body.innerHTML = `
+    <div class="modal-in-edit-header">
+      <span><i class="fa-solid fa-cash-register" style="margin-right:5px"></i>Fechar atendimento</span>
+      <button class="modal-cancel-edit" id="cancelFinishBtn">← Voltar</button>
+    </div>
+
+    <div class="modal-event-card confirmed">
+      <div class="modal-event-info">
+        <strong>${appt.name}</strong>
+        <small>${appt.stylist} · ${serviceName} · ${formatMoney(price)}</small>
+      </div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <div class="modal-form">
+      <div class="form-group">
+        <label>Forma de pagamento</label>
+        <select id="finishPaymentMethod">
+          <option value="Dinheiro">Dinheiro</option>
+          <option value="Pix">Pix</option>
+          <option value="Débito">Débito</option>
+          <option value="Crédito">Crédito</option>
+        </select>
       </div>
 
-      <div class="modal-event-card confirmed">
-        <div class="modal-event-info">
-          <strong>${appt.name}</strong>
-          <small>${appt.stylist} · ${serviceName} · ${formatMoney(price)}</small>
-        </div>
+      <div class="form-group">
+        <label>Valor</label>
+        <input type="number" id="finishPaymentValue" min="0" step="0.01" placeholder="0,00">
       </div>
+
+      <button class="btn btn-ghost btn-sm" id="addPaymentBtn" type="button">
+        <i class="fa-solid fa-plus"></i> Adicionar pagamento
+      </button>
 
       <div class="modal-divider"></div>
 
-      <div class="modal-form">
-        <div class="modal-form-row">
-          <div class="form-group">
-            <label>Pix</label>
-            <input type="number" id="payPix" min="0" step="0.01" placeholder="0,00">
-          </div>
+      <div id="paymentsList"></div>
 
-          <div class="form-group">
-            <label>Dinheiro</label>
-            <input type="number" id="payDinheiro" min="0" step="0.01" placeholder="0,00">
-          </div>
-        </div>
+      <p class="empty-slot-msg" id="remainingValue" style="text-align:right;font-weight:700;"></p>
+    </div>
+  `;
 
-        <div class="modal-form-row">
-          <div class="form-group">
-            <label>Débito</label>
-            <input type="number" id="payDebito" min="0" step="0.01" placeholder="0,00">
-          </div>
+  footer.innerHTML = `
+    <button class="btn btn-ghost btn-sm" id="finishCancelBtn">Cancelar</button>
+    <button class="btn btn-sm" id="finishSaveBtn">
+      <i class="fa-solid fa-check"></i> Finalizar
+    </button>
+  `;
 
-          <div class="form-group">
-            <label>Crédito</label>
-            <input type="number" id="payCredito" min="0" step="0.01" placeholder="0,00">
-          </div>
-        </div>
+  document.getElementById("cancelFinishBtn").onclick = buildModalBody;
+  document.getElementById("finishCancelBtn").onclick = closeModal;
 
-        <p class="empty-slot-msg" style="text-align:left;">
-          Total do serviço: <strong style="color:white;">${formatMoney(price)}</strong><br>
-          Pode dividir o pagamento, exemplo: R$ 50 dinheiro + R$ 40 pix.
-        </p>
-      </div>
-    `;
+  document.getElementById("addPaymentBtn").onclick = () => {
+    const metodo = document.getElementById("finishPaymentMethod").value;
+    const valor = Number(document.getElementById("finishPaymentValue").value || 0);
 
-    footer.innerHTML = `
-      <button class="btn btn-ghost btn-sm" id="finishCancelBtn">Cancelar</button>
-      <button class="btn btn-sm" id="finishSaveBtn">
-        <i class="fa-solid fa-check"></i> Finalizar
-      </button>
-    `;
+    if (valor <= 0) {
+      showNotification("Informe um valor válido.", "error");
+      return;
+    }
 
-    document.getElementById("cancelFinishBtn").onclick = buildModalBody;
-    document.getElementById("finishCancelBtn").onclick = closeModal;
+    pagamentosTemp.push({ metodo, valor });
 
-    document.getElementById("finishSaveBtn").onclick = () => {
-      const pagamentos = [
-        { metodo: "Pix", valor: Number(document.getElementById("payPix").value || 0) },
-        { metodo: "Dinheiro", valor: Number(document.getElementById("payDinheiro").value || 0) },
-        { metodo: "Débito", valor: Number(document.getElementById("payDebito").value || 0) },
-        { metodo: "Crédito", valor: Number(document.getElementById("payCredito").value || 0) }
-      ];
+    document.getElementById("finishPaymentValue").value = "";
+    renderPagamentos();
+  };
 
-      const result = fecharAtendimento(id, pagamentos);
+  document.getElementById("finishSaveBtn").onclick = () => {
+    const totalPago = calcularTotalPago();
 
-      if (result.sucesso) {
-        showNotification("Fechado.", "success");
-        closeModal();
-        renderAgenda();
-      } else {
-        showNotification(result.mensagem, "error");
-      }
-    };
-  }
+    if (pagamentosTemp.length === 0) {
+      showNotification("Adicione pelo menos um pagamento.", "error");
+      return;
+    }
+
+    if (totalPago < price) {
+      showNotification("Ainda existe valor restante.", "error");
+      return;
+    }
+
+    const result = fecharAtendimento(id, pagamentosTemp);
+
+    if (result.sucesso) {
+      showNotification("Fechado.", "success");
+      closeModal();
+      renderAgenda();
+    } else {
+      showNotification(result.mensagem, "error");
+    }
+  };
+
+  document.getElementById("finishPaymentValue").value = price.toFixed(2);
+  renderPagamentos();
+}
 
   function confirmAppt(id) {
     const all = buscarAgendamentos();

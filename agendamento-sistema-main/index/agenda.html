@@ -1058,9 +1058,14 @@ let selectedDuration = 60;
             ${appt.status !== "Confirmado" && appt.status !== "Finalizado"
               ? `<button class="btn-action confirm" data-id="${appt.id}" data-action="confirm" title="Confirmar"><i class="fa-solid fa-check"></i></button>`
               : ""}
-            ${appt.status !== "Finalizado"
-              ? `<button class="btn-action" data-id="${appt.id}" data-action="finish" style="color:var(--success);border-color:rgba(34,197,94,0.28)" title="Fechar atendimento"><i class="fa-solid fa-cash-register"></i></button>`
-              : ""}
+              <button 
+                class="btn-action" 
+                data-id="${appt.id}" 
+                data-action="finish" 
+                style="color:var(--success);border-color:rgba(34,197,94,0.28)" 
+                title="Fechar atendimento">
+                <i class="fa-solid fa-cash-register"></i>
+              </button>
             <button class="btn-action" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)" title="Editar"><i class="fa-solid fa-pen"></i></button>
             ${appt.phone
               ? `<button class="btn-action whatsapp" data-phone="${appt.phone}" data-name="${appt.name}" data-action="whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`

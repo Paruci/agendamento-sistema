@@ -1,10 +1,55 @@
 const BARBERS = ["Adriano", "Arthur", "Igor", "Vinícius"];
 
 const SERVICES = [
-  { label: "Corte Masculino", value: "Corte Masculino - R$ 50", price: 50 },
-  { label: "Corte + Sobrancelha", value: "Corte + Sobrancelha - R$ 55", price: 55 },
-  { label: "Combo Corte e Barba", value: "Combo Corte e Barba - R$ 90", price: 90 },
-  { label: "Acabamento", value: "Acabamento - R$ 20", price: 20 }
+  {
+    label: "Corte Masculino",
+    value: "Corte Masculino - R$ 50",
+    price: 50,
+    duration: 60,
+    interval: 60,
+    barberDurations: { Arthur: 30 },
+    barberIntervals: { Arthur: 30 }
+  },
+  {
+    label: "Corte + Sobrancelha",
+    value: "Corte + Sobrancelha - R$ 55",
+    price: 55,
+    duration: 60,
+    interval: 60,
+    barberDurations: { Arthur: 30 },
+    barberIntervals: { Arthur: 30 }
+  },
+  {
+    label: "Corte + Barba",
+    value: "Corte + Barba - R$ 90",
+    price: 90,
+    duration: 90,
+    interval: 60,
+    barberIntervals: { Arthur: 30 }
+  },
+  {
+    label: "Acabamento",
+    value: "Acabamento - R$ 20",
+    price: 20,
+    duration: 30,
+    interval: 30
+  },
+  {
+    label: "Pigmentação",
+    value: "Pigmentação",
+    price: 0,
+    duration: 60,
+    interval: 60,
+    barberIntervals: { Arthur: 30 }
+  },
+  {
+    label: "Química e cor",
+    value: "Química e cor",
+    price: 0,
+    duration: 120,
+    interval: 60,
+    barberIntervals: { Arthur: 30 }
+  }
 ];
 
 const PAYMENT_FEES = {

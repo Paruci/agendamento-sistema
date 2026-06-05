@@ -1128,17 +1128,11 @@
   // ─── CONSTANTES ───────────────────────────────────────
   const stylists = BARBERS;
 
-  // Mapa de preços por nome de serviço (normaliza variações)
-  const servicePrices = {
-    "Corte Masculino": 50,
-    "Corte masculino - R$ 50": 50,
-    "Corte com Sobrancelha": 55,
-    "Corte + sobrancelha - R$ 55": 55,
-    "Combo Corte e Barba": 90,
-    "Corte + barba - R$ 90": 90,
-    "Acabamento": 20,
-    "Acabamento - R$ 20": 20
-  };
+  const servicePrices = SERVICES.reduce((acc, service) => {
+    acc[service.label] = service.price;
+    acc[service.value] = service.price;
+    return acc;
+  }, {});
 
   // Percentual de comissão por barbeiro (1 = 100% = ele mesmo é dono)
   const barberShare = BARBER_SHARE;
@@ -1847,7 +1841,7 @@
 
     const resultado = adicionarAgendamento({
       name:          cliente || (isExpense ? `Despesa: ${finalDescricao}` : finalDescricao),
-      phone:         telefone || "00000000000", // caixa manual: telefone é opcional
+      phone:         telefone,
       service:       finalDescricao,
       categoria,
       paymentMethod: pagamento,
@@ -1859,32 +1853,9 @@
       origem:        "Caixa"
     });
 
-    // Lançamento de caixa não precisa de validação de telefone — bypass se necessário
     if (!resultado.sucesso) {
-      // Se o erro for só telefone inválido (caixa pode não ter o número), salva mesmo assim
-      if (resultado.mensagem && resultado.mensagem.includes("Telefone")) {
-        // Tenta de novo sem telefone
-        const r2 = adicionarAgendamento({
-          name:          cliente || finalDescricao,
-          phone:         "00000000000",
-          service:       finalDescricao,
-          categoria,
-          paymentMethod: pagamento,
-          feeAmount,
-          price:         netValue,
-          stylist:       barbeiro,
-          date, time,
-          status:        isExpense ? "Despesa" : "Finalizado",
-          origem:        "Caixa"
-        });
-        if (!r2.sucesso) {
-          msg.innerHTML = `<div class="info-msg error">${r2.mensagem}</div>`;
-          return;
-        }
-      } else {
-        msg.innerHTML = `<div class="info-msg error">${resultado.mensagem}</div>`;
-        return;
-      }
+      msg.innerHTML = `<div class="info-msg error">${resultado.mensagem}</div>`;
+      return;
     }
 
     msg.innerHTML = `<div class="info-msg success"><i class="fa-solid fa-check-circle"></i> ${cliente || finalDescricao} registrado!</div>`;

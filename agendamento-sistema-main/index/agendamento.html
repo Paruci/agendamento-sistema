@@ -183,6 +183,7 @@
   <i class="fa-brands fa-whatsapp"></i>
 </a>
 
+<script src="config.js"></script>
 <script src="utils.js"></script>
 <script src="storage.js"></script>
 <script>
@@ -193,6 +194,21 @@
   const campoBarbeiro = document.getElementById("barbeiro");
   const campoHorario  = document.getElementById("horario");
   const campoTelefone = document.getElementById("telefone");
+
+  function carregarOpcoes() {
+    const campoServico = document.getElementById("servico");
+
+    campoServico.innerHTML = `<option value="">Selecione um serviço</option>` +
+      SERVICES.map(service => {
+        const priceText = service.price > 0 ? ` — ${formatMoney(service.price)}` : " — Consultar";
+        return `<option value="${service.value}">${service.label}${priceText}</option>`;
+      }).join("");
+
+    campoBarbeiro.innerHTML = `<option value="">Escolha um barbeiro</option>` +
+      BARBERS.map(barber => `<option value="${barber}">${barber}</option>`).join("");
+  }
+
+  carregarOpcoes();
 
   // Data mínima = hoje
   campoData.min = getTodayISO();

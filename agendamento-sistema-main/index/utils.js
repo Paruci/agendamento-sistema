@@ -5,7 +5,31 @@ function formatMoney(value) {
   });
 }
 
+function normalizeText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function getServiceConfig(service) {
+  if (!Array.isArray(typeof SERVICES !== "undefined" ? SERVICES : [])) return null;
+
+  const text = normalizeText(service);
+
+  return SERVICES.find(item =>
+    normalizeText(item.value) === text ||
+    normalizeText(item.label) === text ||
+    text.includes(normalizeText(item.label)) ||
+    normalizeText(item.value).includes(text)
+  ) || null;
+}
+
 function extractPrice(service) {
+  const serviceConfig = getServiceConfig(service);
+  if (serviceConfig) return Number(serviceConfig.price || 0);
+
   const match = String(service || "").match(/R\$\s*([\d.,]+)/);
   return match ? Number(match[1].replace(/\./g, "").replace(",", ".")) : 0;
 }
@@ -75,46 +99,38 @@ function minutesToTime(totalMinutes) {
 }
 
 function getDuracaoServico(service, stylist) {
-  const text = String(service || "").toLowerCase();
-  const barber = String(stylist || "").toLowerCase();
+  const serviceConfig = getServiceConfig(service);
+  const barber = String(stylist || "").trim();
 
-  if (text.includes("corte") && text.includes("barba")) {
-    return 90;
-  }
-
-  if (text.includes("acabamento")) {
-    return 30;
-  }
-
-  if (text.includes("corte")) {
-    if (barber.includes("arthur")) {
-      return 30;
+  if (serviceConfig) {
+    if (serviceConfig.barberDurations && serviceConfig.barberDurations[barber]) {
+      return Number(serviceConfig.barberDurations[barber]);
     }
 
-    return 60;
+    return Number(serviceConfig.duration || 60);
   }
 
   return 60;
 }
 
 function getIntervaloAgenda(service, stylist) {
-  const text = String(service || "").toLowerCase();
-  const barber = String(stylist || "").toLowerCase();
+  const serviceConfig = getServiceConfig(service);
+  const barber = String(stylist || "").trim();
 
-  if (barber.includes("arthur")) {
-    return 30;
-  }
+  if (serviceConfig) {
+    if (serviceConfig.barberIntervals && serviceConfig.barberIntervals[barber]) {
+      return Number(serviceConfig.barberIntervals[barber]);
+    }
 
-  if (text.includes("acabamento")) {
-    return 30;
+    return Number(serviceConfig.interval || 60);
   }
 
   return 60;
 }
 
 function getHorariosBase(service, stylist) {
-  const start = timeToMinutes("09:00");
-  const end = timeToMinutes("19:00");
+  const start = timeToMinutes(typeof WORK_CONFIG !== "undefined" ? WORK_CONFIG.openingTime : "09:00");
+  const end = timeToMinutes(typeof WORK_CONFIG !== "undefined" ? WORK_CONFIG.closingTime : "19:00");
   const interval = getIntervaloAgenda(service, stylist);
   const times = [];
 
@@ -155,7 +171,7 @@ function getHorariosDisponiveis(date, stylist, service) {
     const newStart = timeToMinutes(time);
     const newEnd = newStart + newDuration;
 
-    if (newEnd > timeToMinutes("19:00")) {
+    if (newEnd > timeToMinutes(typeof WORK_CONFIG !== "undefined" ? WORK_CONFIG.closingTime : "19:00")) {
       return false;
     }
 

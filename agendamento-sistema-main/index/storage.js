@@ -1,186 +1,191 @@
-const STORAGE_KEY = "ahs_agendamentos";
-const LOGIN_KEY = "ahs_admin_logado";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Adriano Hair Style</title>
 
-const ADMIN_CREDENTIALS = {
-  email: "admin@admin.com",
-  senha: "123456"
-};
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-function gerarId() {
-  return "ag_" + Date.now() + "_" + Math.random().toString(16).slice(2);
-}
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-function buscarAgendamentos() {
-  try {
-    const dados = localStorage.getItem(STORAGE_KEY);
-    return dados ? JSON.parse(dados) : [];
-  } catch (e) {
-    showNotification("Erro ao carregar dados.", "error");
-    return [];
-  }
-}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-function salvarAgendamentos(agendamentos) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(agendamentos));
-  } catch (e) {
-    showNotification("Erro ao salvar dados.", "error");
-  }
-}
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-function adicionarAgendamento(agendamento) {
-  const agendamentos = buscarAgendamentos();
+<div class="login-page">
 
-  if (!agendamento.name || !agendamento.service || !agendamento.stylist || !agendamento.date || !agendamento.time) {
-    return { sucesso: false, mensagem: "Preencha nome, serviço, barbeiro, data e horário." };
-  }
+  <a href="index.html" class="login-back">
+    <i class="fa-solid fa-arrow-left"></i>
+    Voltar ao site
+  </a>
 
-  if (agendamento.origem !== "Manual") {
-    if (!agendamento.phone) {
-      return { sucesso: false, mensagem: "Telefone obrigatório para agendamento online." };
-    }
+  <div class="login-wrap">
 
-    if (!validatePhone(agendamento.phone)) {
-      return { sucesso: false, mensagem: "Telefone inválido. Use DDD + número." };
-    }
-  }
+    <div class="login-left">
 
-  const hoje = new Date().toISOString().split("T")[0];
+      <div class="login-overlay"></div>
 
-  if (agendamento.date < hoje) {
-    return { sucesso: false, mensagem: "Não é possível agendar para datas passadas." };
-  }
+      <div class="login-left-content">
 
-  const dataSelecionada = new Date(agendamento.date + "T00:00:00");
-  const diaSemana = dataSelecionada.getDay();
+        <div class="login-brand">
+          <i class="fa-solid fa-scissors"></i>
+          Adriano Hair Style
+        </div>
 
-  if (diaSemana === 0 || diaSemana === 1) {
-    return { sucesso: false, mensagem: "A barbearia atende de terça a sábado." };
-  }
+        <span class="login-badge">
+          Painel interno
+        </span>
 
-  const duration = Number(agendamento.duration || getDuracaoServico(agendamento.service, agendamento.stylist));
+        <h1>
+          Gestão da
+          barbearia
+        </h1>
 
-  const conflito = agendamentos.some(item => {
-    if (
-      item.date !== agendamento.date ||
-      item.stylist !== agendamento.stylist ||
-      item.status === "Cancelado" ||
-      item.status === "Despesa"
-    ) {
-      return false;
-    }
+        <p>
+          Controle agendamentos, acompanhe clientes,
+          visualize métricas e organize a operação da barbearia em um único painel.
+        </p>
 
-    const novoInicio = timeToMinutes(agendamento.time);
-    const novoFim = novoInicio + duration;
+        <div class="login-features">
 
-    const existenteInicio = timeToMinutes(item.time);
-    const existenteDuracao = Number(item.duration || getDuracaoServico(item.service, item.stylist));
-    const existenteFim = existenteInicio + existenteDuracao;
+          <div class="login-feature">
+            <i class="fa-solid fa-calendar-days"></i>
+            Agenda inteligente
+          </div>
 
-    return novoInicio < existenteFim && novoFim > existenteInicio;
-  });
+          <div class="login-feature">
+            <i class="fa-solid fa-users"></i>
+            Gestão de clientes
+          </div>
 
-  if (conflito) {
-    return { sucesso: false, mensagem: "Este horário conflita com outro atendimento deste barbeiro." };
-  }
+          <div class="login-feature">
+            <i class="fa-solid fa-chart-line"></i>
+            Controle financeiro
+          </div>
 
-  const novo = {
-    id: gerarId(),
-    name: sanitizeString(agendamento.name),
-    phone: sanitizeString(agendamento.phone || ""),
-    service: sanitizeString(agendamento.service),
-    stylist: sanitizeString(agendamento.stylist),
-    date: agendamento.date,
-    time: agendamento.time,
-    duration,
-    status: agendamento.status || "Pendente",
-    price: Number(agendamento.price || extractPrice(agendamento.service)),
-    categoria: agendamento.categoria || "Serviço",
-    paymentMethod: agendamento.paymentMethod || "",
-    feeAmount: Number(agendamento.feeAmount || 0),
-    origem: agendamento.origem || "Online",
-    createdAt: new Date().toISOString()
-  };
+        </div>
 
-  agendamentos.push(novo);
-  salvarAgendamentos(agendamentos);
+      </div>
 
-  return {
-    sucesso: true,
-    mensagem: "Agendamento salvo com sucesso.",
-    agendamento: novo
-  };
-}
+    </div>
 
-function fecharAtendimento(id, metodoPagamento) {
-  const agendamentos = buscarAgendamentos();
-  const index = agendamentos.findIndex(item => item.id === id);
+    <div class="login-right">
 
-  if (index === -1) {
-    return { sucesso: false, mensagem: "Agendamento não encontrado." };
-  }
+      <span class="eyebrow">
+        Acesso restrito
+      </span>
 
-  const agendamento = agendamentos[index];
+      <h2>
+        Entrar
+      </h2>
 
-  if (agendamento.status === "Finalizado") {
-    return { sucesso: false, mensagem: "Este atendimento já foi finalizado." };
-  }
+      <p>
+        Use suas credenciais para acessar o painel administrativo.
+      </p>
 
-  if (!metodoPagamento) {
-    return { sucesso: false, mensagem: "Selecione a forma de pagamento." };
-  }
+      <form id="formLogin" class="login-form">
 
-  const preco = Number(agendamento.price || extractPrice(agendamento.service));
-  let taxa = 0;
+        <div class="form-group">
+          <label for="email">E-mail</label>
 
-  if (metodoPagamento === "Crédito") {
-    taxa = preco * 0.04;
-  }
+          <input
+            type="email"
+            id="email"
+            placeholder="admin@admin.com"
+            required
+            autocomplete="username"
+          >
+        </div>
 
-  if (metodoPagamento === "Débito") {
-    taxa = preco * 0.02;
-  }
+        <div class="form-group">
+          <label for="senha">Senha</label>
 
-  agendamentos[index] = {
-    ...agendamento,
-    status: "Finalizado",
-    paymentMethod: metodoPagamento,
-    feeAmount: taxa,
-    closedAt: new Date().toISOString()
-  };
+          <input
+            type="password"
+            id="senha"
+            placeholder="••••••••"
+            required
+            autocomplete="current-password"
+          >
+        </div>
 
-  salvarAgendamentos(agendamentos);
+        <div id="loginMsg"></div>
 
-  return {
-    sucesso: true,
-    mensagem: "Atendimento finalizado com sucesso.",
-    agendamento: agendamentos[index]
-  };
-}
+        <button type="submit" class="btn btn-full">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Entrar no painel
+        </button>
 
-function removerAgendamento(id) {
-  salvarAgendamentos(buscarAgendamentos().filter(item => item.id !== id));
-}
+      </form>
 
-function loginAdmin(email, senha) {
-  if (email === ADMIN_CREDENTIALS.email && senha === ADMIN_CREDENTIALS.senha) {
-    localStorage.setItem(LOGIN_KEY, "sim");
-    return true;
+      <p class="login-hint">
+        Adriano Hair Style © 2026
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="utils.js"></script>
+<script src="storage.js"></script>
+
+<script>
+
+  if (adminLogado()) {
+    window.location.href = "admin.html";
   }
 
-  return false;
-}
+  document
+    .getElementById("formLogin")
+    .addEventListener("submit", function(e) {
 
-function logoutAdmin() {
-  localStorage.removeItem(LOGIN_KEY);
-}
+      e.preventDefault();
 
-function adminLogado() {
-  return localStorage.getItem(LOGIN_KEY) === "sim";
-}
+      const email = document
+        .getElementById("email")
+        .value
+        .trim();
 
-function protegerAdmin() {
-  if (!adminLogado()) {
-    window.location.href = "login.html";
-  }
-}
+      const senha = document
+        .getElementById("senha")
+        .value;
+
+      const msg = document
+        .getElementById("loginMsg");
+
+      if (loginAdmin(email, senha)) {
+
+        msg.innerHTML =
+        `
+          <div class="info-msg success">
+            <i class="fa-solid fa-check-circle"></i>
+            Login realizado! Redirecionando...
+          </div>
+        `;
+
+        setTimeout(() => {
+          window.location.href = "admin.html";
+        }, 1000);
+
+      } else {
+
+        msg.innerHTML =
+        `
+          <div class="info-msg error">
+            <i class="fa-solid fa-times-circle"></i>
+            E-mail ou senha incorretos.
+          </div>
+        `;
+      }
+    });
+
+</script>
+
+</body>
+</html>

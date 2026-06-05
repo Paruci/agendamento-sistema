@@ -767,6 +767,23 @@
 <script>
   protegerAdmin();
 
+const WORK_DAYS = WORK_CONFIG.workDays;
+const TIME_SLOTS = [];
+
+for (
+  let minutos = timeToMinutes(WORK_CONFIG.openingTime);
+  minutos < timeToMinutes(WORK_CONFIG.closingTime);
+  minutos += 30
+) {
+  TIME_SLOTS.push(minutesToTime(minutos));
+}
+
+let currentWeekStart = startOfWeek(new Date());
+let activeBarber = "todos";
+let modalContext = null;
+let editingId = null;
+let selectedDuration = 60;
+
   function startOfWeek(date) {
     const d    = new Date(date);
     const day  = d.getDay();

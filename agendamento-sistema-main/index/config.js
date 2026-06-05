@@ -66,22 +66,8 @@ const BARBER_SHARE = {
   Vinícius: 0.5
 };
 
-const DURATIONS = [
-    { label: "30 min", value: 30 },
-    { label: "60 min", value: 60 },
-    { label: "90 min", value: 90 },
-    { label: "2h", value: 120 }
-];
-
 const WORK_CONFIG = {
-    openingTime: "09:00",
-    closingTime: "19:00",
-    workDays: [2, 3, 4, 5, 6]
+  openingTime: "09:00",
+  closingTime: "19:00",
+  workDays: [2, 3, 4, 5, 6]
 };
-
-const DURATIONS = [
-  { label: "30 min", value: 30 },
-  { label: "60 min", value: 60 },
-  { label: "90 min", value: 90 },
-  { label: "2h", value: 120 }
-];

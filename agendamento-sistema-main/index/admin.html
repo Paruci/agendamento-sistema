@@ -1698,12 +1698,27 @@
     }
 
     if (action === "finish") {
+      const item = scheduleData.find(i => i.id === btn.dataset.id);
+
+      if (!item) {
+        showNotification("Agendamento não encontrado.", "error");
+        return;
+      }
+
+      const valorInformado = prompt("Valor recebido:", Number(item.price || 0).toFixed(2));
+      if (!valorInformado) return;
+
       const metodo = prompt("Forma de pagamento: Pix, Dinheiro, Débito ou Crédito", "Pix");
       if (!metodo) return;
-      const resultado = fecharAtendimento(btn.dataset.id, metodo);
+
+      const resultado = fecharAtendimento(btn.dataset.id, {
+        valor: Number(valorInformado.replace(",", ".")),
+        metodoPagamento: metodo
+      });
+
       if (resultado.sucesso) {
         updateDashboard();
-        showNotification("Atendimento fechado e receita lançada.", "success");
+        showNotification("Atendimento fechado.", "success");
       } else {
         showNotification(resultado.mensagem, "error");
       }

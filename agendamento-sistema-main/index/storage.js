@@ -113,62 +113,51 @@ function adicionarAgendamento(agendamento) {
   };
 }
 
-function fecharAtendimento(id, pagamentos) {
-  const agendamentos = buscarAgendamentos();
-  const index = agendamentos.findIndex(item => item.id === id);
+  function fecharAtendimento(id, dadosFechamento) {
+    const agendamentos = buscarAgendamentos();
+    const index = agendamentos.findIndex(item => item.id === id);
 
-  if (index === -1) {
-    return { sucesso: false, mensagem: "Agendamento não encontrado." };
+    if (index === -1) {
+      return { sucesso: false, mensagem: "Agendamento não encontrado." };
+    }
+
+    const agendamento = agendamentos[index];
+
+    if (agendamento.status === "Finalizado") {
+      return { sucesso: false, mensagem: "Este atendimento já foi fechado." };
+    }
+
+    const valor = Number(dadosFechamento.valor || 0);
+    const metodoPagamento = dadosFechamento.metodoPagamento;
+
+    if (valor <= 0) {
+      return { sucesso: false, mensagem: "Informe um valor válido." };
+    }
+
+    if (!metodoPagamento) {
+      return { sucesso: false, mensagem: "Selecione a forma de pagamento." };
+    }
+
+    const taxa = valor * Number(PAYMENT_FEES[metodoPagamento] || 0);
+
+    agendamentos[index] = {
+      ...agendamento,
+      status: "Finalizado",
+      price: valor,
+      paymentMethod: metodoPagamento,
+      payments: [{ metodo: metodoPagamento, valor }],
+      feeAmount: taxa,
+      closedAt: new Date().toISOString()
+    };
+
+    salvarAgendamentos(agendamentos);
+
+    return {
+      sucesso: true,
+      mensagem: "Atendimento fechado com sucesso.",
+      agendamento: agendamentos[index]
+    };
   }
-
-  const agendamento = agendamentos[index];
-
-  if (agendamento.status === "Finalizado") {
-    return { sucesso: false, mensagem: "Este atendimento já foi finalizado." };
-  }
-
-  const listaPagamentos = Array.isArray(pagamentos) ? pagamentos : [];
-
-  const pagamentosValidos = listaPagamentos
-    .filter(item => item.metodo && Number(item.valor) > 0)
-    .map(item => ({
-      metodo: item.metodo,
-      valor: Number(item.valor)
-    }));
-
-  if (pagamentosValidos.length === 0) {
-    return { sucesso: false, mensagem: "Informe pelo menos uma forma de pagamento." };
-  }
-
-  const totalPago = pagamentosValidos.reduce((total, item) => total + item.valor, 0);
-  const preco = Number(agendamento.price || extractPrice(agendamento.service));
-
-  if (totalPago <= 0) {
-    return { sucesso: false, mensagem: "O valor pago precisa ser maior que zero." };
-  }
-
-  const taxa = pagamentosValidos.reduce((total, item) => {
-    return total + item.valor * Number(PAYMENT_FEES[item.metodo] || 0);
-  }, 0);
-
-  agendamentos[index] = {
-    ...agendamento,
-    status: "Finalizado",
-    price: totalPago,
-    paymentMethod: pagamentosValidos.map(item => item.metodo).join(" + "),
-    payments: pagamentosValidos,
-    feeAmount: taxa,
-    closedAt: new Date().toISOString()
-  };
-
-  salvarAgendamentos(agendamentos);
-
-  return {
-    sucesso: true,
-    mensagem: "Fechado.",
-    agendamento: agendamentos[index]
-  };
-}
 
 function removerAgendamento(id) {
   const agendamentos = buscarAgendamentos().filter(item => item.id !== id);

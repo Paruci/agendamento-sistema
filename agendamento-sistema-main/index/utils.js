@@ -212,5 +212,5 @@ function showNotification(message, type = "info") {
     setTimeout(() => {
       notification.remove();
     }, 300);
-  }, 3000);
+  }, type === "success" ? 1200 : 2500);
 }

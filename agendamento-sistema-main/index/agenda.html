@@ -1340,19 +1340,33 @@ let selectedDuration = 60;
       <div class="modal-divider"></div>
 
       <div class="modal-form">
-        <div class="form-group">
-          <label>Forma de pagamento</label>
-          <select id="finishPayment">
-            <option value="">Selecione</option>
-            <option value="Pix">Pix</option>
-            <option value="Dinheiro">Dinheiro</option>
-            <option value="Débito">Débito</option>
-            <option value="Crédito">Crédito</option>
-          </select>
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label>Pix</label>
+            <input type="number" id="payPix" min="0" step="0.01" placeholder="0,00">
+          </div>
+
+          <div class="form-group">
+            <label>Dinheiro</label>
+            <input type="number" id="payDinheiro" min="0" step="0.01" placeholder="0,00">
+          </div>
+        </div>
+
+        <div class="modal-form-row">
+          <div class="form-group">
+            <label>Débito</label>
+            <input type="number" id="payDebito" min="0" step="0.01" placeholder="0,00">
+          </div>
+
+          <div class="form-group">
+            <label>Crédito</label>
+            <input type="number" id="payCredito" min="0" step="0.01" placeholder="0,00">
+          </div>
         </div>
 
         <p class="empty-slot-msg" style="text-align:left;">
-          Pix e dinheiro entram sem taxa. Débito calcula 2% e crédito calcula 4%.
+          Total do serviço: <strong style="color:white;">${formatMoney(price)}</strong><br>
+          Pode dividir o pagamento, exemplo: R$ 50 dinheiro + R$ 40 pix.
         </p>
       </div>
     `;
@@ -1360,7 +1374,7 @@ let selectedDuration = 60;
     footer.innerHTML = `
       <button class="btn btn-ghost btn-sm" id="finishCancelBtn">Cancelar</button>
       <button class="btn btn-sm" id="finishSaveBtn">
-        <i class="fa-solid fa-check"></i> Finalizar atendimento
+        <i class="fa-solid fa-check"></i> Finalizar
       </button>
     `;
 
@@ -1368,11 +1382,17 @@ let selectedDuration = 60;
     document.getElementById("finishCancelBtn").onclick = closeModal;
 
     document.getElementById("finishSaveBtn").onclick = () => {
-      const metodo = document.getElementById("finishPayment").value;
-      const result = fecharAtendimento(id, metodo);
+      const pagamentos = [
+        { metodo: "Pix", valor: Number(document.getElementById("payPix").value || 0) },
+        { metodo: "Dinheiro", valor: Number(document.getElementById("payDinheiro").value || 0) },
+        { metodo: "Débito", valor: Number(document.getElementById("payDebito").value || 0) },
+        { metodo: "Crédito", valor: Number(document.getElementById("payCredito").value || 0) }
+      ];
+
+      const result = fecharAtendimento(id, pagamentos);
 
       if (result.sucesso) {
-        showNotification(result.mensagem, "success");
+        showNotification("Fechado.", "success");
         closeModal();
         renderAgenda();
       } else {

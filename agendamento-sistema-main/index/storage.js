@@ -113,7 +113,7 @@ function adicionarAgendamento(agendamento) {
   };
 }
 
-function fecharAtendimento(id, metodoPagamento) {
+function fecharAtendimento(id, pagamentos) {
   const agendamentos = buscarAgendamentos();
   const index = agendamentos.findIndex(item => item.id === id);
 
@@ -127,17 +127,36 @@ function fecharAtendimento(id, metodoPagamento) {
     return { sucesso: false, mensagem: "Este atendimento já foi finalizado." };
   }
 
-  if (!metodoPagamento) {
-    return { sucesso: false, mensagem: "Selecione a forma de pagamento." };
+  const listaPagamentos = Array.isArray(pagamentos) ? pagamentos : [];
+
+  const pagamentosValidos = listaPagamentos
+    .filter(item => item.metodo && Number(item.valor) > 0)
+    .map(item => ({
+      metodo: item.metodo,
+      valor: Number(item.valor)
+    }));
+
+  if (pagamentosValidos.length === 0) {
+    return { sucesso: false, mensagem: "Informe pelo menos uma forma de pagamento." };
   }
 
+  const totalPago = pagamentosValidos.reduce((total, item) => total + item.valor, 0);
   const preco = Number(agendamento.price || extractPrice(agendamento.service));
-  const taxa = preco * Number(PAYMENT_FEES[metodoPagamento] || 0);
+
+  if (totalPago <= 0) {
+    return { sucesso: false, mensagem: "O valor pago precisa ser maior que zero." };
+  }
+
+  const taxa = pagamentosValidos.reduce((total, item) => {
+    return total + item.valor * Number(PAYMENT_FEES[item.metodo] || 0);
+  }, 0);
 
   agendamentos[index] = {
     ...agendamento,
     status: "Finalizado",
-    paymentMethod: metodoPagamento,
+    price: totalPago,
+    paymentMethod: pagamentosValidos.map(item => item.metodo).join(" + "),
+    payments: pagamentosValidos,
     feeAmount: taxa,
     closedAt: new Date().toISOString()
   };
@@ -146,7 +165,7 @@ function fecharAtendimento(id, metodoPagamento) {
 
   return {
     sucesso: true,
-    mensagem: "Atendimento finalizado com sucesso.",
+    mensagem: "Fechado.",
     agendamento: agendamentos[index]
   };
 }

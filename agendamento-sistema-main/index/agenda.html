@@ -778,6 +778,13 @@ for (
   TIME_SLOTS.push(minutesToTime(minutos));
 }
 
+const DURATIONS = [
+  { label: "30 min", value: 30 },
+  { label: "60 min", value: 60 },
+  { label: "90 min", value: 90 },
+  { label: "120 min", value: 120 }
+];
+
 let currentWeekStart = startOfWeek(new Date());
 let activeBarber = "todos";
 let modalContext = null;
@@ -929,7 +936,10 @@ let selectedDuration = 60;
           });
 
           if (matches.length < BARBERS.length) {
-            cell.innerHTML += `<div class="slot-add-hint"><i class="fa-solid fa-plus"></i> Mais</div>`;
+            const hint = document.createElement("div");
+            hint.className = "slot-add-hint";
+            hint.innerHTML = `<i class="fa-solid fa-plus"></i> Mais`;
+            cell.appendChild(hint);
           }
         }
 
@@ -1198,6 +1208,7 @@ let selectedDuration = 60;
     `;
     body.appendChild(form);
 
+    selectedDuration = editDuration;
     buildDurationPills("editDurationPills", editDuration);
 
     footer.innerHTML = `

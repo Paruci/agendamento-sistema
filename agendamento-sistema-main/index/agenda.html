@@ -1043,6 +1043,7 @@ let selectedDuration = 60;
                   : appt.status === "Manual"     ? "manual"
                   : "pending";
         const dur = appt.duration ? durationLabel(appt.duration) : "60 min";
+        const isFinalizado = appt.status === "Finalizado";
 
         const card = document.createElement("div");
         card.className = `modal-event-card ${sc}`;
@@ -1051,26 +1052,30 @@ let selectedDuration = 60;
             <strong>
               ${appt.name}
               <span class="duration-tag"><i class="fa-regular fa-clock"></i> ${dur}</span>
+              ${isFinalizado ? `<span class="duration-tag" style="background:rgba(34,197,94,0.15);color:var(--success)"><i class="fa-solid fa-check"></i> Finalizado</span>` : ""}
             </strong>
-            <small>${appt.stylist} · ${(appt.service||"").split(" - ")[0]}${appt.phone ? ` · ${appt.phone}` : ""}</small>
+            <small>${appt.stylist} · ${(appt.service||"").split(" - ")[0]}${appt.phone ? ` · ${appt.phone}` : ""}${isFinalizado && appt.price ? ` · ${formatMoney(appt.price)}` : ""}</small>
           </div>
-          <div class="modal-event-actions">
-            ${appt.status !== "Confirmado" && appt.status !== "Finalizado"
-              ? `<button class="btn-action confirm" data-id="${appt.id}" data-action="confirm" title="Confirmar"><i class="fa-solid fa-check"></i></button>`
-              : ""}
-              <button 
-                class="btn-action" 
-                data-id="${appt.id}" 
-                data-action="finish" 
-                style="color:var(--success);border-color:rgba(34,197,94,0.28)" 
+          <div class="modal-event-actions" style="flex-direction:column;align-items:flex-end;gap:6px;">
+            ${!isFinalizado ? `
+              <button
+                class="btn btn-sm"
+                data-id="${appt.id}"
+                data-action="finish"
+                style="background:linear-gradient(135deg,rgba(34,197,94,0.25),rgba(34,197,94,0.12));border:1px solid rgba(34,197,94,0.35);color:var(--success);font-size:0.72rem;padding:6px 12px;min-height:unset;"
                 title="Fechar atendimento">
-                <i class="fa-solid fa-cash-register"></i>
-              </button>
-            <button class="btn-action" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)" title="Editar"><i class="fa-solid fa-pen"></i></button>
-            ${appt.phone
-              ? `<button class="btn-action whatsapp" data-phone="${appt.phone}" data-name="${appt.name}" data-action="whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`
-              : ""}
-            <button class="btn-action delete" data-id="${appt.id}" data-action="delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                <i class="fa-solid fa-cash-register"></i> Fechar
+              </button>` : ""}
+            <div style="display:flex;gap:5px;">
+              ${appt.status !== "Confirmado" && !isFinalizado
+                ? `<button class="btn-action confirm" data-id="${appt.id}" data-action="confirm" title="Confirmar"><i class="fa-solid fa-check"></i></button>`
+                : ""}
+              <button class="btn-action" data-id="${appt.id}" data-action="edit" style="color:var(--blue-light);border-color:rgba(95,131,255,0.28)" title="Editar"><i class="fa-solid fa-pen"></i></button>
+              ${appt.phone
+                ? `<button class="btn-action whatsapp" data-phone="${appt.phone}" data-name="${appt.name}" data-action="whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>`
+                : ""}
+              <button class="btn-action delete" data-id="${appt.id}" data-action="delete" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+            </div>
           </div>
         `;
         listDiv.appendChild(card);
@@ -1162,25 +1167,27 @@ let selectedDuration = 60;
         <label>Duração <span style="opacity:0.55;font-weight:500;text-transform:none;font-size:0.72rem;">(padrão 60 min)</span></label>
         <div class="duration-pills" id="newDurationPills"></div>
       </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:6px;">
+        <button class="btn btn-ghost btn-sm" id="newFormCancelBtn" type="button">Cancelar</button>
+        <button class="btn btn-sm" id="newFormSaveBtn" type="button">
+          <i class="fa-solid fa-calendar-plus"></i> Agendar
+        </button>
+      </div>
     `;
     body.appendChild(form);
 
     buildDurationPills("newDurationPills", selectedDuration);
-
     aplicarDuracaoAutomatica("mBarber", "mService", "newDurationPills");
 
     document.getElementById("mBarber").addEventListener("change", () => {
       aplicarDuracaoAutomatica("mBarber", "mService", "newDurationPills");
     });
-
     document.getElementById("mService").addEventListener("change", () => {
       aplicarDuracaoAutomatica("mBarber", "mService", "newDurationPills");
     });
 
-    footer.innerHTML = "";
-
-    document.getElementById("modalCancelBtn").onclick = closeModal;
-    document.getElementById("modalSaveNewBtn").onclick = () => {
+    document.getElementById("newFormCancelBtn").onclick = closeModal;
+    document.getElementById("newFormSaveBtn").onclick = () => {
       const name    = document.getElementById("mName").value.trim();
       const phone   = document.getElementById("mPhone").value.trim();
       const stylist = document.getElementById("mBarber").value;
